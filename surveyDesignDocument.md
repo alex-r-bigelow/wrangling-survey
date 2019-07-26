@@ -2,11 +2,12 @@
 Terms with an asterisk* will have on-demand interactive definitions
 
 0. Consent process
-  - Warning that participants' data will be **publicly available** (link to the database)
-  - Answers aren't right or wrong—the data will be used like Yelp reviews
-  - Attempts will be made to make responses as anonymous as possible, however we cannot prevent re-identification if you volunteer unique information about yourself in your responses
-  - Contact information if you wish to remove any or all of your responses in the future
-  - A unique ID will be assigned to this browser to link your responses; button to reset, similarly, clearing local browsing data will break this link with future responses
+  - Warning that participants' data will be **publicly available** (link to the database front-end)
+  - Answers aren't right or wrong—the data will be used like Yelp reviews to guide researchers as to whether / how a wrangling operation is useful to someone somewhere
+  - We have structured the survey to make responses as anonymous as possible, however we cannot prevent re-identification if you volunteer information about yourself in your responses (details such as very unique datasets could be used to identify you)
+  - A unique ID will be assigned to this browser to link your responses together; you can break this connection any time by clicking this button for a new ID. Similarly, clearing local browsing data will do the same thing
+  - Our contact information if they wish to remove any or all responses in the future
+  - *todo:* what's the best way to enable researchers to contact participants about further studies in a secure + private way (would a separate, private google form linking to their ID be sufficient—and researchers would have to go through us to get their contact info)?
 1. Option to walk through a pre-filled tutorial (wrangling movies?)
   - Tutorial examples and word definitions will be available on demand in the real survey as well
 2. Provide the shortest possible label for a dataset that you are familiar with:
@@ -68,7 +69,7 @@ Terms with an asterisk* will have on-demand interactive definitions
 6. What analysis questions* do you imagine this dataset could answer?
 
 # Forced transformation
-One of these two scenarios will be selected by the survey (not the user)...
+One of these scenarios will be randomly selected by the survey (in the event that the participant is repeating the survey, the same transformation will not be repeated):
 1. The system forces an intra-abstraction change
   - Tables
     - Items to Attributes, Attributes to Items
@@ -82,10 +83,8 @@ One of these two scenarios will be selected by the survey (not the user)...
   - Tables to Field
   - Field to Tables
   - *todo* etc.
-... based on this criteria:
-*todo*
 
-After the transformation is introduced in the survey:
+After the transformation is introduced:
 - Imagine what this new structure **could** be like (even if it doesn't make much sense)
   - A "sorry this doesn't make **any** sense" escape option (please describe why; survey ends)
 - repeat the "Describe the characteristics of the dataset" step
@@ -99,3 +98,8 @@ After the transformation is introduced in the survey:
 4. Which software tools*, if any, would be most useful to perform this transformation (comma separated list)?
 5. Are there any analysis questions* that this dataset could answer, that the original one couldn't?
 6. What do you wish was easier about transforming data?
+7. Field for adding contact email address to be contacted about future studies
+
+# Repeating (for really engaged users)
+1. Allow users to try different transformations with the same original dataset
+2. Allow users to go back to the beginning and enter a different dataset
