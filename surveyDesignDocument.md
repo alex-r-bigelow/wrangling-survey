@@ -10,7 +10,7 @@ Terms with an asterisk* will have on-demand interactive definitions
   - *todo:* what's the best way to enable researchers to contact participants about further studies in a secure + private way (would a separate, private google form linking to their ID be sufficient—and researchers would have to go through us to get their contact info)?
 1. Option to walk through a pre-filled tutorial (wrangling movies?)
   - Tutorial examples and word definitions will be available on demand in the real survey as well
-2. Provide the shortest possible label for a dataset that you are familiar with:
+2. **Dataset label** Provide the shortest possible label for a dataset that you are familiar with:
   - Suggestions pre-populated from prior users
   - Have worked with this data before?
   - Do you have this kind of dataset now?
@@ -21,8 +21,8 @@ Terms with an asterisk* will have on-demand interactive definitions
   - Field*
   - Geometry*
   - Clusters* / Sets* / Lists*
-  - The dataset a hybrid combination of one of the above (if so, check this box and select the best fit for what you feel is the most important component, or the component that you interact with the most)
-  - None of these describes the dataset (please describe why; survey ends)
+  - **Is hybrid** The dataset a hybrid combination of one of the above (if so, check this box and select the best fit for what you feel is the most important component, or the component that you interact with the most)
+  - **Different type** None of these describes the dataset (please describe why; survey ends)
 4. Describe the characteristics of the dataset
   - Tables
     - How many tables (1,2,3+)?
@@ -98,7 +98,6 @@ After the transformation is introduced:
 4. Which software tools*, if any, would be most useful to perform this transformation (comma separated list)?
 5. Are there any analysis questions* that this dataset could answer, that the original one couldn't?
 6. What do you wish was easier about transforming data?
-7. Field for adding contact email address to be contacted about future studies
 
 # Repeating (for really engaged users)
 1. Allow users to try different transformations with the same original dataset
