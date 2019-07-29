@@ -1,4 +1,6 @@
 /* globals d3 */
+import Responses from './models/Responses.js';
+
 import ConsentView from './views/ConsentView/ConsentView.js';
 import DatasetView from './views/DatasetView/DatasetView.js';
 import TablesView from './views/TablesView/TablesView.js';
@@ -11,8 +13,9 @@ import DebriefView from './views/DebriefView/DebriefView.js';
 
 class Controller {
   constructor () {
+    this.responses = new Responses();
     this.setupViews();
-    window.onresize = () => { this.renderAllViews(); };
+    window.onresize = () => { this.updateViews(); };
   }
   setupViews () {
     this.views = {};
@@ -34,17 +37,25 @@ class Controller {
       'debrief': { ViewClass: DebriefView }
     };
 
-    const surveyDivs = d3.select('.survey')
-      .selectAll('div')
+    this.currentSurveyView = 'consent';
+
+    const surveySections = d3.select('.survey')
+      .selectAll('.surveyView')
       .data(d3.entries(this.surveyComponents), d => d.key)
-      .enter().append('div')
-      .attr('class', d => d.value.ViewClass.type);
+      .enter().append('section')
+      .style('display', d => d.key === this.currentSurveyView ? null : 'none')
+      .attr('class', d => 'surveyView ' + d.value.ViewClass.type);
     const self = this;
-    surveyDivs.each(function (d) {
+    surveySections.each(function (d) {
       self.views[d.key] = new d.value.ViewClass(d3.select(this), d.value.transform);
     });
   }
-  async submitForm (formValues = {}) {
+  advanceSurvey (nextView) {
+    this.currentSurveyView = nextView;
+    this.updateViews();
+  }
+  async submitForm () {
+    const formValues = this.responses.getFormValues();
     const googleForm = await d3.json('googleForm.json');
     const hiddenFrame = d3.select('body').append('iframe')
       .style('display', 'none');
@@ -63,12 +74,16 @@ class Controller {
       .enter().append('input')
       .attr('type', 'text')
       .attr('name', d => d.value)
-      .property('value', d => formValues[d.key] || null); // TODO: formValues[d.key]
+      .property('value', d => formValues[d.key] || null);
     form.append('input')
       .attr('type', 'submit')
       .node().click();
   }
-  renderAllViews () {
+  updateViews () {
+    d3.select('.survey')
+      .selectAll('.surveyView')
+      .style('display', d => d.key === this.currentSurveyView ? null : 'none');
+    this.views[this.currentSurveyView].render();
     for (const view of Object.values(this.views)) {
       view.render();
     }
