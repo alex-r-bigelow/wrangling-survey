@@ -1,5 +1,5 @@
 <h3>Which of the following is the best description for this type of dataset?</h3>
-<div class="combo button" data-key="datasetType" data-flag="Tables">
+<div class="combo button" data-key="datasetType" data-value="Tables">
   <a><img src="img/tables.svg"/></a>
   <h4>Tables</h4>
   <small>
@@ -8,13 +8,13 @@
       <strong>rows</strong> and <strong>columns</strong>.
     </p>
     <p>
-      This includes more complex tables such as multiple linked / relational
+      This includes more complex datasets such as multiple linked / relational
       tables or tables with multidimensional, complex, or nested cell
       structures.
     </p>
   </small>
 </div>
-<div class="combo button" data-key="datasetType" data-flag="Network">
+<div class="combo button" data-key="datasetType" data-value="Network">
   <a><img src="img/network.svg"/></a>
   <h4>Network / Tree</h4>
   <small>
@@ -29,7 +29,7 @@
     </p>
   </small>
 </div>
-<div class="combo button" data-key="datasetType" data-flag="Field">
+<div class="combo button" data-key="datasetType" data-value="Field">
   <a><img src="img/field.svg"/></a>
   <h4>Field</h4>
   <small>
@@ -45,7 +45,7 @@
     </p>
   </small>
 </div>
-<div class="combo button" data-key="datasetType" data-flag="Geometry">
+<div class="combo button" data-key="datasetType" data-value="Geometry">
   <a><img src="img/geometry.svg"/></a>
   <h4>Geometry</h4>
   <small>
@@ -54,11 +54,11 @@
       <strong>shapes</strong>.
     </p>
     <p>
-      TODO: any nuances that might make someone pick something else or N/A?
+      TODO: any nuances that might make someone unsure if this is a fit?
     </p>
   </small>
 </div>
-<div class="combo button" data-key="datasetType" data-flag="Sets">
+<div class="combo button" data-key="datasetType" data-value="Sets">
   <a><img src="img/sets.svg"/></a>
   <h4>Clusters / Sets / Lists</h4>
   <small>
@@ -73,13 +73,13 @@
     </p>
   </small>
 </div>
-<div class="button" data-key="datasetType" data-flag="NA">
+<div class="button" data-key="datasetType" data-value="N/A">
   <a></a>
   <span>None of the above</span>
 </div>
-<div class="field">
-  <input type="checkbox" data-key="datasetNuances" data-flag="dataIsHybrid" id="dataIsHybrid"/>
-  <label for="dataIsHybrid">The dataset a hybrid combination of two or more of the above descriptions</label><br />
+<div class="hybrid field">
+  <input type="checkbox" data-key="datasetIsHybrid" data-value="true" id="datasetIsHybrid"/>
+  <label for="datasetIsHybrid">The dataset a hybrid combination of two or more of the above descriptions</label><br />
   <small>If so, choose the best description for what you feel is the most important component of the data, or the component that you interact with the most</small>
 </div>
 <div class="na field">

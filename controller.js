@@ -16,9 +16,10 @@ import recolorImageFilter from './utils/recolorImageFilter.js';
 
 class Controller {
   constructor () {
-    this.responses = new Responses();
+    window.responses = this.responses = new Responses();
     this.setupViews();
     window.onresize = () => { this.updateViews(); };
+    this.responses.on('update', () => { this.updateViews(); });
 
     (async () => {
       await less.pageLoadFinished;
@@ -33,17 +34,17 @@ class Controller {
       'consent': { ViewClass: ConsentView },
       'domain': { ViewClass: DomainView },
       'dataType': { ViewClass: DataTypeView },
-      'tables(init)': { ViewClass: TablesView, transform: false },
-      'network(init)': { ViewClass: NetworkView, transform: false },
-      'field(init)': { ViewClass: FieldView, transform: false },
-      'geometry(init)': { ViewClass: GeometryView, transform: false },
-      'sets(init)': { ViewClass: SetsView, transform: false },
+      'Tables(init)': { ViewClass: TablesView, transform: false },
+      'Network(init)': { ViewClass: NetworkView, transform: false },
+      'Field(init)': { ViewClass: FieldView, transform: false },
+      'Geometry(init)': { ViewClass: GeometryView, transform: false },
+      'Sets(init)': { ViewClass: SetsView, transform: false },
       'forcedTransformation': { ViewClass: ForcedTransformationView },
-      'tables(transform)': { ViewClass: TablesView, transform: true },
-      'network(transform)': { ViewClass: NetworkView, transform: true },
-      'field(transform)': { ViewClass: FieldView, transform: true },
-      'geometry(transform)': { ViewClass: GeometryView, transform: true },
-      'sets(transform)': { ViewClass: SetsView, transform: true },
+      'Tables(transform)': { ViewClass: TablesView, transform: true },
+      'Network(transform)': { ViewClass: NetworkView, transform: true },
+      'Field(transform)': { ViewClass: FieldView, transform: true },
+      'Geometry(transform)': { ViewClass: GeometryView, transform: true },
+      'Sets(transform)': { ViewClass: SetsView, transform: true },
       'debrief': { ViewClass: DebriefView }
     };
 
