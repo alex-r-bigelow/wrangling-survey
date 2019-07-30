@@ -1,11 +1,11 @@
 import { View } from '../../node_modules/uki/dist/uki.esm.js';
 import IntrospectableMixin from '../../utils/IntrospectableMixin.js';
 
-class DatasetView extends IntrospectableMixin(View) {
+class DataTypeView extends IntrospectableMixin(View) {
   constructor (div) {
     super(div, [
-      { type: 'less', url: 'views/DatasetView/style.less' },
-      { type: 'text', url: 'views/DatasetView/template.html' }
+      { type: 'less', url: 'views/DataTypeView/style.less' },
+      { type: 'text', url: 'views/DataTypeView/template.html' }
     ]);
   }
   setup () {
@@ -13,4 +13,4 @@ class DatasetView extends IntrospectableMixin(View) {
   }
   draw () {}
 }
-export default DatasetView;
+export default DataTypeView;

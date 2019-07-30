@@ -11,7 +11,7 @@ class ConsentView extends IntrospectableMixin(View) {
   setup () {
     this.d3el.html(this.resources[1]);
     this.d3el.select('.agree').on('click', () => {
-      window.controller.advanceSurvey('dataset');
+      window.controller.advanceSurvey('domain');
     });
   }
   draw () {}

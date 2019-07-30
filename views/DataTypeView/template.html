@@ -1,0 +1,92 @@
+<h3>Which of the following is the best description for this type of dataset?</h3>
+<div class="combo button" data-key="datasetType" data-flag="Tables">
+  <a><img src="img/tables.svg"/></a>
+  <h4>Tables</h4>
+  <small>
+    <p>
+      Choose this option if you tend to think about the data in terms of
+      <strong>rows</strong> and <strong>columns</strong>.
+    </p>
+    <p>
+      This includes more complex tables such as multiple linked / relational
+      tables or tables with multidimensional, complex, or nested cell
+      structures.
+    </p>
+  </small>
+</div>
+<div class="combo button" data-key="datasetType" data-flag="Network">
+  <a><img src="img/network.svg"/></a>
+  <h4>Network / Tree</h4>
+  <small>
+    <p>
+      Choose this option if you tend to think about the data in terms of
+      <strong>nodes</strong> and <strong>links</strong>.
+    </p>
+    <p>
+      This includes trees with parent / child relationships, multivariate
+      networks with node and/or edge attributes, as well as networks
+      containing structures such as supernodes or hyperedges.
+    </p>
+  </small>
+</div>
+<div class="combo button" data-key="datasetType" data-flag="Field">
+  <a><img src="img/field.svg"/></a>
+  <h4>Field</h4>
+  <small>
+    <p>
+      Choose this option if you tend to think about the data in terms of
+      <strong>grid positions</strong> with associated
+      <strong>attributes</strong>.
+    </p>
+    <p>
+      This includes grids with any dimensionality, non-Euclidean coordinate
+      systems, and fields with multidimensional attributes, such as
+      vector or tensor fields.
+    </p>
+  </small>
+</div>
+<div class="combo button" data-key="datasetType" data-flag="Geometry">
+  <a><img src="img/geometry.svg"/></a>
+  <h4>Geometry</h4>
+  <small>
+    <p>
+      Choose this option if you tend to think about the data in terms of
+      <strong>shapes</strong>.
+    </p>
+    <p>
+      TODO: any nuances that might make someone pick something else or N/A?
+    </p>
+  </small>
+</div>
+<div class="combo button" data-key="datasetType" data-flag="Sets">
+  <a><img src="img/sets.svg"/></a>
+  <h4>Clusters / Sets / Lists</h4>
+  <small>
+    <p>
+      Choose this option if you tend to think about the data in terms of
+      <strong>items</strong> that may (or may not) be <strong>grouped</strong>
+      or <strong>ordered</strong>.
+    </p>
+    <p>
+      TODO: I <strong>think</strong> unstructured, or even structured text data
+      would fall in this category... any other nuances?
+    </p>
+  </small>
+</div>
+<div class="button" data-key="datasetType" data-flag="NA">
+  <a></a>
+  <span>None of the above</span>
+</div>
+<div class="field">
+  <input type="checkbox" data-key="datasetNuances" data-flag="dataIsHybrid" id="dataIsHybrid"/>
+  <label for="dataIsHybrid">The dataset a hybrid combination of two or more of the above descriptions</label><br />
+  <small>If so, choose the best description for what you feel is the most important component of the data, or the component that you interact with the most</small>
+</div>
+<div class="na field">
+  <h3>Please describe why none of the above descriptions are a good fit. Is there a similar generalization that we should have included?</h3><br />
+  <textarea data-key="noTypeExplanation"></textarea>
+</div>
+<div class="buttonContainer">
+  <div class="finish button"><a></a><span>Finish Survey</span></div>
+  <div class="next button"><a></a><span>Next</span></div>
+</div>

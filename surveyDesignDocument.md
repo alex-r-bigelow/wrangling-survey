@@ -1,5 +1,5 @@
 # Setup
-Terms with an asterisk* will have on-demand interactive definitions
+Terms with an asterisk* will have on-demand interactive definitions, examples
 
 0. Consent process
   - Warning that participants' data will be **publicly available** (link to the database front-end)
@@ -8,14 +8,12 @@ Terms with an asterisk* will have on-demand interactive definitions
   - A unique ID will be assigned to this browser to link your responses together; you can break this connection any time by clicking this button for a new ID. Similarly, clearing local browsing data will do the same thing
   - Our contact information if they wish to remove any or all responses in the future
   - *todo:* what's the best way to enable researchers to contact participants about further studies in a secure + private way (would a separate, private google form linking to their ID be sufficient—and researchers would have to go through us to get their contact info)?
-1. Option to walk through a pre-filled tutorial (wrangling movies?)
-  - Tutorial examples and word definitions will be available on demand in the real survey as well
-2. **Dataset label** Provide the shortest possible label for a dataset that you are familiar with:
+1. **Dataset label** Please give a short name of **any** dataset that you're familiar with, or, if you prefer, feel free to choose one of the datasets that other participants have used—even if you're not familiar with it.
   - Suggestions pre-populated from prior users
   - Have worked with this data before?
   - Do you have this kind of dataset now?
   - Are you planning to collect or obtain this dataset in the future?
-3. Select the best fit for this dataset from a set of idealized structure visualizations (based on VAD Ch. 2)
+2. Select the best fit for this dataset from a set of idealized structure visualizations (based on VAD Ch. 2)
   - Tables*
   - Network* / Tree*
   - Field*
@@ -23,7 +21,7 @@ Terms with an asterisk* will have on-demand interactive definitions
   - Clusters* / Sets* / Lists*
   - **Is hybrid** The dataset a hybrid combination of one of the above (if so, check this box and select the best fit for what you feel is the most important component, or the component that you interact with the most)
   - **Different type** None of these describes the dataset (please describe why; survey ends)
-4. Describe the characteristics of the dataset
+3. Describe the characteristics of the dataset
   - Tables
     - How many tables (1,2,3+)?
     - Repeat 1 time (or 2 if more than 1 table):
@@ -34,6 +32,7 @@ Terms with an asterisk* will have on-demand interactive definitions
       - Ordinal* values (auto-yes if quantitative)?
       - Nested* structures?
         - Ask for 2 example cells
+      - *todo:* how to ask about multidimensional tables in a way that doesn't create confuse with nested structures?
       - Empty cells?
   - Network / Tree
     - How many node classes* (1,2,3+)?
@@ -64,9 +63,9 @@ Terms with an asterisk* will have on-demand interactive definitions
     - *todo*
   - Clusters, Sets, Lists
     - *todo*
-5. Is there anything that you feel is interesting about this dataset that the
+4. Is there anything that you feel is interesting about this dataset that the
    above questions don't ask?
-6. What analysis questions* do you imagine this dataset could answer?
+5. What analysis questions* do you imagine this dataset could answer?
 
 # Forced transformation
 One of these scenarios will be randomly selected by the survey (in the event that the participant is repeating the survey, the same transformation will not be repeated):

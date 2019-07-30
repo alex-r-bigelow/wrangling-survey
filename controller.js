@@ -1,8 +1,9 @@
-/* globals d3 */
+/* globals d3, less */
 import Responses from './models/Responses.js';
 
 import ConsentView from './views/ConsentView/ConsentView.js';
-import DatasetView from './views/DatasetView/DatasetView.js';
+import DomainView from './views/DomainView/DomainView.js';
+import DataTypeView from './views/DataTypeView/DataTypeView.js';
 import TablesView from './views/TablesView/TablesView.js';
 import NetworkView from './views/NetworkView/NetworkView.js';
 import FieldView from './views/FieldView/FieldView.js';
@@ -11,18 +12,27 @@ import SetsView from './views/SetsView/SetsView.js';
 import ForcedTransformationView from './views/ForcedTransformationView/ForcedTransformationView.js';
 import DebriefView from './views/DebriefView/DebriefView.js';
 
+import recolorImageFilter from './utils/recolorImageFilter.js';
+
 class Controller {
   constructor () {
     this.responses = new Responses();
     this.setupViews();
     window.onresize = () => { this.updateViews(); };
+
+    (async () => {
+      await less.pageLoadFinished;
+      recolorImageFilter();
+      this.updateViews();
+    })();
   }
   setupViews () {
     this.views = {};
 
     this.surveyComponents = {
       'consent': { ViewClass: ConsentView },
-      'dataset': { ViewClass: DatasetView },
+      'domain': { ViewClass: DomainView },
+      'dataType': { ViewClass: DataTypeView },
       'tables(init)': { ViewClass: TablesView, transform: false },
       'network(init)': { ViewClass: NetworkView, transform: false },
       'field(init)': { ViewClass: FieldView, transform: false },

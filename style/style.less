@@ -1,14 +1,45 @@
+@import './fonts.less';
+@import './colors.less';
+@import './ui.less';
+
 html, body {
   margin: 0;
   padding: 0;
+  font-family: @bodyFontFamily;
+  font-weight: @bodyFontWeight;
 }
 body {
   width: 100%;
+  background: @backgroundColor;
+  color: @textColor;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: @headerFontFamily;
+  font-weight: @headerFontWeight;
+}
+strong {
+  font-weight: @strongFontWeight;
 }
 
 .survey {
   position: relative;
   margin: 2em auto;
-  width: 50em;
+  width: 40em;
   max-width: calc(100% - 4em);
+}
+
+.field {
+  margin: 1em;
+  input {
+    margin-right: 1em;
+  }
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  .button {
+    margin: 0 0.5em;
+  }
 }
