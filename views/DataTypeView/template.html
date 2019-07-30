@@ -5,7 +5,7 @@
   <small>
     <p>
       Choose this option if you tend to think about the data in terms of
-      <strong>rows</strong> and <strong>columns</strong>.
+      <span class="inspectable">rows</span> and <span class="inspectable">columns</span>.
     </p>
     <p>
       This includes more complex datasets such as multiple linked / relational
@@ -20,7 +20,7 @@
   <small>
     <p>
       Choose this option if you tend to think about the data in terms of
-      <strong>nodes</strong> and <strong>links</strong>.
+      <span class="inspectable">nodes</span> and <span class="inspectable">links</span>.
     </p>
     <p>
       This includes trees with parent / child relationships, multivariate
@@ -35,8 +35,8 @@
   <small>
     <p>
       Choose this option if you tend to think about the data in terms of
-      <strong>grid positions</strong> with associated
-      <strong>attributes</strong>.
+      <span class="inspectable">grid positions</span> with associated
+      <span class="inspectable">attributes</span>.
     </p>
     <p>
       This includes grids with any dimensionality, non-Euclidean coordinate
@@ -51,7 +51,7 @@
   <small>
     <p>
       Choose this option if you tend to think about the data in terms of
-      <strong>shapes</strong>.
+      <span class="inspectable">shapes</span>.
     </p>
     <p>
       TODO: any nuances that might make someone unsure if this is a fit?
@@ -64,8 +64,8 @@
   <small>
     <p>
       Choose this option if you tend to think about the data in terms of
-      <strong>items</strong> that may (or may not) be <strong>grouped</strong>
-      or <strong>ordered</strong>.
+      <span class="inspectable">items</span> that may (or may not) be <span class="inspectable">grouped</span>
+      or <span class="inspectable">ordered</span>.
     </p>
     <p>
       TODO: I <strong>think</strong> unstructured, or even structured text data
@@ -75,7 +75,7 @@
 </div>
 <div class="button" data-key="datasetType" data-value="N/A">
   <a></a>
-  <span>None of the above</span>
+  <span class="label">None of the above</span>
 </div>
 <div class="hybrid field">
   <input type="checkbox" data-key="datasetIsHybrid" data-value="true" id="datasetIsHybrid"/>
@@ -84,9 +84,9 @@
 </div>
 <div class="na field">
   <h3>Please describe why none of the above descriptions are a good fit. Is there a similar generalization that we should have included?</h3><br />
-  <textarea data-key="noTypeExplanation"></textarea>
+  <textarea data-key="noTypeExplanation" placeholder="Optional. Please remember that these comments are public."></textarea>
 </div>
 <div class="buttonContainer">
-  <div class="finish button"><a></a><span>Finish Survey</span></div>
-  <div class="next button"><a></a><span>Next</span></div>
+  <div class="finish button"><a></a><span class="label">Finish Survey</span></div>
+  <div class="next button"><a></a><span class="label">Next</span></div>
 </div>

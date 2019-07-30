@@ -10,7 +10,8 @@ class TablesView extends IntrospectableMixin(View) {
     this.transform = transform;
   }
   setup () {
-    this.d3el.html(this.resources[1]);
+    const state = this.transform ? 'post' : 'init'; // eslint-disable-line no-unused-vars
+    this.d3el.html(eval('`' + this.resources[1] + '`')); // eslint-disable-line no-eval
   }
   draw () {}
 }
