@@ -30,8 +30,11 @@ Terms with an asterisk* will have on-demand interactive definitions, examples
       - Categorical* values?
       - Quantitative* values?
       - Ordinal* values (auto-yes if quantitative)?
-      - Nested* structures?
+      - Multidimensional cells*?
+      - Nested cell structures*?
         - Ask for 2 example cells
+      - Foreign keys*?
+      - Implicit table relationships*?
       - *todo:* how to ask about multidimensional tables in a way that doesn't create confuse with nested structures?
       - Empty cells?
   - Network / Tree
@@ -63,9 +66,6 @@ Terms with an asterisk* will have on-demand interactive definitions, examples
     - *todo*
   - Clusters, Sets, Lists
     - *todo*
-4. Is there anything that you feel is interesting about this dataset that the
-   above questions don't ask?
-5. What analysis questions* do you imagine this dataset could answer?
 
 # Forced transformation
 One of these scenarios will be randomly selected by the survey (in the event that the participant is repeating the survey, the same transformation will not be repeated):
@@ -95,7 +95,7 @@ After the transformation is introduced:
    B) This transformation would be likely to lose data
 3. With the software tools* that you are already comfortable using, how easy / hard would it be for you to perform this transformation? (likert)
 4. Which software tools*, if any, would be most useful to perform this transformation (comma separated list)?
-5. Are there any analysis questions* that this dataset could answer, that the original one couldn't?
+5. Are there any analysis questions* that you feel either
 6. What do you wish was easier about transforming data?
 
 # Repeating (for really engaged users)

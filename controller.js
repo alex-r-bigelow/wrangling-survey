@@ -12,6 +12,8 @@ import SetsView from './views/SetsView/SetsView.js';
 import ForcedTransformationView from './views/ForcedTransformationView/ForcedTransformationView.js';
 import DebriefView from './views/DebriefView/DebriefView.js';
 
+import HelpView from './views/HelpView/HelpView.js';
+
 import recolorImageFilter from './utils/recolorImageFilter.js';
 
 class Controller {
@@ -60,6 +62,8 @@ class Controller {
     surveySections.each(function (d) {
       self.views[d.key] = new d.value.ViewClass(d3.select(this), d.value.transform);
     });
+
+    this.helpView = new HelpView(d3.select('.HelpView'));
   }
   advanceSurvey (nextView) {
     this.currentSurveyView = nextView;
@@ -98,6 +102,7 @@ class Controller {
     for (const view of Object.values(this.views)) {
       view.render();
     }
+    this.helpView.render();
   }
 }
 
