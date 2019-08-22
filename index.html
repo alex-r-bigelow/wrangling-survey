@@ -13,8 +13,27 @@
 </head>
 
 <body>
-  <div class="survey"></div>
-  <div class="HelpView"><img src="img/geometry.svg"/><p>Test help content</p></div>
+  <div class="explorer unfocused">
+    <div class="wrapper">
+      <details>
+        <summary>Your Responses</summary>
+        <div class="DataManagerView explorerView"></div>
+      </details>
+      <details>
+        <summary>Others' Responses</summary>
+        <div class="AdjacencyMatrixView explorerView"></div>
+      </details>
+      <details>
+        <summary>Response Details</summary>
+        <div class="ResponseListView explorerView"></div>
+      </details>
+    </div>
+  </div>
+  <div class="separator"></div>
+  <div class="survey">
+    <div class="wrapper"></div>
+  </div>
+  <div class="Tooltip"></div>
 </body>
 
 </html>

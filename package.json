@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "scrape": "node ./scrapeGoogleForm.js",
-    "serve": "serve .",
+    "serve": "http-server --cors",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,10 +20,10 @@
   "homepage": "https://github.com/alex-r-bigelow/wrangling-survey#readme",
   "dependencies": {
     "d3": "^5.9.7",
+    "http-server": "^0.11.1",
     "js-sha256": "^0.9.0",
     "jsdom": "^15.1.1",
     "less": "^3.9.0",
-    "serve": "^11.1.0",
     "uki": "^0.3.0"
   }
 }

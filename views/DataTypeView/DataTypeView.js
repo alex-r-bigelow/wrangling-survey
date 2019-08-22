@@ -7,6 +7,8 @@ class DataTypeView extends IntrospectableMixin(View) {
       { type: 'less', url: 'views/DataTypeView/style.less' },
       { type: 'text', url: 'views/DataTypeView/template.html' }
     ]);
+    this.enabled = true;
+    this.humanLabel = 'Initial Data Abstraction';
   }
   setup () {
     this.d3el.html(this.resources[1]);
@@ -63,6 +65,13 @@ class DataTypeView extends IntrospectableMixin(View) {
     this.d3el.select('.next.button')
       .style('display', typeIsNa ? 'none' : null)
       .classed('disabled', typeIsNa || !window.responses.currentExploration.datasetType);
+  }
+  validateForm (formResponses) {
+    if (formResponses.datasetType === 'N/A') {
+      delete formResponses.datasetIsHybrid;
+    } else {
+      delete formResponses.noTypeExplanation;
+    }
   }
 }
 export default DataTypeView;

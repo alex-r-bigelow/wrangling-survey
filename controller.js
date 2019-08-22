@@ -1,6 +1,10 @@
 /* globals d3, less */
 import Responses from './models/Responses.js';
 
+import DataManagerView from './views/DataManagerView/DataManagerView.js';
+import ResponseListView from './views/ResponseListView/ResponseListView.js';
+import AdjacencyMatrixView from './views/AdjacencyMatrixView/AdjacencyMatrixView.js';
+
 import ConsentView from './views/ConsentView/ConsentView.js';
 import DomainView from './views/DomainView/DomainView.js';
 import DataTypeView from './views/DataTypeView/DataTypeView.js';
@@ -12,26 +16,42 @@ import SetsView from './views/SetsView/SetsView.js';
 import ForcedTransformationView from './views/ForcedTransformationView/ForcedTransformationView.js';
 import DebriefView from './views/DebriefView/DebriefView.js';
 
-import HelpView from './views/HelpView/HelpView.js';
+import Tooltip from './views/Tooltip/Tooltip.js';
 
 import recolorImageFilter from './utils/recolorImageFilter.js';
 
 class Controller {
   constructor () {
     window.responses = this.responses = new Responses();
-    this.setupViews();
-    window.onresize = () => { this.updateViews(); };
     this.responses.on('update', () => { this.updateViews(); });
 
+    this.setupViews();
+    window.onresize = () => { this.updateViews(); };
+
     (async () => {
+      // Get the full google spreadsheet of all the results
+      // (I doubt it will get beyond the 400k response tier)
+      this.responses.getAllResponses();
+    })();
+
+    (async () => {
+      // Wait for LESS to finish loading before applying our SVG
+      // filter hack, and then render all the views
       await less.pageLoadFinished;
       recolorImageFilter();
       this.updateViews();
     })();
   }
   setupViews () {
-    this.views = {};
+    this.tooltip = new Tooltip();
 
+    this.explorerViews = {};
+    for (const ViewClass of [DataManagerView, AdjacencyMatrixView, ResponseListView]) {
+      this.explorerViews[ViewClass.type] = new ViewClass(d3.select(`.${ViewClass.type}`));
+    }
+
+    this.surveyViews = {};
+    this.currentSurveyView = 'consent';
     this.surveyComponents = {
       'consent': { ViewClass: ConsentView },
       'domain': { ViewClass: DomainView },
@@ -49,60 +69,54 @@ class Controller {
       'Sets(transform)': { ViewClass: SetsView, transform: true },
       'debrief': { ViewClass: DebriefView }
     };
-
-    this.currentSurveyView = 'consent';
-
-    const surveySections = d3.select('.survey')
-      .selectAll('.surveyView')
-      .data(d3.entries(this.surveyComponents), d => d.key)
-      .enter().append('section')
-      .style('display', d => d.key === this.currentSurveyView ? null : 'none')
-      .attr('class', d => 'surveyView ' + d.value.ViewClass.type);
     const self = this;
+    const surveySections = d3.select('.survey .wrapper')
+      .selectAll('details')
+      .data(d3.entries(this.surveyComponents), d => d.key)
+      .enter().append('details')
+      .on('toggle', function (d) {
+        if (this.open) {
+          self.currentSurveyView = d.key;
+          self.updateViews();
+        }
+      });
+    surveySections.append('summary');
+    surveySections.append('div')
+      .attr('class', d => 'surveyView ' + d.value.ViewClass.type);
     surveySections.each(function (d) {
-      self.views[d.key] = new d.value.ViewClass(d3.select(this), d.value.transform);
+      const d3el = d3.select(this).select('.surveyView');
+      d.value.viewInstance = self.surveyViews[d.key] =
+        new d.value.ViewClass(d3el, d.value.transform);
+    });
+    surveySections.select('summary')
+      .text(d => d.value.viewInstance.humanLabel || 'WARNING: no humanLabel yet');
+
+    // A little javascript help for mobile responsiveness
+    const mainPanes = d3.selectAll('.explorer, .survey');
+    mainPanes.on('click', function () {
+      mainPanes.classed('unfocused', true);
+      d3.select(this).classed('unfocused', false);
     });
 
-    this.helpView = new HelpView(d3.select('.HelpView'));
+    d3.selectAll('[data-key]').on('change', () => {
+      self.updateViews();
+    });
   }
   advanceSurvey (nextView) {
     this.currentSurveyView = nextView;
     this.updateViews();
   }
-  async submitForm () {
-    const formValues = this.responses.getFormValues();
-    const googleForm = await d3.json('googleForm.json');
-    const hiddenFrame = d3.select('body').append('iframe')
-      .style('display', 'none');
-    const frameDoc = hiddenFrame.node().contentDocument;
-    let pollingInterval = window.setInterval(() => {
-      if (frameDoc.location === null) {
-        window.clearTimeout(pollingInterval);
-        hiddenFrame.remove();
-      }
-    }, 200);
-    const form = d3.select(frameDoc).select('body')
-      .append('form')
-      .attr('action', googleForm.action);
-    form.selectAll('input')
-      .data(d3.entries(googleForm.inputs))
-      .enter().append('input')
-      .attr('type', 'text')
-      .attr('name', d => d.value)
-      .property('value', d => formValues[d.key] || null);
-    form.append('input')
-      .attr('type', 'submit')
-      .node().click();
-  }
   updateViews () {
-    d3.select('.survey')
-      .selectAll('.surveyView')
-      .style('display', d => d.key === this.currentSurveyView ? null : 'none');
-    this.views[this.currentSurveyView].render();
-    for (const view of Object.values(this.views)) {
+    const viewStates = this.responses.getViewStates();
+    d3.select('.survey .wrapper')
+      .selectAll('details')
+      .attr('class', d => viewStates[d.key])
+      .property('open', d => d.key === this.currentSurveyView)
+      .style('display', d => d.value.viewInstance.enabled ? null : 'none');
+    this.surveyViews[this.currentSurveyView].render();
+    for (const view of Object.values(this.explorerViews)) {
       view.render();
     }
-    this.helpView.render();
   }
 }
 

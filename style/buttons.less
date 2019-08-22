@@ -20,7 +20,7 @@
   width: fit-content;
   height: fit-content;
 
-  background: @lightBackgroundColor;
+  background: @backgroundColor;
   border-radius: @borderRadius;
 
   cursor: pointer;
@@ -34,7 +34,7 @@
     height: 100%;
     left: -1px;
     top: -1px;
-    border: 1px solid @separatorColor;
+    border: 1px solid @shadowColor;
     border-radius: @borderRadius;
     overflow: hidden;
 
@@ -79,7 +79,7 @@
     min-width: 0.65em;
     padding: 0.25em 0.25em 0em 0.25em;
     background-color: @textColor;
-    color: @darkBackgroundColor;
+    color: @invertedTextColor;
     border-radius: @borderRadius;
     border: 1px solid @shadowColor;
   }
@@ -126,7 +126,7 @@
     color: @disabledColor;
     a {
       border-color: @disabledColor;
-      background: @darkBackgroundColor;
+      background: @backgroundColor;
       img {
         filter: @disabledImageFilter;
       }

@@ -71,7 +71,7 @@ input {
     &:checked:after {
       content: '\2713';
       background: @selectedButtonGradient;
-      color: @darkBackgroundColor;
+      color: @invertedTextColor;
     }
     &:checked:hover:after {
       background: @selectedButtonHoverGradient;
@@ -86,7 +86,7 @@ textarea {
   color: @textColor;
   border: 1px solid @separatorColor;
   border-radius: @borderRadius / 2;
-  height: 4em;
+  height: 6em;
   width: 100%;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -123,10 +123,4 @@ hr {
 }
 fieldset {
   border: 1px solid @separatorColor;
-}
-
-.panel {
-  border: 1px solid @darkestBackgroundColor;
-  background-color: @darkestBackgroundColor;
-  border-radius: @borderRadius;
 }

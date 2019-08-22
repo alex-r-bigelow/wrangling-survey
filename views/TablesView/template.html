@@ -1,6 +1,6 @@
 <h3>How many tables are in this dataset?</h3>
 <div class="field">
-  <input type="radio" data-key="${state}NTables" name="nTables" data-flag="1" id="${state}One" />
+  <input type="radio" data-key="${state}NTables" name="nTables" data-flag="1" id="${state}One" checked="true" />
   <label for="${state}One">1</label>
 </div>
 <div class="field">
@@ -13,8 +13,49 @@
 </div>
 <h3>Please fill in examples of what the rows / columns might look like. Feel
 free to invent fake values.</h3>
-<div class="exampleData field">TODO: table form based on no. of tables</div>
-
+<div class="exampleData field"></div>
+  <table class="firstTable">
+    <thead>
+      <tr>
+        <td></td>
+        <td><input data-key="${state}ExampleData" data-role="table1.H.1"/></td>
+        <td><input data-key="${state}ExampleData" data-role="table1.H.2"/></td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td></td>
+        <td><input data-key="${state}ExampleData" data-role="table1.1.1"/></td>
+        <td><input data-key="${state}ExampleData" data-role="table1.1.2"/></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><input data-key="${state}ExampleData" data-role="table1.2.1"/></td>
+        <td><input data-key="${state}ExampleData" data-role="table1.2.2"/></td>
+      </tr>
+    </tbody>
+  </table>
+  <table class="secondTable">
+    <thead>
+      <tr>
+        <td></td>
+        <td><input data-key="${state}ExampleData" data-role="table2.H.1"/></td>
+        <td><input data-key="${state}ExampleData" data-role="table2.H.2"/></td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td></td>
+        <td><input data-key="${state}ExampleData" data-role="table2.1.1"/></td>
+        <td><input data-key="${state}ExampleData" data-role="table2.1.2"/></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><input data-key="${state}ExampleData" data-role="table2.2.1"/></td>
+        <td><input data-key="${state}ExampleData" data-role="table2.2.2"/></td>
+      </tr>
+    </tbody>
+  </table>
 <h3>Would you expect any of the following to apply to, or exist in, any table?</h3>
 <div class="field">
   <input type="checkbox" data-key="${state}TableNuances" data-flag="Categorical values" id="${state}CategorialValues" />
@@ -36,6 +77,10 @@ free to invent fake values.</h3>
   <input type="checkbox" data-key="${state}TableNuances" data-flag="Nested cell structures" id="${state}NestedCellStructures" />
   <label for="${state}NestedCellStructures"><span class="inspectable">Nested cell structures</span></label>
 </div>
+<div class="nested field">
+  <h3>If you haven't already provided an example above, please describe the nested structure or give a short example here</h3>
+  <textarea data-key="${state}TableNestedExample" placeholder="Optional. Responses such as these are perfectly adequate:&#10;&nbsp;&nbsp;&nbsp;&nbsp;Comma-separated lists&#10;&nbsp;&nbsp;&nbsp;&nbsp;{&quot;a&quot;: 3, &quot;b&quot;: 4}&#10;Please remember that all responses are public."></textarea>
+</div>
 <div class="field">
   <input type="checkbox" data-key="${state}TableNuances" data-flag="Foreign keys" id="${state}ForeignKeys" />
   <label for="${state}ForeignKeys"><span class="inspectable">Foreign keys</span></label>
@@ -44,14 +89,13 @@ free to invent fake values.</h3>
   <input type="checkbox" data-key="${state}TableNuances" data-flag="Implicit table relationships" id="${state}implicitTableRelationships" />
   <label for="${state}implicitTableRelationships"><span class="inspectable">Implicit table relationships</span></label>
 </div>
-<div class="nested field">TODO: if checked, ask for two examples</div>
 <div class="field">
   <input type="checkbox" data-key="${state}TableNuances" data-flag="Empty cells" id="${state}EmptyCells" />
   <label for="${state}EmptyCells">Empty cells</label>
 </div>
 <div class="field">
   <h3>Are there any other characteristics that you would use to describe the table(s) in this dataset?</h3><br />
-  <textarea data-key="${state}TableMisc" placeholder="Optional. Please remember that these comments are public."></textarea>
+  <textarea data-key="${state}TableMisc" placeholder="Optional.&#10;&#10;Please remember that these comments are public."></textarea>
 </div>
 <div class="buttonContainer">
   <div class="next button"><a></a><span class="label">Next</span></div>

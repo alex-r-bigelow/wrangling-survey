@@ -7,6 +7,8 @@ class DomainView extends IntrospectableMixin(View) {
       { type: 'less', url: 'views/DomainView/style.less' },
       { type: 'text', url: 'views/DomainView/template.html' }
     ]);
+    this.enabled = true;
+    this.humanLabel = 'Domain Characterization';
     // TODO: populate this based on prior responses
     this.exampleDatasets = [
       'Brain MRI',
@@ -18,20 +20,6 @@ class DomainView extends IntrospectableMixin(View) {
       'Corpus of news articles'
     ];
   }
-  getDomainOptions () {
-    const options = {};
-    this.d3el.selectAll('[data-key]').each(function () {
-      if (this.dataset.flag) {
-        options[this.dataset.key] = options[this.dataset.key] || [];
-        if (this.checked) {
-          options[this.dataset.key].push(this.dataset.flag);
-        }
-      } else {
-        options[this.dataset.key] = this.value;
-      }
-    });
-    return options;
-  }
   setup () {
     this.d3el.html(this.resources[1]);
 
@@ -40,11 +28,6 @@ class DomainView extends IntrospectableMixin(View) {
       .data(this.exampleDatasets, d => d)
       .enter().append('option')
       .attr('value', d => d);
-
-    this.d3el.selectAll('[data-key]')
-      .on('change', () => {
-        window.responses.setDomainOptions(this.getDomainOptions());
-      });
 
     this.d3el.select('.next').on('click', () => {
       if (window.responses.currentDataset) {
