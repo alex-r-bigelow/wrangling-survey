@@ -7,7 +7,6 @@ class ConsentView extends IntrospectableMixin(View) {
       { type: 'less', url: 'views/ConsentView/style.less' },
       { type: 'text', url: 'views/ConsentView/template.html' }
     ]);
-    this.enabled = true;
     this.humanLabel = 'Consent for Participation, Data Collection';
   }
   setup () {
@@ -19,16 +18,10 @@ class ConsentView extends IntrospectableMixin(View) {
   }
   draw () {}
   validateForm (formValues) {
-    if (!formValues.cookie) {
-      return null;
-    }
-  }
-  getViewState (formValues, editingOldResponse) {
-    if (formValues.cookie !== null) {
-      return 'complete';
-    } else {
-      return 'incomplete';
-    }
+    return {
+      enabled: true,
+      valid: !!formValues.cookie
+    };
   }
 }
 export default ConsentView;

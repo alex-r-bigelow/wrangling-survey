@@ -9,6 +9,7 @@ class TablesView extends IntrospectableMixin(View) {
       { type: 'text', url: 'views/TablesView/template.html' }
     ]);
     this.state = transform ? 'post' : 'init';
+    this.humanLabel = 'Table Details';
   }
   setup () {
     const state = this.state; // eslint-disable-line no-unused-vars
@@ -32,11 +33,16 @@ class TablesView extends IntrospectableMixin(View) {
     this.d3el.select(`.nested`)
       .style('display', this.nestedStructures ? null : 'none');
   }
-  validateForm (formResponses) {
-    const nuanceFlags = formResponses[`${this.state}TableNuances`];
+  validateForm (formValues) {
+    const nuanceFlags = formValues[`${this.state}TableNuances`];
     if (!nuanceFlags || nuanceFlags.indexOf('Nested cell structures') === -1) {
-      delete formResponses[`${this.state}TableNestedExample`];
+      delete formValues[`${this.state}TableNestedExample`];
     }
+    return {
+      enabled: this.state === 'init' && formValues.datasetType === 'Tables',
+      valid: true,
+      invalidKeys: {}
+    };
   }
 }
 export default TablesView;

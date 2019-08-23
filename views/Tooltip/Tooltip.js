@@ -13,7 +13,7 @@ class Tooltip extends View {
 
     const self = this;
     this.definitions = {};
-    d3.select(this.resources[1])
+    d3.select(this.resources[0])
       .selectAll('[data-inspectable]')
       .each(function () {
         self.definitions[this.dataset.inspectable] = this;
@@ -22,7 +22,7 @@ class Tooltip extends View {
       const helpElement = self.definitions[this.innerText];
       if (helpElement && helpElement.outerHTML) {
         self.show({
-          content: self.helpElement.outerHTML,
+          content: helpElement.outerHTML,
           targetBounds: this.getBoundingClientRect(),
           hideAfterMs: 10000
         });
@@ -30,17 +30,28 @@ class Tooltip extends View {
         self.hide();
       }
     }
-    d3.selectAll('.inspectable')
-      .on('mouseenter', showHelp)
-      .on('click', showHelp)
-      .on('mouseleave', () => {
-        self.hide();
-      })
-      .each(function () {
-        if (!self.definitions[this.innerText]) {
-          console.warn(`No help definition for concept: ${this.innerText}`);
-        }
-      });
+    (async () => {
+      await Promise.all(Object.values(window.controller.surveyViews).map(view => {
+        return view.render();
+      }));
+      d3.selectAll('.inspectable')
+        .on('mouseenter', showHelp)
+        .on('click', showHelp)
+        .on('touchend', function () {
+          d3.event.preventDefault();
+          d3.event.stopPropagation();
+          showHelp.call(this);
+          return false;
+        })
+        .on('mouseleave', () => {
+          self.hide();
+        })
+        .each(function () {
+          if (!self.definitions[this.innerText]) {
+            console.warn(`No help definition for concept: ${this.innerText}`);
+          }
+        });
+    })();
   }
   draw () {
     // TODO: migrate a lot of the show() stuff here

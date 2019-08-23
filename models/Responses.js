@@ -98,16 +98,22 @@ ${JSON.stringify(currentData, null, 2)}
     // Clean / validate values + flag invalid form elements
     for (const [viewName, view] of Object.entries(window.controller.surveyViews)) {
       if (view.validateForm) {
-        result.viewStates[viewName] = view.validateForm(result.formValues, this.currentResponse !== null);
+        result.viewStates[viewName] = view.validateForm(result.formValues);
       } else {
         result.viewStates[viewName] = {
           valid: true,
-          state: this.currentResponse === null ? 'complete' : 'unchanged',
-          invalidElements: []
+          enabled: true,
+          invalidKeys: {}
         };
+      }
+      if (result.viewStates[viewName].valid) {
+        result.viewStates[viewName].state = this.currentResponse === null ? 'complete' : 'changesValid';
+      } else {
+        result.viewStates[viewName].state = this.currentResponse === null ? 'incomplete' : 'invalid';
       }
     }
     result.valid = Object.values(result.viewStates).every(viewState => viewState.valid);
+    result.invalidKeys = Object.assign({}, ...Object.values(result.viewStates).map(viewState => viewState.invalidKeys || {}));
     // Compare to previous data (i.e. if the user is editing)
     if (this.currentResponse !== null) {
       result.priorFormValues = this.allResponses[this.currentResponse];

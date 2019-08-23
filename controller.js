@@ -43,11 +43,10 @@ class Controller {
     })();
   }
   setupViews () {
-    this.tooltip = new Tooltip();
-
     this.explorerViews = {};
     for (const ViewClass of [DataManagerView, AdjacencyMatrixView, ResponseListView]) {
       this.explorerViews[ViewClass.type] = new ViewClass(d3.select(`.${ViewClass.type}`));
+      this.explorerViews[ViewClass.type].render();
     }
 
     this.surveyViews = {};
@@ -87,6 +86,7 @@ class Controller {
       const d3el = d3.select(this).select('.surveyView');
       d.value.viewInstance = self.surveyViews[d.key] =
         new d.value.ViewClass(d3el, d.value.transform);
+      d.value.viewInstance.render();
     });
     surveySections.select('summary')
       .text(d => d.value.viewInstance.humanLabel || 'WARNING: no humanLabel yet');
@@ -98,6 +98,9 @@ class Controller {
       d3.select(this).classed('unfocused', false);
     });
 
+    this.tooltip = new Tooltip();
+    this.tooltip.render();
+
     d3.selectAll('[data-key]').on('change', () => {
       self.updateViews();
     });
@@ -107,12 +110,15 @@ class Controller {
     this.updateViews();
   }
   updateViews () {
-    const viewStates = this.responses.getViewStates();
+    const formData = this.responses.getCurrentData();
     d3.select('.survey .wrapper')
       .selectAll('details')
-      .attr('class', d => viewStates[d.key])
+      .attr('class', d => formData.viewStates[d.key].state)
       .property('open', d => d.key === this.currentSurveyView)
-      .style('display', d => d.value.viewInstance.enabled ? null : 'none');
+      .style('display', d => formData.viewStates[d.key].enabled ? null : 'none');
+    d3.selectAll('[data-key]').classed('invalid', function () {
+      return window.responses.currentResponse !== null && formData.invalidKeys[this.dataset.key];
+    });
     this.surveyViews[this.currentSurveyView].render();
     for (const view of Object.values(this.explorerViews)) {
       view.render();

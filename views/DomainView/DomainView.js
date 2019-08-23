@@ -7,7 +7,6 @@ class DomainView extends IntrospectableMixin(View) {
       { type: 'less', url: 'views/DomainView/style.less' },
       { type: 'text', url: 'views/DomainView/template.html' }
     ]);
-    this.enabled = true;
     this.humanLabel = 'Domain Characterization';
     // TODO: populate this based on prior responses
     this.exampleDatasets = [
@@ -20,6 +19,10 @@ class DomainView extends IntrospectableMixin(View) {
       'Corpus of news articles'
     ];
   }
+  get datasetLabel () {
+    const labelElement = this.d3el.select('[data-key="datasetLabel"]').node();
+    return labelElement && labelElement.value;
+  }
   setup () {
     this.d3el.html(this.resources[1]);
 
@@ -30,26 +33,21 @@ class DomainView extends IntrospectableMixin(View) {
       .attr('value', d => d);
 
     this.d3el.select('.next').on('click', () => {
-      if (window.responses.currentDataset) {
+      if (this.datasetLabel) {
         window.controller.advanceSurvey('dataType');
       }
     });
   }
   draw () {
-    if (window.responses.currentDataset) {
-      for (const [key, value] of Object.entries(window.responses.currentDataset)) {
-        if (value instanceof Array) {
-          this.d3el.selectAll(`[data-key="${key}"]`)
-            .property('checked', function () {
-              return value.indexOf(this.dataset.flag) !== -1;
-            });
-        } else {
-          this.d3el.select(`[data-key="${key}"]`)
-            .property('value', value);
-        }
-      }
+    this.d3el.select('.next.button').classed('disabled', !this.datasetLabel);
+  }
+  validateForm (formValues) {
+    const invalidKeys = {};
+    const valid = !!this.datasetLabel;
+    if (!valid) {
+      invalidKeys['datasetLabel'] = true;
     }
-    this.d3el.select('.next.button').classed('disabled', !window.responses.currentDataset);
+    return { enabled: true, valid, invalidKeys };
   }
 }
 export default DomainView;

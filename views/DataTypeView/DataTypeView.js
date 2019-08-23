@@ -7,71 +7,69 @@ class DataTypeView extends IntrospectableMixin(View) {
       { type: 'less', url: 'views/DataTypeView/style.less' },
       { type: 'text', url: 'views/DataTypeView/template.html' }
     ]);
-    this.enabled = true;
     this.humanLabel = 'Initial Data Abstraction';
+    this._datasetType = null;
   }
   setup () {
+    const self = this;
     this.d3el.html(this.resources[1]);
-
     this.d3el.selectAll('[data-key="datasetType"]')
       .on('click', function () {
-        window.responses.setDataTypeOptions({
-          datasetType: this.dataset.value
-        });
+        self._datasetType = this.dataset.value;
+        window.controller.updateViews();
       });
-    function updateOtherOptions () {
-      const options = {};
-      options[this.dataset.key] = this.dataset.value || this.value;
-      window.responses.setDataTypeOptions(options);
-    }
-    this.d3el.selectAll('[data-key]')
-      .on('change', updateOtherOptions);
-    this.d3el.select('textarea')
-      .on('keyup', updateOtherOptions);
+    this.d3el.select('.na.field textarea')
+      .on('keyup', () => { this.render(); });
     this.d3el.select('.finish.button')
       .on('click', () => {
-        if (window.responses.currentExploration &&
-            window.responses.currentExploration.datasetType === 'N/A' &&
-            window.responses.currentExploration.noTypeExplanation) {
-          throw new Error('todo: unimplemented');
-        }
+        window.responses.submitForm();
       });
     this.d3el.select('.next.button')
       .on('click', () => {
-        if (window.responses.currentExploration &&
-            window.responses.currentExploration.datasetType !== 'N/A') {
-          window.controller.advanceSurvey(window.responses.currentExploration.datasetType + '(init)');
+        if (this._datasetType !== null) {
+          window.controller.advanceSurvey(this._datasetType + '(init)');
         }
       });
   }
   draw () {
-    if (!window.responses.currentExploration) {
-      return;
-    }
+    const self = this;
     this.d3el.selectAll('.button[data-key="datasetType"]')
       .classed('selected', function () {
-        return (window.responses.currentExploration.datasetType === this.dataset.value);
+        return (self._datasetType === this.dataset.value);
       });
-    const typeIsNa = window.responses.currentExploration.datasetType === 'N/A';
+    const typeIsNa = this._datasetType === 'N/A';
     this.d3el.select('.hybrid.field')
       .style('display', typeIsNa ? 'none' : null);
-    this.d3el.select('[data-key="datasetIsHybrid"]')
-      .property('checked', window.responses.currentExploration.datasetIsHybrid);
     this.d3el.select('.na.field')
       .style('display', typeIsNa ? null : 'none');
     this.d3el.select('.finish.button')
       .style('display', typeIsNa ? null : 'none')
-      .classed('disabled', !typeIsNa || !window.responses.currentExploration.noTypeExplanation);
+      .classed('disabled', () => {
+        return !typeIsNa || !this.d3el.select('.na.field textarea').node().value;
+      });
     this.d3el.select('.next.button')
       .style('display', typeIsNa ? 'none' : null)
-      .classed('disabled', typeIsNa || !window.responses.currentExploration.datasetType);
+      .classed('disabled', typeIsNa || this._datasetType === null);
   }
-  validateForm (formResponses) {
-    if (formResponses.datasetType === 'N/A') {
-      delete formResponses.datasetIsHybrid;
+  populateForm (formValues) {
+    this._datasetType = formValues.datasetType;
+    this.d3el.select('[data-key="datasetIsHybrid"]')
+      .property('checked', formValues['datasetIsHybrid'] === 'true');
+  }
+  validateForm (formValues) {
+    formValues.datasetType = this._datasetType;
+    let valid = formValues.datasetType !== null;
+    const invalidKeys = {};
+    if (formValues.datasetType === 'N/A') {
+      delete formValues.datasetIsHybrid;
+      valid = !!formValues.noTypeExplanation;
+      if (!valid) {
+        invalidKeys['noTypeExplanation'] = true;
+      }
     } else {
-      delete formResponses.noTypeExplanation;
+      delete formValues.noTypeExplanation;
     }
+    return { enabled: true, valid, invalidKeys };
   }
 }
 export default DataTypeView;
