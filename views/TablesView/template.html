@@ -1,37 +1,38 @@
 <h3>How many tables are in this dataset?</h3>
 <div class="field">
-  <input type="radio" data-key="${state}NTables" name="nTables" data-flag="1" id="${state}One" checked="true" />
+  <input type="radio" data-key="${state}NTables" name="${state}NTables" data-checked-value="1" id="${state}One" checked />
   <label for="${state}One">1</label>
 </div>
 <div class="field">
-  <input type="radio" data-key="${state}NTables" name="nTables" data-flag="2" id="${state}Two" />
+  <input type="radio" data-key="${state}NTables" name="${state}NTables" data-checked-value="2" id="${state}Two" />
   <label for="${state}Two">2</label>
 </div>
 <div class="field">
-  <input type="radio" data-key="${state}NTables" name="nTables" data-flag="3+" id="${state}Three" />
+  <input type="radio" data-key="${state}NTables" name="${state}NTables" data-checked-value="3+" id="${state}Three" />
   <label for="${state}Three">&ge;3</label>
 </div>
-<h3>Please fill in examples of what the rows / columns might look like. Feel
-free to invent fake values.</h3>
-<div class="exampleData field"></div>
+<h3>Please fill in examples of what a few headers, rows, and columns might look
+  like. Feel free to invent fake values.</h3>
+<small>Please remember that these examples will be public.</small>
+<div class="exampleData field">
   <table class="firstTable">
     <thead>
       <tr>
         <td></td>
-        <td><input data-key="${state}ExampleData" data-role="table1.H.1"/></td>
-        <td><input data-key="${state}ExampleData" data-role="table1.H.2"/></td>
+        <td><input data-key="${state}ExampleData" data-role="table1_H_1" id="${state}table1_H_1" placeholder="A"/></td>
+        <td><input data-key="${state}ExampleData" data-role="table1_H_2" id="${state}table1_H_2" placeholder="B"/></td>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td></td>
-        <td><input data-key="${state}ExampleData" data-role="table1.1.1"/></td>
-        <td><input data-key="${state}ExampleData" data-role="table1.1.2"/></td>
+        <td><input data-key="${state}ExampleData" data-role="table1_1_H" id="${state}table1_1_H" placeholder="0"/></td>
+        <td><input data-key="${state}ExampleData" data-role="table1_1_1" id="${state}table1_1_1"/></td>
+        <td><input data-key="${state}ExampleData" data-role="table1_1_2" id="${state}table1_1_2"/></td>
       </tr>
       <tr>
-        <td></td>
-        <td><input data-key="${state}ExampleData" data-role="table1.2.1"/></td>
-        <td><input data-key="${state}ExampleData" data-role="table1.2.2"/></td>
+        <td><input data-key="${state}ExampleData" data-role="table1_2_H" id="${state}table1_2_H" placeholder="1"/></td>
+        <td><input data-key="${state}ExampleData" data-role="table1_2_1" id="${state}table1_2_1"/></td>
+        <td><input data-key="${state}ExampleData" data-role="table1_2_2" id="${state}table1_2_2"/></td>
       </tr>
     </tbody>
   </table>
@@ -39,23 +40,24 @@ free to invent fake values.</h3>
     <thead>
       <tr>
         <td></td>
-        <td><input data-key="${state}ExampleData" data-role="table2.H.1"/></td>
-        <td><input data-key="${state}ExampleData" data-role="table2.H.2"/></td>
+        <td><input data-key="${state}ExampleData" data-role="table2_H_1" id="${state}table2_H_1" placeholder="A"/></td>
+        <td><input data-key="${state}ExampleData" data-role="table2_H_2" id="${state}table2_H_2" placeholder="B"/></td>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td></td>
-        <td><input data-key="${state}ExampleData" data-role="table2.1.1"/></td>
-        <td><input data-key="${state}ExampleData" data-role="table2.1.2"/></td>
+        <td><input data-key="${state}ExampleData" data-role="table2_1_H" id="${state}table2_1_H" placeholder="0"/></td>
+        <td><input data-key="${state}ExampleData" data-role="table2_1_1" id="${state}table2_1_1"/></td>
+        <td><input data-key="${state}ExampleData" data-role="table2_1_2" id="${state}table2_1_2"/></td>
       </tr>
       <tr>
-        <td></td>
-        <td><input data-key="${state}ExampleData" data-role="table2.2.1"/></td>
-        <td><input data-key="${state}ExampleData" data-role="table2.2.2"/></td>
+        <td><input data-key="${state}ExampleData" data-role="table2_2_H" id="${state}table2_2_H" placeholder="1"/></td>
+        <td><input data-key="${state}ExampleData" data-role="table2_2_1" id="${state}table2_2_1"/></td>
+        <td><input data-key="${state}ExampleData" data-role="table2_2_2" id="${state}table2_2_2"/></td>
       </tr>
     </tbody>
   </table>
+</div>
 <h3>Would you expect any of the following to apply to, or exist in, any table?</h3>
 <div class="field">
   <input type="checkbox" data-key="${state}TableNuances" data-flag="Categorical values" id="${state}CategorialValues" />

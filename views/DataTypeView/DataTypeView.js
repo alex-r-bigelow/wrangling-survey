@@ -8,7 +8,8 @@ class DataTypeView extends IntrospectableMixin(View) {
       { type: 'text', url: 'views/DataTypeView/template.html' }
     ]);
     this.humanLabel = 'Initial Data Abstraction';
-    this._datasetType = null;
+    const debugView = window.DEBUG_VIEW && window.DEBUG_VIEW.match(/(.*)\(init\)/)[1];
+    this._datasetType = debugView || null;
   }
   setup () {
     const self = this;
@@ -59,17 +60,17 @@ class DataTypeView extends IntrospectableMixin(View) {
   validateForm (formValues) {
     formValues.datasetType = this._datasetType;
     let valid = formValues.datasetType !== null;
-    const invalidKeys = {};
+    const invalidIds = {};
     if (formValues.datasetType === 'N/A') {
       delete formValues.datasetIsHybrid;
       valid = !!formValues.noTypeExplanation;
       if (!valid) {
-        invalidKeys['noTypeExplanation'] = true;
+        invalidIds['noTypeExplanation'] = true;
       }
     } else {
       delete formValues.noTypeExplanation;
     }
-    return { enabled: true, valid, invalidKeys };
+    return { enabled: true, valid, invalidIds };
   }
 }
 export default DataTypeView;

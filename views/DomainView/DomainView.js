@@ -42,12 +42,12 @@ class DomainView extends IntrospectableMixin(View) {
     this.d3el.select('.next.button').classed('disabled', !this.datasetLabel);
   }
   validateForm (formValues) {
-    const invalidKeys = {};
+    const invalidIds = {};
     const valid = !!this.datasetLabel;
     if (!valid) {
-      invalidKeys['datasetLabel'] = true;
+      invalidIds['datasetLabel'] = true;
     }
-    return { enabled: true, valid, invalidKeys };
+    return { enabled: true, valid, invalidIds };
   }
 }
 export default DomainView;

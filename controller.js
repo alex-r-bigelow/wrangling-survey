@@ -20,6 +20,8 @@ import Tooltip from './views/Tooltip/Tooltip.js';
 
 import recolorImageFilter from './utils/recolorImageFilter.js';
 
+window.DEBUG_VIEW = 'Tables(init)';
+
 class Controller {
   constructor () {
     window.responses = this.responses = new Responses();
@@ -50,7 +52,7 @@ class Controller {
     }
 
     this.surveyViews = {};
-    this.currentSurveyView = 'consent';
+    this.currentSurveyView = window.DEBUG_VIEW || 'consent';
     this.surveyComponents = {
       'consent': { ViewClass: ConsentView },
       'domain': { ViewClass: DomainView },
@@ -99,11 +101,18 @@ class Controller {
     });
 
     this.tooltip = new Tooltip();
-    this.tooltip.render();
-
-    d3.selectAll('[data-key]').on('change', () => {
-      self.updateViews();
-    });
+    (async () => {
+      await Promise.all(Object.values(this.surveyViews).map(view => {
+        return view.render();
+      }));
+      // A couple general-purpose things should only load after all the views
+      // have populated themselves completely
+      this.tooltip.dirty = true;
+      this.tooltip.render();
+      d3.selectAll('[data-key]').on('change', () => {
+        self.updateViews();
+      });
+    })();
   }
   advanceSurvey (nextView) {
     this.currentSurveyView = nextView;
@@ -116,9 +125,12 @@ class Controller {
       .attr('class', d => formData.viewStates[d.key].state)
       .property('open', d => d.key === this.currentSurveyView)
       .style('display', d => formData.viewStates[d.key].enabled ? null : 'none');
-    d3.selectAll('[data-key]').classed('invalid', function () {
-      return window.responses.currentResponse !== null && formData.invalidKeys[this.dataset.key];
-    });
+    d3.selectAll('.invalid').classed('invalid', false);
+    // if (window.responses.currentResponse !== null) {
+      for (const invalidId of Object.keys(formData.invalidIds)) {
+        d3.select(`#${invalidId}`).classed('invalid', true);
+      }
+    // }
     this.surveyViews[this.currentSurveyView].render();
     for (const view of Object.values(this.explorerViews)) {
       view.render();

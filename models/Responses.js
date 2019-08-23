@@ -89,8 +89,12 @@ ${JSON.stringify(currentData, null, 2)}
           result.formValues[this.dataset.key].push(this.dataset.flag);
         }
       } else if (this.dataset.role) {
-        result.formValues[this.dataset.key] = result.formValues[this.dataset.role] || {};
+        result.formValues[this.dataset.key] = result.formValues[this.dataset.key] || {};
         result.formValues[this.dataset.key][this.dataset.role] = this.value;
+      } else if (this.dataset.checkedValue) {
+        if (this.checked) {
+          result.formValues[this.dataset.key] = this.dataset.checkedValue;
+        }
       } else {
         result.formValues[this.dataset.key] = this.value;
       }
@@ -103,7 +107,7 @@ ${JSON.stringify(currentData, null, 2)}
         result.viewStates[viewName] = {
           valid: true,
           enabled: true,
-          invalidKeys: {}
+          invalidIds: {}
         };
       }
       if (result.viewStates[viewName].valid) {
@@ -113,7 +117,7 @@ ${JSON.stringify(currentData, null, 2)}
       }
     }
     result.valid = Object.values(result.viewStates).every(viewState => viewState.valid);
-    result.invalidKeys = Object.assign({}, ...Object.values(result.viewStates).map(viewState => viewState.invalidKeys || {}));
+    result.invalidIds = Object.assign({}, ...Object.values(result.viewStates).map(viewState => viewState.invalidIds || {}));
     // Compare to previous data (i.e. if the user is editing)
     if (this.currentResponse !== null) {
       result.priorFormValues = this.allResponses[this.currentResponse];

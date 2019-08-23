@@ -30,8 +30,14 @@ input {
     -moz-appearance: none;
     appearance: none;
     outline: none;
+    &::placeholder {
+      color: @disabledColor;
+    }
     &:focus {
       background: @lightBackgroundColor;
+    }
+    &.invalid {
+      background: @errorColor;
     }
   }
 
@@ -76,6 +82,9 @@ input {
     &:checked:hover:after {
       background: @selectedButtonHoverGradient;
     }
+    &.invalid:after {
+      box-shadow: 0 0 0 5px @errorColor;
+    }
   }
 }
 
@@ -94,6 +103,9 @@ textarea {
   outline: none;
   &:focus {
     background: @lightBackgroundColor;
+  }
+  &.invalid {
+    background: @errorColor;
   }
 }
 
