@@ -1,16 +1,20 @@
-import { View } from '../../node_modules/uki/dist/uki.esm.js';
-import IntrospectableMixin from '../../utils/IntrospectableMixin.js';
+import SurveyView from '../SurveyView/SurveyView.js';
 
-class ForcedTransformationView extends IntrospectableMixin(View) {
+class ForcedTransformationView extends SurveyView {
   constructor (div) {
     super(div, [
       { type: 'less', url: 'views/ForcedTransformationView/style.less' },
       { type: 'text', url: 'views/ForcedTransformationView/template.html' }
     ]);
+    this.humanLabel = 'Transformation';
   }
   setup () {
     this.d3el.html(this.resources[1]);
+    super.collectKeyElements();
   }
   draw () {}
+  isEnabled (formValues) {
+    return formValues.datasetType !== 'N/A';
+  }
 }
 export default ForcedTransformationView;

@@ -77,43 +77,48 @@ ${JSON.stringify(currentData, null, 2)}
       .node().click();
   }
   getCurrentData () {
-    // Collect the current state of the fields
     const result = {
       formValues: { cookie: this.cookie },
       viewStates: {}
     };
-    d3.selectAll('[data-key]').each(function () {
-      if (this.dataset.flag) {
-        result.formValues[this.dataset.key] = result.formValues[this.dataset.key] || [];
-        if (this.checked) {
-          result.formValues[this.dataset.key].push(this.dataset.flag);
+    for (const { viewName, viewInstance } of window.controller.surveyComponents) {
+      const enabled = viewInstance.isEnabled(result.formValues);
+      if (enabled) {
+        // Collect the current state of the fields
+        for (const element of viewInstance.keyElements) {
+          const key = element.dataset.key;
+          if (element.dataset.flag) {
+            result.formValues[key] = result.formValues[key] || [];
+            if (element.checked) {
+              result.formValues[element.dataset.key].push(element.dataset.flag);
+            }
+          } else if (element.dataset.role) {
+            result.formValues[key] = result.formValues[key] || {};
+            result.formValues[key][element.dataset.role] = element.value;
+          } else if (element.dataset.checkedValue) {
+            if (this.checked) {
+              result.formValues[key] = element.dataset.checkedValue;
+            }
+          } else {
+            result.formValues[key] = element.value;
+          }
         }
-      } else if (this.dataset.role) {
-        result.formValues[this.dataset.key] = result.formValues[this.dataset.key] || {};
-        result.formValues[this.dataset.key][this.dataset.role] = this.value;
-      } else if (this.dataset.checkedValue) {
-        if (this.checked) {
-          result.formValues[this.dataset.key] = this.dataset.checkedValue;
+        // Clean / validate values + flag invalid form elements
+        const viewState = viewInstance.validateForm(result.formValues);
+        viewState.enabled = enabled;
+        if (viewState.valid) {
+          viewState.state = this.currentResponse === null ? 'complete' : 'changesValid';
+        } else {
+          viewState.state = this.currentResponse === null ? 'incomplete' : 'invalid';
         }
-      } else {
-        result.formValues[this.dataset.key] = this.value;
-      }
-    });
-    // Clean / validate values + flag invalid form elements
-    for (const [viewName, view] of Object.entries(window.controller.surveyViews)) {
-      if (view.validateForm) {
-        result.viewStates[viewName] = view.validateForm(result.formValues);
+        result.viewStates[viewName] = viewState;
       } else {
         result.viewStates[viewName] = {
           valid: true,
-          enabled: true,
+          enabled: false,
+          state: 'hidden',
           invalidIds: {}
         };
-      }
-      if (result.viewStates[viewName].valid) {
-        result.viewStates[viewName].state = this.currentResponse === null ? 'complete' : 'changesValid';
-      } else {
-        result.viewStates[viewName].state = this.currentResponse === null ? 'incomplete' : 'invalid';
       }
     }
     result.valid = Object.values(result.viewStates).every(viewState => viewState.valid);

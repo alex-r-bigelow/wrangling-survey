@@ -1,17 +1,21 @@
-import { View } from '../../node_modules/uki/dist/uki.esm.js';
-import IntrospectableMixin from '../../utils/IntrospectableMixin.js';
+import SurveyView from '../SurveyView/SurveyView.js';
 
-class SetsView extends IntrospectableMixin(View) {
+class SetsView extends SurveyView {
   constructor (div, transform) {
     super(div, [
       { type: 'less', url: 'views/SetsView/style.less' },
       { type: 'text', url: 'views/SetsView/template.html' }
     ]);
-    this.transform = transform;
+    this.state = transform ? 'post' : 'init';
+    this.humanLabel = 'Cluster / Set / List Details';
   }
   setup () {
     this.d3el.html(this.resources[1]);
+    super.collectKeyElements();
   }
   draw () {}
+  isEnabled (formValues) {
+    return this.state === 'init' && formValues.datasetType === 'Sets';
+  }
 }
 export default SetsView;

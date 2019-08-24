@@ -1,7 +1,6 @@
-import { View } from '../../node_modules/uki/dist/uki.esm.js';
-import IntrospectableMixin from '../../utils/IntrospectableMixin.js';
+import SurveyView from '../SurveyView/SurveyView.js';
 
-class TablesView extends IntrospectableMixin(View) {
+class TablesView extends SurveyView {
   constructor (div, transform) {
     super(div, [
       { type: 'less', url: 'views/TablesView/style.less' },
@@ -20,6 +19,7 @@ class TablesView extends IntrospectableMixin(View) {
   setup () {
     const state = this.state; // eslint-disable-line no-unused-vars
     this.d3el.html(eval('`' + this.resources[1] + '`')); // eslint-disable-line no-eval
+    super.collectKeyElements();
   }
   draw () {
     this.d3el.select('.secondTable')
@@ -27,12 +27,13 @@ class TablesView extends IntrospectableMixin(View) {
     this.d3el.select(`.nested`)
       .style('display', this.nestedStructures ? null : 'none');
   }
+  getNextView () {
+    return 'forcedTransformation';
+  }
+  isEnabled (formValues) {
+    return this.state === 'init' && formValues.datasetType === 'Tables';
+  }
   validateForm (formValues) {
-    const enabled = this.state === 'init' && formValues.datasetType === 'Tables';
-    if (!enabled) {
-      return { enabled, valid: false };
-    }
-
     let emptyCells = {};
     const initExampleData = formValues[`${this.state}ExampleData`];
     if (initExampleData) {
@@ -63,7 +64,6 @@ class TablesView extends IntrospectableMixin(View) {
     }
 
     return {
-      enabled,
       valid: Object.keys(invalidIds).length === 0,
       invalidIds
     };

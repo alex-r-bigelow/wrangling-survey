@@ -1,7 +1,6 @@
-import { View } from '../../node_modules/uki/dist/uki.esm.js';
-import IntrospectableMixin from '../../utils/IntrospectableMixin.js';
+import SurveyView from '../SurveyView/SurveyView.js';
 
-class DomainView extends IntrospectableMixin(View) {
+class DomainView extends SurveyView {
   constructor (div) {
     super(div, [
       { type: 'less', url: 'views/DomainView/style.less' },
@@ -31,23 +30,24 @@ class DomainView extends IntrospectableMixin(View) {
       .data(this.exampleDatasets, d => d)
       .enter().append('option')
       .attr('value', d => d);
-
-    this.d3el.select('.next').on('click', () => {
-      if (this.datasetLabel) {
-        window.controller.advanceSurvey('dataType');
-      }
-    });
+    super.collectKeyElements();
   }
   draw () {
     this.d3el.select('.next.button').classed('disabled', !this.datasetLabel);
   }
+  getNextView () {
+    return 'dataType';
+  }
+  isEnabled (formValues) {
+    return true;
+  }
   validateForm (formValues) {
     const invalidIds = {};
-    const valid = !!this.datasetLabel;
+    const valid = !!formValues.datasetLabel;
     if (!valid) {
       invalidIds['datasetLabel'] = true;
     }
-    return { enabled: true, valid, invalidIds };
+    return { valid, invalidIds };
   }
 }
 export default DomainView;

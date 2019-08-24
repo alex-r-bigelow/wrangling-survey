@@ -1,7 +1,6 @@
-import { View } from '../../node_modules/uki/dist/uki.esm.js';
-import IntrospectableMixin from '../../utils/IntrospectableMixin.js';
+import SurveyView from '../SurveyView/SurveyView.js';
 
-class DataTypeView extends IntrospectableMixin(View) {
+class DataTypeView extends SurveyView {
   constructor (div) {
     super(div, [
       { type: 'less', url: 'views/DataTypeView/style.less' },
@@ -25,12 +24,7 @@ class DataTypeView extends IntrospectableMixin(View) {
       .on('click', () => {
         window.responses.submitForm();
       });
-    this.d3el.select('.next.button')
-      .on('click', () => {
-        if (this._datasetType !== null) {
-          window.controller.advanceSurvey(this._datasetType + '(init)');
-        }
-      });
+    super.collectKeyElements();
   }
   draw () {
     const self = this;
@@ -49,13 +43,18 @@ class DataTypeView extends IntrospectableMixin(View) {
         return !typeIsNa || !this.d3el.select('.na.field textarea').node().value;
       });
     this.d3el.select('.next.button')
-      .style('display', typeIsNa ? 'none' : null)
-      .classed('disabled', typeIsNa || this._datasetType === null);
+      .style('display', typeIsNa ? 'none' : null);
+  }
+  getNextView () {
+    return this._datasetType + '(init)';
   }
   populateForm (formValues) {
     this._datasetType = formValues.datasetType;
     this.d3el.select('[data-key="datasetIsHybrid"]')
       .property('checked', formValues['datasetIsHybrid'] === 'true');
+  }
+  isEnabled (formValues) {
+    return true;
   }
   validateForm (formValues) {
     formValues.datasetType = this._datasetType;
@@ -70,7 +69,7 @@ class DataTypeView extends IntrospectableMixin(View) {
     } else {
       delete formValues.noTypeExplanation;
     }
-    return { enabled: true, valid, invalidIds };
+    return { valid, invalidIds };
   }
 }
 export default DataTypeView;

@@ -1,17 +1,21 @@
-import { View } from '../../node_modules/uki/dist/uki.esm.js';
-import IntrospectableMixin from '../../utils/IntrospectableMixin.js';
+import SurveyView from '../SurveyView/SurveyView.js';
 
-class GeometryView extends IntrospectableMixin(View) {
+class GeometryView extends SurveyView {
   constructor (div, transform) {
     super(div, [
       { type: 'less', url: 'views/GeometryView/style.less' },
       { type: 'text', url: 'views/GeometryView/template.html' }
     ]);
-    this.transform = transform;
+    this.state = transform ? 'post' : 'init';
+    this.humanLabel = 'Geometry Details';
   }
   setup () {
     this.d3el.html(this.resources[1]);
+    super.collectKeyElements();
   }
   draw () {}
+  isEnabled (formValues) {
+    return this.state === 'init' && formValues.datasetType === 'Geometry';
+  }
 }
 export default GeometryView;
