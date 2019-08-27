@@ -1,3 +1,50 @@
-.NetworkView {
+@import '../../style/colors.less';
 
+.NetworkView {
+  .insufficientNodesAndEdges {
+    position: absolute;
+    text-align: center;
+    width: 100%;
+  }
+  .node.field, .edge.field {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-flow: row wrap;
+    & > div {
+      white-space: nowrap;
+    }
+    &.selected {
+      // Sneaky way to get a padded outline
+      box-shadow: 0 0 0 7px @backgroundColor, 0 0 0 8px @focusColor;
+    }
+  }
+  .exampleData {
+    .node circle {
+      cursor: pointer;
+      fill: white;
+      stroke: @textColor;
+      stroke-width: 1;
+    }
+    .node.selected circle {
+      stroke: @focusColor;
+      stroke-width: 3;
+    }
+    .edge path {
+      cursor: pointer;
+      fill: none;
+      &.hoverTarget {
+        stroke: transparent;
+        stroke-width: 6;
+      }
+      &.visible {
+        stroke: @textColor;
+        stroke-width: 1;
+      }
+    }
+    .edge.selected path.visible {
+      stroke: @focusColor;
+      stroke-width: 3;
+    }
+  }
 }

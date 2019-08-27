@@ -20,7 +20,7 @@ import Tooltip from './views/Tooltip/Tooltip.js';
 
 import recolorImageFilter from './utils/recolorImageFilter.js';
 
-window.DEBUG_VIEW = 'Tables(init)';
+window.DEBUG_VIEW = 'Network(init)';
 
 class Controller {
   constructor () {
@@ -38,10 +38,9 @@ class Controller {
 
     (async () => {
       // Wait for LESS to finish loading before applying our SVG
-      // filter hack, and then render all the views
+      // filter hack
       await less.pageLoadFinished;
       recolorImageFilter();
-      this.updateViews();
     })();
   }
   setupViews () {
@@ -112,6 +111,7 @@ class Controller {
       d3.selectAll('[data-key]').on('change', () => {
         self.updateViews();
       });
+      self.updateViews();
     })();
   }
   advanceSurvey (nextView) {

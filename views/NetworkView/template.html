@@ -1,0 +1,131 @@
+<h3>How many <span class="inspectable">node</span> <span class="inspectable">classes</span> are there?</h3>
+<div class="field">
+  <input type="radio" data-key="${state}NNodeClasses" name="${state}NNodeClasses" data-checked-value="1" id="${state}OneNodeClass" />
+  <label for="${state}OneNodeClass">1</label>
+</div>
+<div class="field">
+  <input type="radio" data-key="${state}NNodeClasses" name="${state}NNodeClasses" data-checked-value="2" id="${state}TwoNodeClass" />
+  <label for="${state}TwoNodeClass">2</label>
+</div>
+<div class="field">
+  <input type="radio" data-key="${state}NNodeClasses" name="${state}NNodeClasses" data-checked-value="3+" id="${state}ThreeNodeClass" />
+  <label for="${state}ThreeNodeClass">&ge;3</label>
+</div>
+
+<h3>How many <span class="inspectable">edge</span> <span class="inspectable">classes</span> are there?</h3>
+<div class="field">
+  <input type="radio" data-key="${state}NEdgeClasses" name="${state}NEdgeClasses" data-checked-value="1" id="${state}OneEdgeClass" />
+  <label for="${state}OneEdgeClass">1</label>
+</div>
+<div class="field">
+  <input type="radio" data-key="${state}NEdgeClasses" name="${state}NEdgeClasses" data-checked-value="2" id="${state}TwoEdgeClass" />
+  <label for="${state}TwoEdgeClass">2</label>
+</div>
+<div class="field">
+  <input type="radio" data-key="${state}NEdgeClasses" name="${state}NEdgeClasses" data-checked-value="3+" id="${state}ThreeEdgeClass" />
+  <label for="${state}ThreeEdgeClass">&ge;3</label>
+</div>
+
+<h3>How would you characterize <span class="inspectable">edge</span> direction?</h3>
+<div class="field">
+  <input type="radio" data-key="${state}EdgeDirection" name="${state}EdgeDirection" data-checked-value="Directed" id="${state}directed" />
+  <label for="${state}directed">Directed</label>
+</div>
+<div class="field">
+  <input type="radio" data-key="${state}EdgeDirection" name="${state}EdgeDirection" data-checked-value="Undirected" id="${state}undirected" />
+  <label for="${state}undirected">Undirected</label>
+</div>
+<div class="field">
+  <input type="radio" data-key="${state}EdgeDirection" name="${state}EdgeDirection" data-checked-value="Mixed" id="${state}mixedDirection" />
+  <label for="${state}mixedDirection">Mixed</label>
+</div>
+
+<h3>Please create a few examples of what a nodes and edges might look like. Feel free to invent fake data.</h3>
+<p><span class="inspectable">Node</span>s:</p>
+<div class="nodeFields"></div>
+<div class="new node field">
+  <input placeholder="Provide a node label (optional)"/>
+  <div class="create node button"><a></a><span class="label">Create Node</span></div>
+</div>
+<p><span class="inspectable">Edge</span>s:</p>
+<div class="edgeFields"></div>
+<div class="new edge field">
+  <select class="source"></select>
+  <select class="target"></select>
+  <div>
+    <input type="checkbox" id="${state}newEdgeDirected" class="directed"/>
+    <label for="${state}newEdgeDirected">Directed</label>
+  </div>
+  <div class="create edge button"><a></a><span class="label">Create Edge</span></div>
+</div>
+<p>Preview:</p>
+<p class="insufficientNodesAndEdges">Please create at least two nodes and two edges</p>
+<svg class="exampleData">
+  <g class="edgeLayer"></g>
+  <g class="nodeLayer"></g>
+</svg>
+
+<h3>What is the greatest number of <span class="inspectable">attributes</span> that any <span class="inspectable">node</span> has?</h3>
+<div class="field">
+  <input type="radio" data-key="${state}NNodeAttributes" name="${state}NNodeAttributes" data-checked-value="1" id="${state}OneNodeAttributes" />
+  <label for="${state}OneNodeAttributes">1</label>
+</div>
+<div class="field">
+  <input type="radio" data-key="${state}NNodeAttributes" name="${state}NNodeAttributes" data-checked-value="2" id="${state}TwoNodeAttributes" />
+  <label for="${state}TwoNodeAttributes">2</label>
+</div>
+<div class="field">
+  <input type="radio" data-key="${state}NNodeAttributes" name="${state}NNodeAttributes" data-checked-value="3+" id="${state}ThreeNodeAttributes" />
+  <label for="${state}ThreeNodeAttributes">&ge;3</label>
+</div>
+
+<h3>What is the greatest number of <span class="inspectable">attributes</span> that any <span class="inspectable">edge</span> has?</h3>
+<div class="field">
+  <input type="radio" data-key="${state}NEdgeAttributes" name="${state}NEdgeAttributes" data-checked-value="1" id="${state}OneEdgeAttributes" />
+  <label for="${state}OneEdgeAttributes">1</label>
+</div>
+<div class="field">
+  <input type="radio" data-key="${state}NEdgeAttributes" name="${state}NEdgeAttributes" data-checked-value="2" id="${state}TwoEdgeAttributes" />
+  <label for="${state}TwoEdgeAttributes">2</label>
+</div>
+<div class="field">
+  <input type="radio" data-key="${state}NEdgeAttributes" name="${state}NEdgeAttributes" data-checked-value="3+" id="${state}ThreeEdgeAttributes" />
+  <label for="${state}ThreeEdgeAttributes">&ge;3</label>
+</div>
+
+<h3>Would you expect any of the following to describe the network?</h3>
+<div class="field">
+  <input type="checkbox" data-key="${state}NetworkNuances" data-flag="Tree" id="${state}isTree" />
+  <label for="${state}isTree">The network is a <span class="inspectable">tree</span></label>
+</div>
+<div class="field">
+  <input type="checkbox" data-key="${state}NetworkNuances" data-flag="Connected" id="${state}connected" />
+  <label for="${state}connected">The network is <span class="inspectable">connected</span></label>
+</div>
+<div class="field">
+  <input type="checkbox" data-key="${state}NetworkNuances" data-flag="Cycles" id="${state}hasCycles" />
+  <label for="${state}hasCycles">The network has <span class="inspectable">cycles</span></label>
+</div>
+<div class="field">
+  <input type="checkbox" data-key="${state}NetworkNuances" data-flag="Parallel Edges" id="${state}hasParallel" />
+  <label for="${state}hasParallel">The network contains <span class="inspectable">parallel edges</span></label>
+</div>
+<div class="field">
+  <input type="checkbox" data-key="${state}NetworkNuances" data-flag="Self Edges" id="${state}hasSelfEdges" />
+  <label for="${state}hasSelfEdges">The network contains <span class="inspectable">self-edges</span></label>
+</div>
+<div class="field">
+  <input type="checkbox" data-key="${state}NetworkNuances" data-flag="Supernodes" id="${state}hasSupernodes" />
+  <label for="${state}hasSupernodes">The network contains <span class="inspectable">supernodes</span></label>
+</div>
+<div class="field">
+  <input type="checkbox" data-key="${state}NetworkNuances" data-flag="Hyperedges" id="${state}hasHyperEdges" />
+  <label for="${state}hasHyperEdges">The network contains <span class="inspectable">hyperedges</span></label>
+</div>
+<h3>Are there any other characteristics that you would use to describe the network?</h3>
+<div class="field">
+  <textarea data-key="${state}NetworkMisc" placeholder="Optional.&#10;&#10;Please remember that these comments are public."></textarea>
+</div>
+<div class="buttonContainer">
+  <div class="next button"><a></a><span class="label">Next</span></div>
+</div>
