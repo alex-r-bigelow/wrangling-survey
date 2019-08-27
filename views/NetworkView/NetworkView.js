@@ -10,12 +10,28 @@ class NetworkView extends SurveyView {
     this.state = transform ? 'post' : 'init';
     this.humanLabel = 'Network / Tree Details';
 
+    // Start out with a graph, so that people aren't confronted with
+    // an empty canvas
     this._exampleData = {
-      nodes: [],
-      edges: []
+      nodes: [
+        { label: '0' },
+        { label: '1' },
+        { label: '2' }
+      ],
+      edges: [
+        { source: 0, target: 1, directed: false },
+        { source: 1, target: 2, directed: false }
+      ]
     };
     this._selectedNode = null;
     this._selectedEdge = null;
+
+    this._nodesChanged = true;
+    this._edgesChanged = true;
+
+    this.on('open', () => {
+      this._justOpened = true;
+    });
   }
   getNewNode () {
     return {
@@ -26,8 +42,8 @@ class NetworkView extends SurveyView {
     const sourceSelect = this.d3el.select('.new.edge.field .source').node();
     const targetSelect = this.d3el.select('.new.edge.field .target').node();
     return {
-      source: sourceSelect.selectedIndex === 0 ? null : sourceSelect.value,
-      target: targetSelect.selectedIndex === 0 ? null : targetSelect.value,
+      source: sourceSelect.selectedIndex === 0 ? null : parseInt(sourceSelect.value),
+      target: targetSelect.selectedIndex === 0 ? null : parseInt(targetSelect.value),
       directed: !!this.d3el.select('.new.edge.field .directed').node().checked
     };
   }
@@ -54,8 +70,6 @@ class NetworkView extends SurveyView {
     this.d3el.selectAll('.new.edge.field .source, .new.edge.field .target')
       .on('change', () => { this.render(); });
 
-    this._nodesChanged = true;
-    this._edgesChanged = true;
     this.simulation = d3.forceSimulation()
       .force('charge', d3.forceManyBody());
 
@@ -75,6 +89,48 @@ class NetworkView extends SurveyView {
     const newEdge = this.getNewEdge();
     this.d3el.select('.create.edge.button')
       .classed('disabled', newEdge.source === null || newEdge.target === null);
+  }
+  deleteEdge (index) {
+    // Delete the edge
+    this._exampleData.edges.splice(index, 1);
+    this._edgesChanged = true;
+
+    // Fix the _selectedEdge pointer if it was messed up
+    if (this._selectedEdge === index) {
+      this._selectedEdge = null;
+    } else if (this._selectedEdge !== null && this._selectedEdge > index) {
+      this._selectedEdge -= 1;
+    }
+  }
+  deleteNode (index) {
+    // First, delete any edges that reference this node, or update edges that
+    // reference higher-indexed nodes
+    let i = 0;
+    while (i < this._exampleData.edges.length) {
+      const edge = this._exampleData.edges[i];
+      if (edge.source === index || edge.target === index) {
+        this.deleteEdge(i);
+      } else {
+        if (edge.source > index) {
+          edge.source -= 1;
+        }
+        if (edge.target > index) {
+          edge.target -= 1;
+        }
+        i++;
+      }
+    }
+
+    // Delete the node
+    this._exampleData.nodes.splice(index, 1);
+    this._nodesChanged = true;
+
+    // Fix the _selectedNode pointer if it was messed up
+    if (this._selectedNode === index) {
+      this._selectedNode = null;
+    } else if (this._selectedNode !== null && this._selectedNode > index) {
+      this._selectedNode -= 1;
+    }
   }
   drawNodeFields () {
     let nodes = this.d3el.select('.nodeFields')
@@ -98,9 +154,13 @@ class NetworkView extends SurveyView {
       .attr('data-role', (d, i) => `node${i}`)
       .attr('id', (d, i) => `${this.state}node${i}`);
     const self = this;
+    let updateTimeout;
     function updateLabel (d) {
-      d.label = this.value;
-      self.render();
+      window.clearTimeout(updateTimeout);
+      updateTimeout = window.setTimeout(() => {
+        d.label = this.value;
+        self.render();
+      }, 500);
     }
     nodes.select('input')
       .property('value', d => d.label)
@@ -114,14 +174,12 @@ class NetworkView extends SurveyView {
       .classed('label', true)
       .text('Delete');
     buttonEnter.on('click', (d, i) => {
-      this._exampleData.nodes.splice(i, 1);
-      // TODO: fix all edge references, and delete edges that pointed to this node
-      this._nodesChanged = true;
-      this._edgesChanged = true;
+      this.deleteNode(i);
       this.render();
     });
   }
   drawEdgeFields () {
+    const self = this;
     let edges = this.d3el.select('.edgeFields')
       .selectAll('.field').data(this._exampleData.edges);
     edges.exit().remove();
@@ -143,11 +201,23 @@ class NetworkView extends SurveyView {
       .attr('data-key', `${this.state}ExampleData`)
       .attr('data-role', (d, i) => `edge${i}source`)
       .attr('id', (d, i) => `${this.state}edge${i}source`);
+    edges.select('.source')
+      .on('change', function (d) {
+        d.source = this.value;
+        self._edgesChanged = true;
+        self.render();
+      });
     edgesEnter.append('select')
       .classed('target', true)
       .attr('data-key', `${this.state}ExampleData`)
       .attr('data-role', (d, i) => `edge${i}target`)
       .attr('id', (d, i) => `${this.state}edge${i}target`);
+    edges.select('.target')
+      .on('change', function (d) {
+        d.target = this.value;
+        self._edgesChanged = true;
+        self.render();
+      });
     const checkboxChunk = edgesEnter.append('div');
     checkboxChunk.append('input')
       .attr('type', 'checkbox')
@@ -158,6 +228,7 @@ class NetworkView extends SurveyView {
       .attr('checked', d => d.directed ? '' : null)
       .on('change', d => {
         d.directed = !d.directed;
+        this._edgesChanged = true;
         this.render();
       });
     checkboxChunk.append('label')
@@ -171,13 +242,7 @@ class NetworkView extends SurveyView {
       .classed('label', true)
       .text('Delete');
     buttonEnter.on('click', (d, i) => {
-      this._exampleData.edges.splice(i, 1);
-      this._edgesChanged = true;
-      if (this._selectedEdge === i) {
-        this._selectedEdge = null;
-      } else if (this._selectedEdge !== null && this._selectedEdge > i) {
-        this._selectedEdge -= 1;
-      }
+      this.deleteEdge(i);
       this.render();
     });
   }
@@ -189,6 +254,7 @@ class NetworkView extends SurveyView {
     options = options.merge(optionsEnter);
 
     options.attr('disabled', d => d === null ? true : null)
+      .property('value', (d, i) => d === null ? null : i - 1)
       .text(d => d === null ? `Choose a ${type} node` : d.node.label);
 
     if (valueFunc) {
@@ -204,25 +270,87 @@ class NetworkView extends SurveyView {
     this.d3el.select('svg')
       .attr('width', bounds.width)
       .attr('height', height);
+    const nodeRadius = 10;
 
-    // Make copies so that d3 doesn't corrupt the "pure" submission data; also
-    // we tack on our own helper stuff (e.g. to separate parallel / self edges)
-    const nodeData = this._exampleData.nodes.map(d => Object.create(d));
-    const edgeData = this._exampleData.edges.map(d => Object.create(d));
-
-    // TODO: flag parallel / self edges
-
-    this.simulation.force('center', d3.forceCenter(bounds.width / 2, height / 2));
-    this.simulation.nodes(nodeData);
-    this.simulation.force('link', d3.forceLink(edgeData));
+    // We start by assuming that no data has changed, and that we're just
+    // re-using the data already bound to the existing nodes / edges
+    let nodeData = this.d3el.select('.nodeLayer').selectAll('.node').data();
+    let edgeData = this.d3el.select('.edgeLayer').selectAll('.edge').data();
     if (this._nodesChanged || this._edgesChanged) {
-      this.simulation.alphaTarget(0.3).restart();
-      this._nodesChanged = false;
-      this._edgesChanged = false;
-    } else {
-      this.simulation.stop();
+      // Some data was changed, so create copies of our "pure" nodes (so that
+      // d3's additions don't corrupt them), and attempt to preserve any prior
+      // node positions / velocities / fixed states that were there before (to
+      // avoid jitter)
+      const propertiesToCopy = ['x', 'y', 'vx', 'vy', 'fx', 'fy'];
+      nodeData = this._exampleData.nodes.map((d, i) => {
+        const copy = Object.assign({}, d);
+        if (i < nodeData.length) {
+          for (const prop of propertiesToCopy) {
+            copy[prop] = nodeData[i][prop];
+          }
+        }
+        return copy;
+      });
+      // We can just create edge copies from scratch (d3 will reshape them
+      // anyway). While we're at it, attach flags to self-edges and parallel
+      // edges so that we know how to draw them later
+      edgeData = this._exampleData.edges.map(d => {
+        // TODO: flag self-edgs and parallel edges
+        const copy = Object.assign({}, d);
+        return copy;
+      });
+
+      // Let d3 do its transformation of the objects
+      this.simulation.nodes(nodeData)
+        .force('link', d3.forceLink(edgeData).distance(() => 5 * nodeRadius));
     }
 
+    // Update the forces that care about bounding boxes / need references to the
+    // data
+    const bboxForce = alpha => {
+      for (const node of nodeData) {
+        if (node.x < nodeRadius) {
+          node.x = nodeRadius;
+          node.vx = Math.abs(node.vx);
+        }
+        if (node.x > bounds.width - nodeRadius) {
+          node.x = bounds.width - nodeRadius;
+          node.vx = -Math.abs(node.vx);
+        }
+        if (node.y < nodeRadius) {
+          node.y = nodeRadius;
+          node.vy = Math.abs(node.vy);
+        }
+        if (node.y > height - nodeRadius) {
+          node.y = height - nodeRadius;
+          node.vy = -Math.abs(node.vy);
+        }
+      }
+    };
+    this.simulation
+      .force('center', d3.forceCenter(bounds.width / 2, height / 2))
+      .force('bbox', bboxForce);
+    const drag = d3.drag()
+      .on('start', (d, i) => {
+        if (!d3.event.active) {
+          this.simulation.alphaTarget(0.3).restart();
+          d.fx = d.x;
+          d.fy = d.y;
+          this._selectedNode = i;
+          this.render();
+        }
+      }).on('drag', d => {
+        d.fx = d3.event.x;
+        d.fy = d3.event.y;
+      }).on('end', d => {
+        if (!d3.event.active) {
+          this.simulation.alphaTarget(0);
+        }
+        d.fx = null;
+        d.fy = null;
+      });
+
+    // Okay, actually start drawing
     let nodes = this.d3el.select('.nodeLayer')
       .selectAll('.node').data(nodeData);
     nodes.exit().remove();
@@ -231,13 +359,10 @@ class NetworkView extends SurveyView {
     nodes = nodes.merge(nodesEnter);
 
     nodesEnter.append('circle')
-      .attr('r', 6);
+      .attr('r', nodeRadius);
 
     nodes.classed('selected', (d, i) => this._selectedNode === i);
-    nodes.on('click', (d, i) => {
-      this._selectedNode = i;
-      this.render();
-    });
+    nodes.call(drag);
 
     let edges = this.d3el.select('.edgeLayer')
       .selectAll('.edge').data(edgeData);
@@ -257,13 +382,67 @@ class NetworkView extends SurveyView {
       this.render();
     });
 
+    // Helper for computing edge paths
+    const computeEdge = d => {
+      let path;
+      let incomingAngle;
+      let arrowheadAngle;
+      if (d.source === d.target) {
+        // This is a self edge
+
+        // Outgoing point on the circle
+        const x0 = d.source.x - nodeRadius;
+        const y0 = d.source.y;
+        // First curve handle
+        const xc0 = d.source.x - 5 * nodeRadius;
+        const yc0 = d.source.y - nodeRadius;
+        // Second curve handle
+        const xc1 = d.source.x - nodeRadius;
+        const yc1 = d.source.y - 5 * nodeRadius;
+        // Incoming point on the circle
+        const x1 = d.source.x;
+        const y1 = d.source.y - nodeRadius;
+        // Resulting SVG path, and incomingAngle
+        path = `M${x0},${y0}C${xc0},${yc0},${xc1},${yc1},${x1},${y1}`;
+        incomingAngle = -Math.PI / 2;
+        arrowheadAngle = incomingAngle - Math.PI / 10;
+      } else {
+        // TODO: straight line for now (TODO: arcs when there are parallel
+        // edges)
+        path = `M${d.source.x},${d.source.y}L${d.target.x},${d.target.y}`;
+        arrowheadAngle = incomingAngle = Math.atan2(d.source.y - d.target.y, d.source.x - d.target.x);
+      }
+      if (d.directed) {
+        // Draw an arrowhead
+        // Tip of the arrowhead
+        const x0 = d.target.x + nodeRadius * Math.cos(incomingAngle);
+        const y0 = d.target.y + nodeRadius * Math.sin(incomingAngle);
+        // Left arrowhead leg
+        const x1 = x0 + nodeRadius * Math.cos(arrowheadAngle - Math.PI / 4);
+        const y1 = y0 + nodeRadius * Math.sin(arrowheadAngle - Math.PI / 4);
+        // Right arrowhead leg
+        const x2 = x0 + nodeRadius * Math.cos(arrowheadAngle + Math.PI / 4);
+        const y2 = y0 + nodeRadius * Math.sin(arrowheadAngle + Math.PI / 4);
+        // Add the arrowhead to the path
+        path += `M${x0},${y0}L${x1},${y1}M${x0},${y0}L${x2},${y2}`;
+      }
+      return path;
+    };
+
     this.simulation.on('tick', () => {
-      edges.selectAll('path')
-        .attr('d', d => {
-          return `M${d.source.x},${d.source.y}L${d.target.x},${d.target.y}`;
-        });
+      edges.select('.hoverTarget').attr('d', computeEdge);
+      edges.select('.visible').attr('d', computeEdge);
       nodes.attr('transform', d => `translate(${d.x},${d.y})`);
     });
+
+    if (this._nodesChanged || this._edgesChanged || this._justOpened) {
+      // Restart the simulation in any of the above scenarios, and clear those
+      // flags for future draw() calls
+      this.simulation.alphaTarget(0.3).restart();
+      this._nodesChanged = false;
+      this._edgesChanged = false;
+      this._justOpened = false;
+    }
   }
   isEnabled (formValues) {
     return this.state === 'init' && formValues.datasetType === 'Network';

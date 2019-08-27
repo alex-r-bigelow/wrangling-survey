@@ -76,8 +76,7 @@ class Controller {
       .enter().append('details')
       .on('toggle', function (d) {
         if (this.open) {
-          self.currentSurveyView = d.viewName;
-          self.updateViews();
+          self.advanceSurvey(d.viewName);
         }
       });
     surveySections.append('summary');
@@ -116,7 +115,8 @@ class Controller {
   }
   advanceSurvey (nextView) {
     this.currentSurveyView = nextView;
-    this.forceInvalidFields = false;
+    this.surveyViews[this.currentSurveyView].trigger('open');
+    this.forceInvalidFieldWarnings = false;
     this.updateViews();
   }
   updateViews () {
@@ -138,12 +138,12 @@ class Controller {
           const nextView = boundData.viewInstance.getNextView();
           self.advanceSurvey(nextView);
         } else {
-          self.forceInvalidFields = true;
+          self.forceInvalidFieldWarnings = true;
           self.updateViews();
         }
       });
     d3.selectAll('.invalid').classed('invalid', false);
-    if (window.responses.currentResponse !== null || this.forceInvalidFields) {
+    if (window.responses.currentResponse !== null || this.forceInvalidFieldWarnings) {
       for (const invalidId of Object.keys(formData.invalidIds)) {
         d3.select(`#${invalidId}`).classed('invalid', true);
       }

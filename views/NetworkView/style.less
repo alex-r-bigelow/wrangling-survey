@@ -16,19 +16,24 @@
     }
     &.selected {
       // Sneaky way to get a padded outline
-      box-shadow: 0 0 0 7px @backgroundColor, 0 0 0 8px @focusColor;
+      box-shadow: 0 0 0 6px @backgroundColor, 0 0 0 9px @focusColor;
     }
   }
   .exampleData {
-    .node circle {
+    .node {
       cursor: pointer;
-      fill: white;
-      stroke: @textColor;
-      stroke-width: 1;
-    }
-    .node.selected circle {
-      stroke: @focusColor;
-      stroke-width: 3;
+      &:active {
+        cursor: grabbing;
+      }
+      circle {
+        fill: white;
+        stroke: @textColor;
+        stroke-width: 1;
+      }
+      &.selected circle {
+        stroke: @focusColor;
+        stroke-width: 3;
+      }
     }
     .edge path {
       cursor: pointer;
