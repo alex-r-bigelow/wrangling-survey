@@ -19,8 +19,8 @@ class NetworkView extends SurveyView {
         { label: '2' }
       ],
       edges: [
-        { source: 0, target: 1, directed: false },
-        { source: 1, target: 2, directed: false }
+        { source: 0, target: 1, directed: true },
+        { source: 1, target: 2, directed: true }
       ]
     };
     this._selectedNode = null;
@@ -294,15 +294,34 @@ class NetworkView extends SurveyView {
       // We can just create edge copies from scratch (d3 will reshape them
       // anyway). While we're at it, attach flags to self-edges and parallel
       // edges so that we know how to draw them later
-      edgeData = this._exampleData.edges.map(d => {
-        // TODO: flag self-edgs and parallel edges
+      const parallelEdges = {};
+      edgeData = this._exampleData.edges.map((d, i) => {
+        let key = d.source + '_' + d.target;
+        if (parallelEdges[key]) {
+          parallelEdges[key].push(i);
+        } else {
+          parallelEdges[key] = [i];
+        }
         const copy = Object.assign({}, d);
         return copy;
       });
+      for (const indices of Object.values(parallelEdges)) {
+        if (indices.length === 1) {
+          // Always bend solo edges a little (in the event other edges are
+          // coming back)
+          edgeData[indices[0]].parallelOffset = 0.25;
+        } else {
+          // Assign a unique offset from (0, 1] to each parallel edge
+          // (the mirror side is reserved for the other direction)
+          for (const [parallelIndex, edgeIndex] of indices.entries()) {
+            edgeData[edgeIndex].parallelOffset = (parallelIndex + 1) / indices.length;
+          }
+        }
+      }
 
       // Let d3 do its transformation of the objects
       this.simulation.nodes(nodeData)
-        .force('link', d3.forceLink(edgeData).distance(() => 5 * nodeRadius));
+        .force('link', d3.forceLink(edgeData).distance(() => 10 * nodeRadius));
     }
 
     // Update the forces that care about bounding boxes / need references to the
@@ -360,6 +379,11 @@ class NetworkView extends SurveyView {
 
     nodesEnter.append('circle')
       .attr('r', nodeRadius);
+    nodesEnter.append('text')
+      .attr('text-anchor', 'middle')
+      .attr('y', `${nodeRadius + this.emSize}px`);
+    nodes.select('text')
+      .text(d => d.label);
 
     nodes.classed('selected', (d, i) => this._selectedNode === i);
     nodes.call(drag);
@@ -385,33 +409,48 @@ class NetworkView extends SurveyView {
     // Helper for computing edge paths
     const computeEdge = d => {
       let path;
+      let outgoingAngle;
       let incomingAngle;
       let arrowheadAngle;
       if (d.source === d.target) {
-        // This is a self edge
+        // This is a self edge; draw an arc from the node to itself
 
-        // Outgoing point on the circle
-        const x0 = d.source.x - nodeRadius;
-        const y0 = d.source.y;
-        // First curve handle
-        const xc0 = d.source.x - 5 * nodeRadius;
-        const yc0 = d.source.y - nodeRadius;
-        // Second curve handle
-        const xc1 = d.source.x - nodeRadius;
-        const yc1 = d.source.y - 5 * nodeRadius;
-        // Incoming point on the circle
-        const x1 = d.source.x;
-        const y1 = d.source.y - nodeRadius;
-        // Resulting SVG path, and incomingAngle
-        path = `M${x0},${y0}C${xc0},${yc0},${xc1},${yc1},${x1},${y1}`;
-        incomingAngle = -Math.PI / 2;
+        // Outgoing angle range for parallel, self edges: (0, 2 * Math.PI]
+        outgoingAngle = d.parallelOffset * 2 * Math.PI;
+        // Self edges come back in offset 90 degrees
+        incomingAngle = outgoingAngle + Math.PI / 2;
+        // Tilt the arrowhead slightly back
         arrowheadAngle = incomingAngle - Math.PI / 10;
       } else {
-        // TODO: straight line for now (TODO: arcs when there are parallel
-        // edges)
-        path = `M${d.source.x},${d.source.y}L${d.target.x},${d.target.y}`;
-        arrowheadAngle = incomingAngle = Math.atan2(d.source.y - d.target.y, d.source.x - d.target.x);
+        // Centered outgoingAngle points directly at the target node
+        outgoingAngle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x);
+        // Point the incoming angle the other way
+        incomingAngle = outgoingAngle + Math.PI;
+        // Offset parallel edges by (0, Math.PI / 3]
+        outgoingAngle += d.parallelOffset * Math.PI / 3;
+        incomingAngle -= d.parallelOffset * Math.PI / 3;
+        arrowheadAngle = incomingAngle;
       }
+      // Shorthand for outgoing / incoming distances
+      const ox = nodeRadius * Math.cos(outgoingAngle);
+      const oy = nodeRadius * Math.sin(outgoingAngle);
+      const ix = nodeRadius * Math.cos(incomingAngle);
+      const iy = nodeRadius * Math.sin(incomingAngle);
+
+      // Outgoing point on the circle
+      const x0 = d.source.x + ox;
+      const y0 = d.source.y + oy;
+      // First curve handle
+      const xc0 = d.source.x + 5 * ox + ix;
+      const yc0 = d.source.y + 5 * oy + iy;
+      // Second curve handle
+      const xc1 = d.target.x + 5 * ix + ox;
+      const yc1 = d.target.y + 5 * iy + oy;
+      // Incoming point on the circle
+      const x1 = d.target.x + ix;
+      const y1 = d.target.y + iy;
+      // Resulting SVG path, and incomingAngle
+      path = `M${x0},${y0}C${xc0},${yc0},${xc1},${yc1},${x1},${y1}`;
       if (d.directed) {
         // Draw an arrowhead
         // Tip of the arrowhead

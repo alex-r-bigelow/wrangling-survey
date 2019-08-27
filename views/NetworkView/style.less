@@ -20,10 +20,24 @@
     }
   }
   .exampleData {
+    /*
+      TODO: d3 is still working on dragging touch issues, as the ways that
+      browsers prevent default actions (e.g. scrolling, zooming) aren't
+      consistent yet. Need to watch this space:
+      https://github.com/d3/d3-drag/issues/9
+    */
+    touch-action: none;
+
     .node {
       cursor: pointer;
       &:active {
         cursor: grabbing;
+      }
+      text {
+        display: none;
+      }
+      &:hover text {
+        display: inherit;
       }
       circle {
         fill: white;
