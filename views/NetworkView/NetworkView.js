@@ -76,13 +76,13 @@ class NetworkView extends SurveyView {
     super.collectKeyElements();
   }
   draw () {
-    this.enableButtons();
     this.drawNodeFields();
     this.drawEdgeFields();
     this.populateSelectMenus(this.d3el.select('.new.edge.field .source'), 'source');
     this.populateSelectMenus(this.d3el.select('.new.edge.field .target'), 'target');
     this.populateSelectMenus(this.d3el.selectAll('.edgeFields .source'), 'source', d => d.source);
     this.populateSelectMenus(this.d3el.selectAll('.edgeFields .target'), 'target', d => d.target);
+    this.enableButtons(); // Important that this comes after populateSelectMenus
     this.drawNodeLinkDiagram();
   }
   enableButtons () {
@@ -247,17 +247,20 @@ class NetworkView extends SurveyView {
     });
   }
   populateSelectMenus (selectMenus, type, valueFunc) {
-    let options = selectMenus.selectAll('option')
-      .data([null].concat(this._exampleData.nodes.map((node, index) => { return { node, index }; })));
+    const optionList = [null].concat(this._exampleData.nodes
+      .map((node, index) => { return { node, index }; }));
+    let options = selectMenus.selectAll('option').data(optionList);
     options.exit().remove();
     const optionsEnter = options.enter().append('option');
     options = options.merge(optionsEnter);
 
     options.attr('disabled', d => d === null ? true : null)
-      .property('value', (d, i) => d === null ? null : i - 1)
+      .property('value', (d, i) => d === null ? 'null' : i - 1)
       .text(d => d === null ? `Choose a ${type} node` : d.node.label);
 
-    if (valueFunc) {
+    if (optionList.length === 1) {
+      selectMenus.property('selectedIndex', 0);
+    } else if (valueFunc) {
       selectMenus.property('value', valueFunc);
     }
   }
