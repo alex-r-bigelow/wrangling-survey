@@ -1,42 +1,42 @@
-<h3>How many <span class="inspectable">node</span> <span class="inspectable">classes</span> are there?</h3>
+<h3 id="${state}NNodeClasses">How many <span class="inspectable">node</span> <span class="inspectable">classes</span> are there?</h3>
 <div class="field">
-  <input type="radio" data-key="${state}NNodeClasses" name="${state}NNodeClasses" data-checked-value="1" id="${state}OneNodeClass" />
+  <input type="radio" data-key="${state}NNodeClasses" name="${state}NNodeClasses" data-checked-value="1" />
   <label for="${state}OneNodeClass">1</label>
 </div>
 <div class="field">
-  <input type="radio" data-key="${state}NNodeClasses" name="${state}NNodeClasses" data-checked-value="2" id="${state}TwoNodeClass" />
+  <input type="radio" data-key="${state}NNodeClasses" name="${state}NNodeClasses" data-checked-value="2" />
   <label for="${state}TwoNodeClass">2</label>
 </div>
 <div class="field">
-  <input type="radio" data-key="${state}NNodeClasses" name="${state}NNodeClasses" data-checked-value="3+" id="${state}ThreeNodeClass" />
+  <input type="radio" data-key="${state}NNodeClasses" name="${state}NNodeClasses" data-checked-value="3+" />
   <label for="${state}ThreeNodeClass">&ge;3</label>
 </div>
 
-<h3>How many <span class="inspectable">edge</span> <span class="inspectable">classes</span> are there?</h3>
+<h3 id="${state}NEdgeClasses">How many <span class="inspectable">edge</span> <span class="inspectable">classes</span> are there?</h3>
 <div class="field">
-  <input type="radio" data-key="${state}NEdgeClasses" name="${state}NEdgeClasses" data-checked-value="1" id="${state}OneEdgeClass" />
+  <input type="radio" data-key="${state}NEdgeClasses" name="${state}NEdgeClasses" data-checked-value="1" />
   <label for="${state}OneEdgeClass">1</label>
 </div>
 <div class="field">
-  <input type="radio" data-key="${state}NEdgeClasses" name="${state}NEdgeClasses" data-checked-value="2" id="${state}TwoEdgeClass" />
+  <input type="radio" data-key="${state}NEdgeClasses" name="${state}NEdgeClasses" data-checked-value="2" />
   <label for="${state}TwoEdgeClass">2</label>
 </div>
 <div class="field">
-  <input type="radio" data-key="${state}NEdgeClasses" name="${state}NEdgeClasses" data-checked-value="3+" id="${state}ThreeEdgeClass" />
+  <input type="radio" data-key="${state}NEdgeClasses" name="${state}NEdgeClasses" data-checked-value="3+" />
   <label for="${state}ThreeEdgeClass">&ge;3</label>
 </div>
 
-<h3>How would you characterize <span class="inspectable">edge</span> direction?</h3>
+<h3 id="${state}EdgeDirection">How would you characterize <span class="inspectable">edge</span> direction?</h3>
 <div class="field">
-  <input type="radio" data-key="${state}EdgeDirection" name="${state}EdgeDirection" data-checked-value="Directed" id="${state}directed" />
+  <input type="radio" data-key="${state}EdgeDirection" name="${state}EdgeDirection" data-checked-value="Directed" />
   <label for="${state}directed">Directed</label>
 </div>
 <div class="field">
-  <input type="radio" data-key="${state}EdgeDirection" name="${state}EdgeDirection" data-checked-value="Undirected" id="${state}undirected" />
+  <input type="radio" data-key="${state}EdgeDirection" name="${state}EdgeDirection" data-checked-value="Undirected" />
   <label for="${state}undirected">Undirected</label>
 </div>
 <div class="field">
-  <input type="radio" data-key="${state}EdgeDirection" name="${state}EdgeDirection" data-checked-value="Mixed" id="${state}mixedDirection" />
+  <input type="radio" data-key="${state}EdgeDirection" name="${state}EdgeDirection" data-checked-value="Mixed" />
   <label for="${state}mixedDirection">Mixed</label>
 </div>
 
@@ -60,7 +60,7 @@
 </div>
 <p>Preview:</p>
 <p class="insufficientNodesAndEdges">Please create at least two nodes and two edges</p>
-<svg class="exampleData">
+<svg class="exampleData" id="${state}networkPreview">
   <g class="edgeLayer"></g>
   <g class="nodeLayer"></g>
 </svg>

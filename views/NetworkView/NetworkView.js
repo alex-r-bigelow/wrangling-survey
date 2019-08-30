@@ -489,12 +489,73 @@ class NetworkView extends SurveyView {
   isEnabled (formValues) {
     return this.state === 'init' && formValues.datasetType === 'Network';
   }
+  get graphProperties () {
+    // BFS to determine if the graph:
+    // - is (weakly) connected
+    // - has (weak) cycles
+    // - has self-edges
+    const results = {
+      hasSelfEdges: false
+    };
+
+    const components = {};
+    const nodeAssignments = {};
+    let nextNewComponent = 0;
+    for (const edge of this._exampleData.edges) {
+      // Check for self edges
+      if (edge.source === edge.target) {
+        results.hasSelfEdges = true;
+      }
+      const sourceComponent = nodeAssignments[edge.source];
+      const targetComponent = nodeAssignments[edge.target];
+      // Assign each endpoint to connected components
+      if (sourceComponent !== undefined) {
+        if (targetComponent !== undefined) {
+          //  We've seen both nodes; don't need to do anything unless...
+          if (sourceComponent !== targetComponent) {
+            // Reassign all nodes matching the target component to the
+            // source component
+            const oldComponentMembers = components[targetComponent];
+            delete components[targetComponent];
+            for (const node of oldComponentMembers) {
+              components[sourceComponent].push(node);
+            }
+          }
+        } else {
+          // Haven't seen the target yet
+          nodeAssignments[edge.target] = sourceComponent;
+          components[sourceComponent].push(edge.target);
+        }
+      } else if (targetComponent !== undefined) {
+        // Haven't seen the source yet
+        nodeAssignments[edge.source] = targetComponent;
+        components[targetComponent].push(edge.source);
+      } else {
+        // Haven't seen either yet; assign a new component
+        nodeAssignments[edge.source] = nodeAssignments[edge.target] = nextNewComponent;
+        components[nextNewComponent] = [edge.source, edge.target];
+        nextNewComponent++;
+      }
+    }
+
+    results.weaklyConnected = Object.keys(components).length === 1;
+  }
   validateForm (formValues) {
     formValues[`${this.state}ExampleData`] = this._exampleData;
-    return {
-      valid: true,
-      invalidIds: {}
-    };
+    const invalidIds = {};
+    const requiredFields = [
+      `${this.state}NNodeClasses`,
+      `${this.state}NEdgeClasses`,
+      `${this.state}EdgeDirection`,
+      `${this.state}NNodeAttributes`,
+      `${this.state}NEdgeAttributes`
+    ];
+    for (const requiredField of requiredFields) {
+      if (formValues[requiredField] === undefined) {
+        invalidIds[requiredField] = true;
+      }
+    }
+    return { valid: Object.keys(invalidIds).length === 0, invalidIds };
   }
 }
 export default NetworkView;

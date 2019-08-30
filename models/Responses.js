@@ -96,7 +96,7 @@ ${JSON.stringify(currentData, null, 2)}
             result.formValues[key] = result.formValues[key] || {};
             result.formValues[key][element.dataset.role] = element.value;
           } else if (element.dataset.checkedValue) {
-            if (this.checked) {
+            if (element.checked) {
               result.formValues[key] = element.dataset.checkedValue;
             }
           } else {
