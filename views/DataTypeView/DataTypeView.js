@@ -7,8 +7,13 @@ class DataTypeView extends SurveyView {
       { type: 'text', url: 'views/DataTypeView/template.html' }
     ]);
     this.humanLabel = 'Initial Data Abstraction';
-    const debugView = window.DEBUG_VIEW && window.DEBUG_VIEW.match(/(.*)\(init\)/)[1];
-    this._datasetType = debugView || null;
+    this._datasetType = null;
+    if (window.DEBUG_VIEW) {
+      const temp = window.DEBUG_VIEW.match(/(.*)\(init\)/);
+      if (temp && temp[1]) {
+        this._datasetType = temp[1];
+      }
+    }
   }
   setup () {
     const self = this;

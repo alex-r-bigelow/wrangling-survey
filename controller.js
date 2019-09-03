@@ -10,9 +10,8 @@ import DomainView from './views/DomainView/DomainView.js';
 import DataTypeView from './views/DataTypeView/DataTypeView.js';
 import TablesView from './views/TablesView/TablesView.js';
 import NetworkView from './views/NetworkView/NetworkView.js';
-import FieldView from './views/FieldView/FieldView.js';
-import GeometryView from './views/GeometryView/GeometryView.js';
-import SetsView from './views/SetsView/SetsView.js';
+import SpatialView from './views/SpatialView/SpatialView.js';
+import TextView from './views/TextView/TextView.js';
 import ForcedTransformationView from './views/ForcedTransformationView/ForcedTransformationView.js';
 import DebriefView from './views/DebriefView/DebriefView.js';
 
@@ -20,7 +19,8 @@ import Tooltip from './views/Tooltip/Tooltip.js';
 
 import recolorImageFilter from './utils/recolorImageFilter.js';
 
-window.DEBUG_VIEW = 'Network(init)';
+window.DEBUG_VIEW = 'dataType';
+window.SANDBOX_MODE = true;
 
 class Controller {
   constructor () {
@@ -56,17 +56,15 @@ class Controller {
       { viewName: 'consent', ViewClass: ConsentView },
       { viewName: 'domain', ViewClass: DomainView },
       { viewName: 'dataType', ViewClass: DataTypeView },
-      { viewName: 'Tables(init)', ViewClass: TablesView, transform: false },
+      { viewName: 'Tabular(init)', ViewClass: TablesView, transform: false },
       { viewName: 'Network(init)', ViewClass: NetworkView, transform: false },
-      { viewName: 'Field(init)', ViewClass: FieldView, transform: false },
-      { viewName: 'Geometry(init)', ViewClass: GeometryView, transform: false },
-      { viewName: 'Sets(init)', ViewClass: SetsView, transform: false },
+      { viewName: 'Spatial(init)', ViewClass: SpatialView, transform: false },
+      { viewName: 'Textual(init)', ViewClass: TextView, transform: false },
       { viewName: 'forcedTransformation', ViewClass: ForcedTransformationView },
-      { viewName: 'Tables(transform)', ViewClass: TablesView, transform: true },
+      { viewName: 'Tabular(transform)', ViewClass: TablesView, transform: true },
       { viewName: 'Network(transform)', ViewClass: NetworkView, transform: true },
-      { viewName: 'Field(transform)', ViewClass: FieldView, transform: true },
-      { viewName: 'Geometry(transform)', ViewClass: GeometryView, transform: true },
-      { viewName: 'Sets(transform)', ViewClass: SetsView, transform: true },
+      { viewName: 'Spatial(transform)', ViewClass: SpatialView, transform: true },
+      { viewName: 'Textual(transform)', ViewClass: TextView, transform: true },
       { viewName: 'debrief', ViewClass: DebriefView }
     ];
     const self = this;

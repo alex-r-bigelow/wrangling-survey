@@ -72,9 +72,13 @@ ${JSON.stringify(currentData, null, 2)}
       .attr('type', 'text')
       .attr('name', d => d.value)
       .property('value', d => currentData.formValues[d.key] || null);
-    form.append('input')
+    const inputElement = form.append('input')
       .attr('type', 'submit')
-      .node().click();
+      .node();
+    if (!window.SANDBOX_MODE) {
+      inputElement.click();
+    }
+    form.remove();
   }
   getCurrentData () {
     const result = {

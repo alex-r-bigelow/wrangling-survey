@@ -8,7 +8,7 @@ class NetworkView extends SurveyView {
       { type: 'text', url: 'views/NetworkView/template.html' }
     ]);
     this.state = transform ? 'post' : 'init';
-    this.humanLabel = 'Network / Tree Details';
+    this.humanLabel = 'Network / Hierarchy Data Details';
 
     // Start out with a graph, so that people aren't confronted with
     // an empty canvas

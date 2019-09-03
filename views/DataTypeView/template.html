@@ -1,17 +1,17 @@
 <h3>Which of the following is the best description for this <span class="inspectable">type of dataset</span>?</h3>
-<div class="combo button" data-key="datasetType" data-value="Tables">
+<div class="combo button" data-key="datasetType" data-value="Tabular">
   <a><img src="img/tables.svg"/></a>
-  <h4 class="inspectable">Tables</h4>
+  <h4><span class="inspectable">Tabular</span> data</h4>
   <small>
     <p>
       Choose this option if you tend to think about the data in terms of
-      <span class="inspectable">rows</span> and <span class="inspectable">columns</span>.
+      <span class="inspectable">row</span>s and <span class="inspectable">column</span>s.
     </p>
   </small>
 </div>
 <div class="combo button" data-key="datasetType" data-value="Network">
   <a><img src="img/network.svg"/></a>
-  <h4 class="inspectable">Network / Tree</h4>
+  <h4><span class="inspectable">Network</span> / <span class="inspectable">Hierarchy</span> data</h4>
   <small>
     <p>
       Choose this option if you tend to think about the data in terms of
@@ -19,35 +19,22 @@
     </p>
   </small>
 </div>
-<div class="combo button" data-key="datasetType" data-value="Field">
-  <a><img src="img/field.svg"/></a>
-  <h4 class="inspectable">Field</h4>
+<div class="combo button" data-key="datasetType" data-value="Spatial">
+  <a><img src="img/spatial.svg"/></a>
+  <h4><span class="inspectable">Spatial</span> / <span class="inspectable">Temporal</span> data</h4>
   <small>
     <p>
-      Choose this option if you tend to think about the data in terms of
-      <span class="inspectable">grid positions</span> with associated
-      <span class="inspectable">attributes</span>.
+      Choose this option if you tend to think about the data in terms of <span class="inspectable">points</span> or <span class="inspectable">regions</span> in space or time.
     </p>
   </small>
 </div>
-<div class="combo button" data-key="datasetType" data-value="Geometry">
-  <a><img src="img/geometry.svg"/></a>
-  <h4 class="inspectable">Geometry</h4>
+<div class="combo button" data-key="datasetType" data-value="Textual">
+  <a><img src="img/text.svg"/></a>
+  <h4><span class="inspectable">Textual</span> data</h4>
   <small>
     <p>
       Choose this option if you tend to think about the data in terms of
-      <span class="inspectable">shapes</span>.
-    </p>
-  </small>
-</div>
-<div class="combo button" data-key="datasetType" data-value="Sets">
-  <a><img src="img/sets.svg"/></a>
-  <h4 class="inspectable">Clusters / Sets / Lists</h4>
-  <small>
-    <p>
-      Choose this option if you tend to think about the data in terms of
-      <span class="inspectable">items</span> that may (or may not) be <span class="inspectable">grouped</span>
-      or <span class="inspectable">ordered</span>.
+      <span class="inspectable">words</span> or <span class="inspectable">documents</span>.
     </p>
   </small>
 </div>
@@ -55,14 +42,26 @@
   <a></a>
   <span class="label">None of the above</span>
 </div>
+<div class="na field">
+  <h3>Please describe why none of the above descriptions are a good fit. Is there a similar generalization that we should have included?</h3><br />
+  <textarea data-key="noTypeExplanation" id="noTypeExplanation" placeholder="Optional. Please remember that these comments are public."></textarea>
+</div>
 <div class="hybrid field">
   <input type="checkbox" data-key="datasetIsHybrid" data-value="true" id="datasetIsHybrid"/>
   <label for="datasetIsHybrid">The dataset a hybrid combination of two or more of the above descriptions</label><br />
   <small>If so, choose the best description for what you feel is the most important component of the data, or the component that you interact with the most</small>
 </div>
-<div class="na field">
-  <h3>Please describe why none of the above descriptions are a good fit. Is there a similar generalization that we should have included?</h3><br />
-  <textarea data-key="noTypeExplanation" id="noTypeExplanation" placeholder="Optional. Please remember that these comments are public."></textarea>
+<div class="field">
+  <input type="checkbox" data-key="datasetNuances" data-flag="hasClusters" id="hasClusters" />
+  <label for="hasClusters">I would expect the data to contain natural <span class="inspectable">clusters</span></label>
+</div>
+<div class="field">
+  <input type="checkbox" data-key="datasetNuances" data-flag="hasSets" id="hasSets" />
+  <label for="hasSets">The data contains meaningful <span class="inspectable">sets</span></label>
+</div>
+<div class="field">
+  <input type="checkbox" data-key="datasetNuances" data-flag="isOrdered" id="isOrdered" />
+  <label for="isOrdered">The data has at least one natural <span class="inspectable">ordering</span></label>
 </div>
 <div class="buttonContainer">
   <div class="finish button"><a></a><span class="label">Finish Survey</span></div>

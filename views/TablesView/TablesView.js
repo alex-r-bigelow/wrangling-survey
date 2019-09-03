@@ -7,7 +7,7 @@ class TablesView extends SurveyView {
       { type: 'text', url: 'views/TablesView/template.html' }
     ]);
     this.state = transform ? 'post' : 'init';
-    this.humanLabel = 'Table Details';
+    this.humanLabel = 'Tabular Data Details';
   }
   get nTables () {
     return this.d3el.selectAll(`[data-key="${this.state}NTables"]`)
@@ -31,7 +31,7 @@ class TablesView extends SurveyView {
     return 'forcedTransformation';
   }
   isEnabled (formValues) {
-    return this.state === 'init' && formValues.datasetType === 'Tables';
+    return this.state === 'init' && formValues.datasetType === 'Tabular';
   }
   validateForm (formValues) {
     let emptyCells = {};
