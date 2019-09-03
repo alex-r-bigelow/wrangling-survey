@@ -493,11 +493,14 @@ class NetworkView extends SurveyView {
     // BFS to determine if the graph:
     // - is (weakly) connected
     // - has (weak) cycles
+    // - has parallel edges
     // - has self-edges
     const results = {
-      hasSelfEdges: false
+      hasSelfEdges: false,
+      hasParallelEdges: false
     };
 
+    const edgeKeys = {};
     const components = {};
     const nodeAssignments = {};
     let nextNewComponent = 0;
@@ -505,6 +508,13 @@ class NetworkView extends SurveyView {
       // Check for self edges
       if (edge.source === edge.target) {
         results.hasSelfEdges = true;
+      }
+      // Check for parallel edges
+      if (edgeKeys[edge.source + '_' + edge.target] ||
+          edgeKeys[edge.target + '_' + edge.source]) {
+        results.hasParallelEdges = true;
+      } else {
+        edgeKeys[edge.source + '_' + edge.target] = true;
       }
       const sourceComponent = nodeAssignments[edge.source];
       const targetComponent = nodeAssignments[edge.target];
