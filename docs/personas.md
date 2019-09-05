@@ -1,0 +1,87 @@
+# Persona-Specific Core Needs, Other Needs, Risks, Tests, Limitations
+The survey we are designing, and the data that we are collecting:
+- are intended for a specific, diverse set of goals for two persona types (DSW and WTB)
+- may potentially assist with additional goals, belonging to other persona types (VTD, VDSR, VE)
+
+- **DSW** Data Science Workers
+  - Core Needs:
+    - **DSW.C1** Need for a tool to suggest or support search / discovery of similar data abstractions and associated:
+      - **DSW.C1.1** wrangling tools
+      - **DSW.C1.2** visualization software
+    - **DSW.C2** Need for a tool to suggest or support search / discovery of similar data transformations and associated visualization techniques
+    - **DSW.C3** Need for a creativity exercise that provokes out-of-the-box analysis questions
+    - **DSW.C4** Need for opportunities to learn basic CS concepts in the context of familiar data, that can take advantage of other participants' translations
+  - Other Needs:
+    - **DSW.N1** Need for opportunities to connect with Wrangling Tool Builders, Visualization Technique Developers, or Visualization Design Study Researchers for more in-depth collaborations
+    - **DSW.N2** Need for opportunities for voice / perspective / language / specific problems to be heard in a way that (could) impact the design of future tools
+  - Risks:
+    - DSWs may not be able to effectively find relevant information [DSW.C1, DSW.C2]
+      - Test:
+    - Our survey may not provoke out-of-the-box analysis questions [DSW.C3]
+      - Test: Participants will self-report (Likert), and we will qualitatively evaluate, whether forced transitions provoked novel perspectives on the data
+    - Contextual definitions, even with alternate translations, may not be sufficient to teach basic CS concepts [DSW.C4]
+      - Test: Short conceptual quiz (matching a random subset of terms to their definition) at the end
+  - Limitations:
+    - Data Science Workers are extremely diverse (designers, excel users, scientists, etc.); only a subset of Needs may apply
+    - Individual Data Science Worker needs are also very diverse (discovery, capture, curation, etc.); our work only begins to focus one narrow aspect (design)
+    - DSWs may never hear from anyone [DSW.N1]
+    - WTBs may not consult specific user responses [DSW.N2]
+  - User costs:
+    - Time commitment
+    - Privacy (data is public)
+    - May have to do the work of translating (potentially unfamiliar) CS jargon to domain concepts
+
+- **WTB** Wrangling Tool Builders
+  - Core Needs:
+    - **WTB.C1** Needs real-world, crisply defined data abstractions so that generalized tools are capable of modeling a diverse array of specific abstractions
+    - **WTB.C2** Needs real-world, crisply described examples of data transformations that:
+      - **WTB.C1.1** In their basic form, require less than the expressiveness of Turing-complete programming languages
+      - **WTB.C1.2** Do not yet have adequate support in existing software (especially w.r.t. interface designs that eliminate/reduce the need for programming)
+    - **WTB.C3** Needs ways to translate data abstraction and transformation jargon to:
+      - **WTB.C2.1** More easily-understood domain concepts (for applied tools)
+      - **WTB.C2.2** More easily-understood general terms for CS jargon (for general tools)
+  - Risks:
+    - DSWs might only specify highly expressive data transformation requirements [WTB.C2]
+      - Test: in addition to allowing for open-ended comments for users to describe needed expressiveness, ask how *likely* (Likert) it is that a visual interface will someday capture enough nuance to correctly perform a specific transformation, without requiring the user to write code
+    - Only transformations that have support in existing software are specified [WTB.C3]
+      - Test: if the list of user tools is blank that means either that 1) the user is unaware of existing tool support [DSW.C2], or that 2) no support exists. If the list is not blank, the participant's response helps [DSW.G1] more than [WTB.C3]
+    - Resulting domain map may be incomplete (if users don't bother to fill in alternates) / biased (if users misunderstand / mistranslate) [DSW.G2]
+      - Test: follow-up survey with independent domain experts that we identify, only checking terminology
+  - Limitations:
+    - Tempting to generalize about which abstractions or transformations are *most* common, but our participant pool will be biased (gets worse when we, ourselves, archive prior design study abstractions)
+    - Tempting to generalize about which general terms for CS are *most* common, but our participants will be biased—at most, this survey will help us to identify (probably) "good" terms
+
+- **TVR** Theoretical Visualization Researchers
+  - Core Needs:
+    - **TVR.C1** Need for data that characterizes the design space of non-tabular data abstraction transformations
+  - Risks:
+    - [DAS] may over-simplify individual abstractions
+      - Test:
+        - pilot [DAS] by characterizing design studies from VIS that have clearly documented data abstractions
+        - post-hoc qualitative evaluation of the degree to which open-ended comment fields indicate failures to capture abstractions
+    - The data may not be
+  - Limitations:
+    - The data may include a representative sample of real-world needs
+
+- **VTD** Visualization Technique Developers
+  - Other Needs:
+    - **VTD.N1** Needs real-world, crisply described examples of specific data abstractions that do not yet have adequate visualization support; our work could improve *a little* on current Maslow's hammer practices
+  - Limitations:
+    - We won't be collecting very detailed task abstraction info; likely won't be *enough* to adequately justify pure technique work as useful in the real world [VTD.N1]
+
+- **VDSR** Visualization Design Study Researchers
+  - Other Needs:
+    - **VDSR.N1** Needs to jump-start collaborations with Data Science Workers:
+      - **VDSR.N1.1** Do they have interesting data problems?
+      - **VDSR.N1.2** How to be advised in advance of common winnowing problems?
+      - **VDSR.N1.3** How to translate between domain concepts and CS jargon?
+    - **VDSR.N2** Needs evidence that a given data abstraction effectively represents a Data Science Worker's mental model
+  - Limitations:
+    - Impossible to fully *validate* a data abstraction based on this data [VDSR.N2]
+
+- **VE** Visualization Educators
+  - Other Needs:
+    - **VE.N1** Seeks ways to encourage students to explore more varied visualization designs
+    - **VE.N2** Needs ways to teach data abstraction concepts to students with non-CS backgrounds
+  - Limitations:
+    - The survey wasn't really designed or tested for either VE.N1 or VE.N2
