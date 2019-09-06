@@ -8,7 +8,7 @@ The survey we are designing, and the data that we are collecting:
     - **DSW.C1** Need for a tool to suggest or support search / discovery of similar data abstractions and associated:
       - **DSW.C1.1** wrangling tools
       - **DSW.C1.2** visualization software
-    - **DSW.C2** Need for a tool to suggest or support search / discovery of similar data transformations and associated visualization techniques
+    - **DSW.C2** Need for a tool to suggest or support search / discovery of similar data transformations and associated software
     - **DSW.C3** Need for a creativity exercise that provokes out-of-the-box analysis questions
     - **DSW.C4** Need for opportunities to learn unfamiliar CS concepts in the context of familiar data, using familiar terms to the extent that they are available
   - Other Needs:
