@@ -10,7 +10,7 @@ The survey we are designing, and the data that we are collecting:
       - **DSW.C1.2** visualization software
     - **DSW.C2** Need for a tool to suggest or support search / discovery of similar data transformations and associated visualization techniques
     - **DSW.C3** Need for a creativity exercise that provokes out-of-the-box analysis questions
-    - **DSW.C4** Need for opportunities to learn basic CS concepts in the context of familiar data, that can take advantage of other participants' translations
+    - **DSW.C4** Need for opportunities to learn unfamiliar CS concepts in the context of familiar data, using familiar terms to the extent that they are available
   - Other Needs:
     - **DSW.N1** Need for opportunities to connect with Wrangling Tool Builders, Visualization Technique Developers, or Visualization Design Study Researchers for more in-depth collaborations
     - **DSW.N2** Need for opportunities for voice / perspective / language / specific problems to be heard in a way that (could) impact the design of future tools
@@ -85,3 +85,7 @@ The survey we are designing, and the data that we are collecting:
     - **VE.N2** Needs ways to teach data abstraction concepts to students with non-CS backgrounds
   - Limitations:
     - The survey wasn't really designed or tested for either VE.N1 or VE.N2
+
+- **DSL** Data Science Learners
+  - Other Needs:
+    - (shared with DSW.C4)

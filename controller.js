@@ -19,7 +19,7 @@ import Tooltip from './views/Tooltip/Tooltip.js';
 
 import recolorImageFilter from './utils/recolorImageFilter.js';
 
-window.DEBUG_VIEW = 'dataType';
+window.DEBUG_VIEW = 'Spatial(init)';
 window.SANDBOX_MODE = true;
 
 class Controller {

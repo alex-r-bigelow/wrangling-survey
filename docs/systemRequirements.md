@@ -38,7 +38,8 @@
 - Submit names of other tools that they use (or could imagine using) with a particular data abstraction or data transformation
 ## **CQE** Creative Question Evaluations
 ### What
-- At the end of each activity, users will **todo**
+- At the end of each activity, users will ... **todo**
+- Other ideas: detect when users go back to change answers? Ask users to Likert-rate the extent to which the survey caused them to think about their data differently? How to word "differently"?
 ## **JTM** Jargon translation maps
 ### What
 - Throughout all activities, CS jargon will be presented, and users will be encouraged (**todo:** how?) to choose more appropriate terms for their domain
