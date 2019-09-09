@@ -25,3 +25,8 @@
   - Spatial [**todo**]
   - Text [**todo**]
 - Databases again?
+
+
+
+
+CHI: Evan peck, rural pennsylvania talking about infographics

@@ -60,7 +60,54 @@ Ideally, we'd like to get people from the Core or Relevant persona categories to
 
 
 
+    - Risks:
+    - DSWs may not be able to effectively find relevant information [DSW.C1, DSW.C2]
+      - Test:
+    - Our survey may not provoke out-of-the-box analysis questions [DSW.C3]
+      - Test: Participants will self-report (Likert), and we will qualitatively evaluate, whether forced transitions provoked novel perspectives on the data
+    - Contextual definitions, even with alternate translations, may not be sufficient to teach basic CS concepts [DSW.C4]
+      - Test: Short conceptual quiz (matching a random subset of terms to their definition) at the end
+    - Limitations:
+    - Data Science Workers are extremely diverse (designers, excel users, scientists, etc.); only a subset of Needs may apply
+    - Individual Data Science Worker needs are also very diverse (discovery, capture, curation, etc.); our work only begins to focus one narrow aspect (design)
+    - DSWs may never hear from anyone [DSW.N1]
+    - WTBs may not consult specific user responses [DSW.N2]
+    - User costs:
+    - Time commitment
+    - Privacy (data is public)
+    - May have to do the work of translating (potentially unfamiliar) CS jargon to domain concepts
 
+
+
+    - Risks:
+      - DSWs might only specify highly expressive data transformation requirements [WTB.C2]
+        - Test: in addition to allowing for open-ended comments for users to describe needed expressiveness, ask how *likely* (Likert) it is that a visual interface will someday capture enough nuance to correctly perform a specific transformation, without requiring the user to write code
+      - Only transformations that have support in existing software are specified [WTB.C3]
+        - Test: if the list of user tools is blank that means either that 1) the user is unaware of existing tool support [DSW.C2], or that 2) no support exists. If the list is not blank, the participant's response helps [DSW.G1] more than [WTB.C3]
+      - Resulting domain map may be incomplete (if users don't bother to fill in alternates) / biased (if users misunderstand / mistranslate) [DSW.G2]
+        - Test: follow-up survey with independent domain experts that we identify, only checking terminology
+    - Limitations:
+      - Tempting to generalize about which abstractions or transformations are *most* common, but our participant pool will be biased (gets worse when we, ourselves, archive prior design study abstractions)
+      - Tempting to generalize about which general terms for CS are *most* common, but our participants will be biased—at most, this survey will help us to identify (probably) "good" terms
+
+
+
+        - Risks:
+          - [DAS] may over-simplify individual abstractions
+            - Test:
+              - pilot [DAS] by characterizing design studies from VIS that have clearly documented data abstractions
+              - post-hoc qualitative evaluation of the degree to which open-ended comment fields indicate failures to capture abstractions
+          - The data may not be
+        - Limitations:
+          - The data may include a representative sample of real-world needs
+
+
+            - Limitations:
+              - We won't be collecting very detailed task abstraction info; likely won't be *enough* to adequately justify pure technique work as useful in the real world [VTD.N1]
+
+
+                - Limitations:
+                  - Impossible to fully *validate* a data abstraction based on this data [VDSR.N2]
 
 
 Terms with an asterisk* will have on-demand interactive definitions, examples
