@@ -5,7 +5,7 @@ class ConsentView extends IntrospectableMixin(View) {
   constructor (div) {
     super(div, [
       { type: 'less', url: 'views/ConsentView/style.less' },
-      { type: 'text', url: 'views/ConsentView/construction.html' }
+      { type: 'text', url: 'views/ConsentView/template.html' }
     ]);
   }
   setup () {
