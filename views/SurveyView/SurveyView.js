@@ -6,6 +6,9 @@ class SurveyView extends IntrospectableMixin(View) {
     super(...arguments);
     this.keyElements = [];
   }
+  get className () {
+    return this.type;
+  }
   collectKeyElements () {
     this.keyElements = this.d3el.selectAll('[data-key]').nodes();
   }

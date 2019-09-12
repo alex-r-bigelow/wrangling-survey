@@ -1,35 +1,20 @@
-import SurveyView from '../SurveyView/SurveyView.js';
+import { View } from '../../node_modules/uki/dist/uki.esm.js';
+import IntrospectableMixin from '../../utils/IntrospectableMixin.js';
 
-class ConsentView extends SurveyView {
+class ConsentView extends IntrospectableMixin(View) {
   constructor (div) {
     super(div, [
       { type: 'less', url: 'views/ConsentView/style.less' },
-      { type: 'text', url: 'views/ConsentView/template.html' }
+      { type: 'text', url: 'views/ConsentView/construction.html' }
     ]);
-    this.humanLabel = 'Consent for Participation, Data Collection';
   }
   setup () {
     this.d3el.html(this.resources[1]);
     this.d3el.select('.agree').on('click', () => {
-      window.responses.resetCookie();
-      window.controller.advanceSurvey('domain');
+      window.localStorage.setItem('consented', 'true');
+      window.controller.renderAllViews();
     });
   }
   draw () {}
-  getNextView () {
-    // this view has an .agree button instead of a .next one
-  }
-  populateForm (formValues) {
-    // nothing to populate
-  }
-  isEnabled (formValues) {
-    return true;
-  }
-  validateForm (formValues) {
-    return {
-      enabled: true,
-      valid: !!formValues.cookie
-    };
-  }
 }
 export default ConsentView;

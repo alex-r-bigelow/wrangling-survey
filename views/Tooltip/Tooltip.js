@@ -4,52 +4,13 @@ import { View } from '../../node_modules/uki/dist/uki.esm.js';
 class Tooltip extends View {
   constructor () {
     super(d3.select('.Tooltip'), [
-      { type: 'html', url: 'views/Tooltip/helpDefinitions.html' },
       { type: 'less', url: 'views/Tooltip/style.less' }
     ]);
   }
   setup () {
     this.hide();
-
-    const self = this;
-    this.definitions = {};
-    d3.select(this.resources[0])
-      .selectAll('[data-inspectable]')
-      .each(function () {
-        self.definitions[this.dataset.inspectable] = this;
-      });
-    function showHelp () {
-      const helpElement = self.definitions[this.innerText];
-      if (helpElement && helpElement.outerHTML) {
-        self.show({
-          content: helpElement.outerHTML,
-          targetBounds: this.getBoundingClientRect(),
-          hideAfterMs: 10000
-        });
-      } else {
-        self.hide();
-      }
-    }
-    d3.selectAll('.inspectable')
-      .on('mouseenter', showHelp)
-      .on('click', showHelp)
-      .on('touchend', function () {
-        d3.event.preventDefault();
-        d3.event.stopPropagation();
-        showHelp.call(this);
-      })
-      .on('mouseleave', () => {
-        self.hide();
-      })
-      .each(function () {
-        if (!self.definitions[this.innerText]) {
-          console.warn(`No help definition for concept: ${this.innerText}`);
-        }
-      });
   }
-  draw () {
-    // TODO: migrate a lot of the show() stuff here
-  }
+  draw () {}
   hide () {
     this.show({ content: null });
   }
