@@ -8,7 +8,7 @@ import recolorImageFilter from '../utils/recolorImageFilter.js';
 class Controller extends Model {
   constructor () {
     super([
-      { type: 'html', url: '/docs/helpDefinitions.html' }
+      { type: 'html', url: '../docs/helpDefinitions.html' }
     ]);
     this.database = new Database();
 
