@@ -22,7 +22,7 @@ import { Model } from '../node_modules/uki/dist/uki.esm.js';
 class Database extends Model {
   constructor () {
     super([
-      { type: 'json', url: './databaseConfig.json' }
+      { type: 'json', url: 'models/databaseConfig.json' }
     ]);
 
     this.browserId = window.localStorage.getItem('browserId');
