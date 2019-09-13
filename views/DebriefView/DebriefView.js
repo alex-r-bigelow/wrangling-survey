@@ -13,8 +13,8 @@ class DebriefView extends SurveyView {
     super.collectKeyElements();
   }
   draw () {}
-  isEnabled (formValues) {
-    return formValues.datasetType !== 'N/A';
+  isEnabled () {
+    return true;
   }
 }
 export default DebriefView;

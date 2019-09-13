@@ -26,10 +26,11 @@ class Controller extends Model {
   async renderAllViews () {
     await this.tooltip.render();
   }
-  setupJTM () {
+  async setupJTM () {
     if (this._alreadySetupJTM) {
       return;
     }
+    await this.ready;
     const self = this;
     this.definitions = {};
     d3.select(this.resources[0])

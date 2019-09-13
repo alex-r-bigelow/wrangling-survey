@@ -15,7 +15,7 @@
   <small>
     <p>
       Choose this option if you tend to think about the data in terms of
-      <span class="inspectable">nodes</span> and <span class="inspectable">edges</span>.
+      <span class="inspectable">node</span>s and <span class="inspectable">edge</span>s.
     </p>
   </small>
 </div>
@@ -24,7 +24,7 @@
   <h4><span class="inspectable">Spatial</span> / <span class="inspectable">Temporal</span> data</h4>
   <small>
     <p>
-      Choose this option if you tend to think about the data in terms of <span class="inspectable">points</span> or <span class="inspectable">regions</span> in space or time.
+      Choose this option if you tend to think about the data in terms of <span class="inspectable">point</span>s or <span class="inspectable">region</span>s in space or time.
     </p>
   </small>
 </div>
@@ -38,18 +38,19 @@
     </p>
   </small>
 </div>
-<div class="button" data-key="datasetType" data-value="N/A">
-  <a></a>
-  <span class="label">None of the above</span>
+<div class="combo button" data-key="datasetType" data-value="Other">
+  <a><img src="img/question.svg"/></a>
+  <h4>Something else</h4>
+  <small>
+    <p>
+      Choose this option if you think about the data in a way that doesn't resemble
+      any of the above.
+    </p>
+  </small>
 </div>
-<div class="na field">
-  <h3>Please describe why none of the above descriptions are a good fit. Is there a similar generalization that we should have included?</h3><br />
-  <textarea data-key="noTypeExplanation" id="noTypeExplanation" placeholder="Optional. Please remember that these comments are public."></textarea>
-</div>
-<div class="hybrid field">
-  <input type="checkbox" data-key="datasetIsHybrid" data-value="true" id="datasetIsHybrid"/>
-  <label for="datasetIsHybrid">The dataset a hybrid combination of two or more of the above descriptions</label><br />
-  <small>If so, choose the best description for what you feel is the most important component of the data, or the component that you interact with the most</small>
+<div class="other field">
+  <h3>Please describe why none of the above descriptions are a good fit.</h3><br />
+  <textarea data-key="otherTypeExplanation" id="otherTypeExplanation" placeholder="Optional. Is there a similar generalization that we should have included?&#10;&#10;Please remember that these comments are public."></textarea>
 </div>
 <div class="field">
   <input type="checkbox" data-key="datasetNuances" data-flag="hasClusters" id="hasClusters" />
@@ -64,6 +65,5 @@
   <label for="isOrdered">The data has at least one natural <span class="inspectable">ordering</span></label>
 </div>
 <div class="buttonContainer">
-  <div class="finish button"><a></a><span class="label">Finish Survey</span></div>
   <div class="next button"><a></a><span class="label">Next</span></div>
 </div>

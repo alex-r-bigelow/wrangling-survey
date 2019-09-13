@@ -12,11 +12,32 @@ class SurveyView extends IntrospectableMixin(View) {
   collectKeyElements () {
     this.keyElements = this.d3el.selectAll('[data-key]').nodes();
   }
-  getNextView () {
-    console.warn(`getNextView not implemented for ${this.type}`);
-  }
   populateForm (formValues) {
-    console.warn(`populateForm not implemented for ${this.type}`);
+    this.d3el.selectAll('[data-key]').each(function () {
+      const key = this.dataset.key;
+      if (this.dataset.flag) {
+        // { data-key: [data-flag value, data-flag value, ...] }
+        this.checked = formValues[key] &&
+          formValues[key].indexOf(this.dataset.flag) !== -1;
+      } else if (this.dataset.role) {
+        // { data-key: { data-role: element value } }
+        let value = formValues[key] && formValues[this.dataset.role];
+        if (value === undefined) {
+          value = '';
+        }
+        this.value = value;
+      } else if (this.dataset.checkedValue) {
+        // { data-key: data-checkedValue }
+        this.checked = formValues[key] === this.dataset.checkedValue;
+      } else {
+        // { data-key: element value }
+        let value = formValues[key];
+        if (value === undefined) {
+          value = '';
+        }
+        this.value = value;
+      }
+    });
   }
   isEnabled (formValues) {
     console.warn(`isEnabled not implemented for ${this.type}`);

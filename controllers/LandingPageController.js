@@ -20,7 +20,7 @@ class LandingPageController extends Controller {
     await Promise.all(this.views.map(view => view.render()));
     // Now that all the views have finished rendering, set up metadata collection
     // (relies on DOM elements already existing)
-    this.setupJTM();
+    await this.setupJTM();
   }
 }
 

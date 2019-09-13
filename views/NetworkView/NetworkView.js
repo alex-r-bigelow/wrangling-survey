@@ -487,7 +487,11 @@ class NetworkView extends SurveyView {
     }
   }
   isEnabled (formValues) {
-    return this.state === 'init' && formValues.datasetType === 'Network';
+    if (formValues.datasetTypes['Network']) {
+      return this.state === 'init';
+    } else {
+      return this.state === 'post';
+    }
   }
   get graphProperties () {
     // BFS to determine if the graph:

@@ -35,9 +35,6 @@ class DomainView extends SurveyView {
   draw () {
     this.d3el.select('.next.button').classed('disabled', !this.datasetLabel);
   }
-  getNextView () {
-    return 'dataType';
-  }
   isEnabled (formValues) {
     return true;
   }

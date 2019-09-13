@@ -15,7 +15,11 @@ class TextView extends SurveyView {
   }
   draw () {}
   isEnabled (formValues) {
-    return this.state === 'init' && formValues.datasetType === 'Textual';
+    if (formValues.datasetTypes['Textual']) {
+      return this.state === 'init';
+    } else {
+      return this.state === 'post';
+    }
   }
 }
 export default TextView;

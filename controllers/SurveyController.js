@@ -14,10 +14,10 @@ class SurveyController extends Controller {
     this.ownedResponseIndex = null;
 
     this.surveyViews = [];
-    this.setupViews(viewClasses);
     this.currentSurveyViewIndex = window.DEBUG_SURVEY_VIEW_INDEX || 0;
+    this.setupViews(viewClasses);
   }
-  setupViews (viewClasses) {
+  async setupViews (viewClasses) {
     const self = this;
     this.surveyViews = viewClasses.map(View => new View());
     const surveySections = d3.select('.survey .wrapper')
@@ -34,32 +34,78 @@ class SurveyController extends Controller {
       .text(d => d.humanLabel);
     surveySections.append('div')
       .attr('class', d => d.className);
-    surveySections.each(function (viewInstance) {
-      // Initial render is to assign a DOM element
-      viewInstance.render(d3.select(this).select(`.${viewInstance.className}`));
-    });
-    // Extra render call does some cross-cutting form validation stuff, plus
-    // sets up Controller's JTM metadata collection stuff after the DOM elements
-    // are all there
+    await Promise.all(surveySections.nodes().map(node => {
+      const d3el = d3.select(node);
+      const viewInstance = d3el.datum();
+      // Assign DOM elements to each view, and ensure views create all their DOM
+      // elements before the next cross-cutting steps
+      return viewInstance.render(d3.select(node).select(`.${viewInstance.className}`));
+    }));
+    // Now that all the views have finished rendering, set up stuff that relies
+    // on DOM elements already existing
+
+    // Is the user currently working on a response to this survey? If so,
+    // pre-populate with values they already chose
+    if (this.unfinishedResponse) {
+      for (const view of this.surveyViews) {
+        view.populateForm(this.unfinishedResponse);
+      }
+    }
+    this.setupSurveyListeners();
+    await this.setupJTM();
+    // Extra render call does form validation
     this.renderAllViews();
   }
-  completeSurvey () {
-    console.warn('unimplemented');
+  setupSurveyListeners () {
+    if (this._alreadySetupSurveyListeners) {
+      return;
+    }
+    let debounceTimeout;
+    const self = this;
+    const getDebouncedChangeHandler = (delay, refocus = false) => {
+      return function () {
+        window.clearTimeout(debounceTimeout);
+        debounceTimeout = window.setTimeout(async () => {
+          const formData = self.extractResponses();
+          self.database.setResponse(self.tableName, formData.formValues);
+          await self.renderAllViews(formData);
+          if (refocus) {
+            this.focus();
+          }
+        }, delay);
+      };
+    };
+    const standardHandler = getDebouncedChangeHandler(300);
+    d3.selectAll('[data-key]').on('change', standardHandler);
+    d3.selectAll('[data-key][type="radio"], [data-key][type="checkbox"]')
+      .on('click', standardHandler);
+    d3.selectAll('textarea[data-key], [type="text"][data-key]')
+      .on('keyup', getDebouncedChangeHandler(1000, true));
+    for (const view of this.surveyViews) {
+      view.on('formValuesChanged', standardHandler);
+    }
+    this._alreadySetupSurveyListeners = true;
   }
-  advanceSurvey (viewIndex = this.currentSurveyViewIndex + 1) {
+  async advanceSurvey (viewIndex = this.currentSurveyViewIndex + 1) {
+    const formData = this.extractResponses();
+    while (this.surveyViews[viewIndex] && !this.surveyViews[viewIndex].isEnabled(formData.formValues)) {
+      viewIndex++;
+    }
     if (!this.surveyViews[viewIndex]) {
-      this.completeSurvey();
+      if (formData.valid) {
+        this.database.setResponse(this.tableName, formData.formValues);
+        await this.database.submitResponse(this.tableName);
+      }
     } else {
       this.currentSurveyViewIndex = viewIndex;
       this.forceInvalidFieldWarnings = false;
       this.surveyViews[viewIndex].trigger('open');
-      this.renderAllViews();
+      this.renderAllViews(formData);
     }
   }
-  async renderAllViews () {
+  async renderAllViews (formData = this.extractResponses()) {
     const self = this;
     await super.renderAllViews();
-    const formData = this.extractResponses();
     d3.select('.survey .wrapper')
       .selectAll('details')
       .attr('class', (d, i) => formData.viewStates[i].state)
@@ -87,9 +133,6 @@ class SurveyController extends Controller {
       }
     }
     await Promise.all(this.surveyViews.map(view => view.render()));
-    // Now that all the views have finished rendering, set up metadata collection
-    // (relies on DOM elements already existing)
-    this.setupJTM();
   }
   get unfinishedResponse () {
     return this.database.unfinishedResponses[this.tableName] || null;
@@ -102,38 +145,38 @@ class SurveyController extends Controller {
     return temp ? temp[this.ownedResponseIndex] : null;
   }
   extractResponses () {
-    const result = {
+    const formData = {
       formValues: {},
       viewStates: []
     };
     for (const viewInstance of this.surveyViews) {
-      const enabled = viewInstance.isEnabled(result.formValues);
+      const enabled = viewInstance.isEnabled(formData.formValues);
       if (enabled) {
         // Collect the current state of the fields
         for (const element of viewInstance.keyElements) {
           const key = element.dataset.key;
           if (element.dataset.flag) {
             // { data-key: [data-flag value, data-flag value, ...] }
-            result.formValues[key] = result.formValues[key] || [];
+            formData.formValues[key] = formData.formValues[key] || [];
             if (element.checked) {
-              result.formValues[element.dataset.key].push(element.dataset.flag);
+              formData.formValues[element.dataset.key].push(element.dataset.flag);
             }
           } else if (element.dataset.role) {
             // { data-key: { data-role: element value } }
-            result.formValues[key] = result.formValues[key] || {};
-            result.formValues[key][element.dataset.role] = element.value;
+            formData.formValues[key] = formData.formValues[key] || {};
+            formData.formValues[key][element.dataset.role] = element.value;
           } else if (element.dataset.checkedValue) {
             // { data-key: data-checkedValue }
             if (element.checked) {
-              result.formValues[key] = element.dataset.checkedValue;
+              formData.formValues[key] = element.dataset.checkedValue;
             }
           } else {
             // { data-key: element value }
-            result.formValues[key] = element.value;
+            formData.formValues[key] = element.value;
           }
         }
         // Clean / validate values + flag invalid form elements
-        const viewState = viewInstance.validateForm(result.formValues);
+        const viewState = viewInstance.validateForm(formData.formValues);
 
         // Store whether the view should be visible
         viewState.enabled = enabled;
@@ -144,9 +187,9 @@ class SurveyController extends Controller {
         } else {
           viewState.state = this.unfinishedResponse === null ? 'incomplete' : 'invalid';
         }
-        result.viewStates.push(viewState);
+        formData.viewStates.push(viewState);
       } else {
-        result.viewStates.push({
+        formData.viewStates.push({
           valid: true,
           enabled: false,
           state: 'hidden',
@@ -154,16 +197,16 @@ class SurveyController extends Controller {
         });
       }
     }
-    result.valid = Object.values(result.viewStates).every(viewState => viewState.valid);
-    result.invalidIds = Object.assign({}, ...Object.values(result.viewStates).map(viewState => viewState.invalidIds || {}));
+    formData.valid = Object.values(formData.viewStates).every(viewState => viewState.valid);
+    formData.invalidIds = Object.assign({}, ...Object.values(formData.viewStates).map(viewState => viewState.invalidIds || {}));
 
     // Compare to previous data (i.e. if the user is editing)
     const ownedResponse = this.getOwnedResponse();
     if (ownedResponse) {
-      result.priorFormValues = ownedResponse;
+      formData.priorFormValues = ownedResponse;
       // TODO: compute a diff?
     }
-    return result;
+    return formData;
   }
 }
 

@@ -10,8 +10,9 @@ class TablesView extends SurveyView {
     this.humanLabel = 'Tabular Data Details';
   }
   get nTables () {
-    return this.d3el.selectAll(`[data-key="${this.state}NTables"]`)
-      .nodes().filter(element => element.checked)[0].dataset.checkedValue;
+    const checkedElement = this.d3el.selectAll(`[data-key="${this.state}NTables"]`)
+      .nodes().filter(element => element.checked)[0];
+    return checkedElement && checkedElement.dataset.checkedValue;
   }
   get nestedStructures () {
     return this.d3el.select(`[data-flag="Nested cell structures"]`).node().checked;
@@ -27,17 +28,18 @@ class TablesView extends SurveyView {
     this.d3el.select(`.nested`)
       .style('display', this.nestedStructures ? null : 'none');
   }
-  getNextView () {
-    return 'forcedTransformation';
-  }
   isEnabled (formValues) {
-    return this.state === 'init' && formValues.datasetType === 'Tabular';
+    if (formValues.datasetTypes['Tabular']) {
+      return this.state === 'init';
+    } else {
+      return this.state === 'post';
+    }
   }
   validateForm (formValues) {
+    const nTables = formValues[`${this.state}NTables`];
     let emptyCells = {};
     const initExampleData = formValues[`${this.state}ExampleData`];
     if (initExampleData) {
-      const nTables = formValues[`${this.state}NTables`];
       for (const [key, value] of Object.entries(initExampleData)) {
         const [table, row, col] = key.match(/table([^_]*)_([^_]*)_([^_]*)/).slice(1, 4);
         if (table === '2' && nTables === '1') {
@@ -58,6 +60,9 @@ class TablesView extends SurveyView {
       delete formValues[`${this.state}TableNestedExample`];
     }
     let invalidIds = {};
+    if (nTables === undefined) {
+      invalidIds[`${this.state}OneTable`] = invalidIds[`${this.state}TwoTables`] = invalidIds[`${this.state}ThreeTables`] = true;
+    }
     if (nuanceFlags && Object.keys(emptyCells).length > 0 && nuanceFlags.indexOf('Empty cells') === -1) {
       invalidIds[`${this.state}EmptyCells`] = true;
       Object.assign(invalidIds, emptyCells);

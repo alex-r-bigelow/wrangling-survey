@@ -40,12 +40,14 @@ class SpatialView extends SurveyView {
     this.humanLabel = 'Spatial / Temporal Data Details';
   }
   get dimensions () {
+    const spaceElement = this.d3el.selectAll(`[data-key="${this.state}NDimensions"]`)
+      .nodes().filter(element => element.checked)[0];
+    const typeElement = this.d3el.selectAll(`[data-key="${this.state}SpatialItemType"]`)
+      .nodes().filter(element => element.checked)[0];
     return {
       temporal: this.d3el.select(`#${this.state}isTemporal`).node().checked ? 'temporal' : 'spatialOnly',
-      spaceDimensions: this.d3el.selectAll(`[data-key="${this.state}NDimensions"]`)
-        .nodes().filter(element => element.checked)[0].dataset.checkedValue,
-      itemType: this.d3el.selectAll(`[data-key="${this.state}SpatialItemType"]`)
-        .nodes().filter(element => element.checked)[0].dataset.checkedValue
+      spaceDimensions: spaceElement && spaceElement.dataset.checkedValue,
+      itemType: typeElement && typeElement.dataset.checkedValue
     };
   }
   setup () {
@@ -54,8 +56,8 @@ class SpatialView extends SurveyView {
     super.collectKeyElements();
     const checkItemType = () => {
       const { temporal, spaceDimensions, itemType } = this.dimensions;
-      if (this.previewLookup[temporal][spaceDimensions][itemType] === undefined) {
-        this.d3el.select(`[data-checked-value="Points"]`).property('checked', true);
+      if (spaceDimensions === undefined || this.previewLookup[temporal][spaceDimensions][itemType] === undefined) {
+        this.d3el.selectAll(`[data-key="${this.state}SpatialItemType"]`).property('checked', false);
       }
     };
     this.d3el.selectAll(`[data-key="${this.state}NDimensions"]`)
@@ -67,27 +69,30 @@ class SpatialView extends SurveyView {
   draw () {
     const { temporal, spaceDimensions, itemType } = this.dimensions;
     const eligibleTypes = this.previewLookup[temporal][spaceDimensions];
-    const preview = this.resources[eligibleTypes[itemType]];
+    const preview = eligibleTypes ? this.resources[eligibleTypes[itemType]] : '';
 
     this.d3el.select('.preview').html(preview);
     this.d3el.selectAll(`[data-key="${this.state}SpatialItemType"]`)
       .each(function () {
-        const eligible = eligibleTypes[this.dataset.checkedValue] !== undefined;
+        const eligible = eligibleTypes && eligibleTypes[this.dataset.checkedValue] !== undefined;
         d3.select(this.parentNode).style('display', eligible ? null : 'none');
       });
   }
   isEnabled (formValues) {
-    return this.state === 'init' && formValues.datasetType === 'Spatial';
+    if (formValues.datasetTypes['Spatial']) {
+      return this.state === 'init';
+    } else {
+      return this.state === 'post';
+    }
   }
   validateForm (formValues) {
+    const invalidIds = {};
     const temporal = formValues[`${this.state}isTemporal`] ? 'temporal' : 'spatialOnly';
     const eligibleTypes = this.previewLookup[temporal][formValues[`${this.state}NDimensions`]];
-    if (eligibleTypes[formValues[`${this.state}SpatialItemType`]] === undefined) {
-      formValues[`${this.state}SpatialItemType`] = 'Points';
-    }
+    // TODO
     return {
-      isValid: true,
-      invalidIds: {}
+      valid: Object.keys(invalidIds).length === 0,
+      invalidIds
     };
   }
 }
