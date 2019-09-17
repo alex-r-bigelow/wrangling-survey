@@ -3,6 +3,9 @@
 - Discovery vs Capture vs Curation vs Design vs Creation [Muller et al. 2019]
   - Our target is specifically ***Design***
 
+### Evidence for Data Science Worker abstraction design needs
+- (see personaNeeds.md)
+
 ## Prior efforts to create frameworks to describe designing a data model
 - "What: Data Abstractions" [Munzner 2014]
 - Databases:
@@ -25,8 +28,6 @@
   - Spatial [**todo**]
   - Text [**todo**]
 - Databases again?
-
-
 
 
 CHI: Evan peck, rural pennsylvania talking about infographics

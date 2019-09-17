@@ -29,7 +29,8 @@ export default () => {
     let svg = d3.select('body').append('svg')
       .attr('id', 'recolorImageFilters')
       .attr('width', 0)
-      .attr('height', 0);
+      .attr('height', 0)
+      .style('position', 'absolute');
     svg.append('defs');
   }
 

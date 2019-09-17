@@ -66,6 +66,16 @@ class Controller extends Model {
           console.warn(`No help definition for inspectable concept: ${this.innerText}`);
         }
       });
+
+    // TODO: this is an ugly patch for public / private fields, because pseudo-elements can't exist inside form fields. Move this:
+    d3.selectAll('input[type="text"], input[type="email"], textarea').each(function () {
+      const privacyLogo = document.createElement('img');
+      this.insertAdjacentElement('afterend', privacyLogo);
+      d3.select(privacyLogo)
+        .classed('privacyLogo', true)
+        .attr('src', d3.select(this).classed('private') ? 'img/lock.svg' : 'img/eye.svg');
+    });
+
     this._alreadySetupJTM = true;
   }
 }
