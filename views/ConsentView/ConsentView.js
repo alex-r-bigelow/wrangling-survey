@@ -13,6 +13,7 @@ class ConsentView extends SurveyView {
     this.d3el.select('.agree').on('click', () => {
       window.localStorage.setItem('consented', 'true');
       window.controller.renderAllViews();
+      window.controller.advanceSurvey();
     });
   }
   draw () {

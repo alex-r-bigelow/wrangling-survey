@@ -25,6 +25,15 @@ class Database extends Model {
       { type: 'json', url: 'models/databaseConfig.json' }
     ]);
 
+    this.context = window.localStorage.getItem('context');
+    if (!this.context) {
+      const temp = new URLSearchParams(window.location.search).get('context');
+      if (temp) {
+        this.context = temp;
+        window.localStorage.setItem('context', this.context);
+      }
+    }
+
     this.browserId = window.localStorage.getItem('browserId');
     if (this.browserId === null) {
       this.browserId = sha256((new Date()).toISOString());

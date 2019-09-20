@@ -11,6 +11,9 @@ class SettingsView extends SurveyView {
   setup () {
     this.d3el.html(this.resources[1]);
     super.collectKeyElements();
+    if (!window.controller.unfinishedResponse && window.controller.database.context) {
+      this.d3el.select('#context').node().value = window.controller.database.context;
+    }
   }
   draw () {
 
