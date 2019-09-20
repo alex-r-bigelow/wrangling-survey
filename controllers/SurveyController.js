@@ -19,7 +19,7 @@ class SurveyController extends Controller {
       .selectAll('details')
       .data(this.surveyViews)
       .enter().append('details')
-      .on('toggle', function (d, i) {
+      .on('toggle.survey', function (d, i) {
         if (this.open) {
           self.advanceSurvey(i);
         }
@@ -86,12 +86,8 @@ class SurveyController extends Controller {
     while (this.surveyViews[viewIndex] && !this.surveyViews[viewIndex].isEnabled(formData.formValues)) {
       viewIndex++;
     }
-    if (!this.surveyViews[viewIndex]) {
-      if (formData.valid) {
-        this.database.setResponse(this.tableName, formData.formValues);
-        await this.database.submitResponse(this.tableName);
-      }
-    } else {
+    this.database.setResponse(this.tableName, formData.formValues);
+    if (this.surveyViews[viewIndex]) {
       this.currentSurveyViewIndex = viewIndex;
       this.forceInvalidFieldWarnings = false;
       this.surveyViews[viewIndex].trigger('open');
@@ -115,6 +111,15 @@ class SurveyController extends Controller {
               self.renderAllViews();
             } else {
               self.advanceSurvey();
+            }
+          });
+        d3.select(this).select('.submit.button')
+          .classed('disabled', !formData.valid)
+          .on('click', async () => {
+            if (formData.valid) {
+              this.database.setResponse(this.tableName, formData.formValues);
+              await this.database.submitResponse(this.tableName);
+              window.location.replace('/index.html');
             }
           });
       });

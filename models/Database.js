@@ -25,9 +25,11 @@ class Database extends Model {
       { type: 'json', url: 'models/databaseConfig.json' }
     ]);
 
+    const params = new URLSearchParams(window.location.search);
+
     this.context = window.localStorage.getItem('context');
     if (!this.context) {
-      const temp = new URLSearchParams(window.location.search).get('context');
+      const temp = params.get('context');
       if (temp) {
         this.context = temp;
         window.localStorage.setItem('context', this.context);
@@ -39,6 +41,7 @@ class Database extends Model {
       this.browserId = sha256((new Date()).toISOString());
       window.localStorage.setItem('browserId', this.browserId);
     }
+
     this.unfinishedResponses = window.localStorage.getItem('unfinishedResponses');
     this.unfinishedResponses = this.unfinishedResponses ? JSON.parse(this.unfinishedResponses) : {};
 

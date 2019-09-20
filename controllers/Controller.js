@@ -1,18 +1,16 @@
 /* globals d3, less */
 import { Model } from '../node_modules/uki/dist/uki.esm.js';
 import Database from '../models/Database.js';
-import Tooltip from '../views/Tooltip/Tooltip.js';
+import GlossaryView from '../views/GlossaryView/GlossaryView.js';
 
 import recolorImageFilter from '../utils/recolorImageFilter.js';
 
 class Controller extends Model {
   constructor () {
-    super([
-      { type: 'html', url: 'docs/helpDefinitions.html' }
-    ]);
+    super();
     this.database = new Database();
 
-    this.tooltip = new Tooltip();
+    this.glossary = new GlossaryView();
 
     this.initialPaneIndex = 0;
 
@@ -26,7 +24,12 @@ class Controller extends Model {
     })();
   }
   async renderAllViews () {
-    await this.tooltip.render();
+    await this.glossary.render();
+  }
+  focusPane (target) {
+    d3.selectAll('.pageSlice').classed('unfocused', function () {
+      return this !== target;
+    });
   }
   async finishSetup () {
     if (this._alreadyFinished) {
@@ -36,49 +39,23 @@ class Controller extends Model {
 
     // Attach event listeners to inspectable fields
     const self = this;
-    this.definitions = {};
-    d3.select(this.resources[0])
-      .selectAll('[data-inspectable]')
-      .each(function () {
-        self.definitions[this.dataset.inspectable] = this;
-      });
-    function showHelp () {
-      const helpElement = self.definitions[this.innerText];
-      if (helpElement && helpElement.outerHTML) {
-        self.tooltip.show({
-          content: helpElement.outerHTML,
-          targetBounds: this.getBoundingClientRect(),
-          hideAfterMs: 10000
-        });
-      } else {
-        self.tooltip.hide();
-      }
-    }
     d3.selectAll('.inspectable')
-      .on('mouseenter', showHelp)
-      .on('click', showHelp)
-      .on('touchend', function () {
+      .on('click', function () {
+        self.glossary.show(this.innerText);
+      }).on('touchend', function () {
         d3.event.preventDefault();
         d3.event.stopPropagation();
-        showHelp.call(this);
-      })
-      .on('mouseleave', () => {
-        self.tooltip.hide();
-      })
-      .each(function () {
-        if (!self.definitions[this.innerText]) {
-          console.warn(`No help definition for inspectable concept: ${this.innerText}`);
-        }
+        self.glossary.show(this.innerText);
       });
 
     // For small screens, collapse large horizontal panes that aren't being used
     d3.selectAll('.pageSlice')
       .classed('unfocused', (d, i) => i !== this.initialPaneIndex)
       .on('click', function () {
-        const target = this;
-        d3.selectAll('.pageSlice').classed('unfocused', function () {
-          return this !== target;
-        });
+        if (d3.select(this).classed('unfocused')) {
+          self.focusPane(this);
+          d3.event.preventDefault();
+        }
       });
 
     // TODO: this is an ugly patch for public / private fields, because pseudo-elements can't exist inside form fields. Move this:
@@ -89,6 +66,9 @@ class Controller extends Model {
         .classed('privacyLogo', true)
         .attr('src', d3.select(this).classed('private') ? 'img/lock.svg' : 'img/eye.svg');
     });
+
+    // Only show the conference-specific parts if the user originally used a
+    // conference link
 
     this._alreadyFinished = true;
   }
