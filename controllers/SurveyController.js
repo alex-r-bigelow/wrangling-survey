@@ -52,7 +52,7 @@ class SurveyController extends Controller {
       }
     }
     this.setupSurveyListeners();
-    await this.setupJTM();
+    await this.finishSetup();
     // Extra render call does form validation
     this.renderAllViews();
   }

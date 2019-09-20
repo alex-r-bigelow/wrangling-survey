@@ -1,12 +1,12 @@
-import { View } from '../../node_modules/uki/dist/uki.esm.js';
-import IntrospectableMixin from '../../utils/IntrospectableMixin.js';
+import SurveyView from '../SurveyView/SurveyView.js';
 
-class ConsentView extends IntrospectableMixin(View) {
+class ConsentView extends SurveyView {
   constructor (div) {
     super(div, [
       { type: 'less', url: 'views/ConsentView/style.less' },
       { type: 'text', url: 'views/ConsentView/template.html' }
     ]);
+    this.humanLabel = 'Research Consent Form';
   }
   setup () {
     this.d3el.html(this.resources[1]);
@@ -15,6 +15,21 @@ class ConsentView extends IntrospectableMixin(View) {
       window.controller.renderAllViews();
     });
   }
-  draw () {}
+  draw () {
+    const consented = window.localStorage.getItem('consented');
+    this.d3el.select('.agree')
+      .classed('disabled', consented);
+    this.d3el.select('.consented')
+      .style('display', consented ? null : 'none');
+  }
+  isEnabled () {
+    return true;
+  }
+  validateForm (formValues) {
+    return {
+      valid: true,
+      invalidIds: {}
+    };
+  }
 }
 export default ConsentView;

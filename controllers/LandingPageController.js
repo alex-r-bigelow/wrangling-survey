@@ -1,26 +1,28 @@
-/* globals d3 */
-import Controller from './Controller.js';
+import SurveyController from './SurveyController.js';
 
 import ConsentView from '../views/ConsentView/ConsentView.js';
+import SettingsView from '../views/SettingsView/SettingsView.js';
+import DashboardView from '../views/DashboardView/DashboardView.js';
 
-class LandingPageController extends Controller {
+class LandingPageController extends SurveyController {
   constructor () {
-    super();
-
-    this.redisplayConsent = false;
-
-    this.views = [
-      new ConsentView(d3.select('.ConsentView'))
-    ];
+    super('DR.UID', [
+      ConsentView,
+      SettingsView,
+      DashboardView
+    ]);
+    const consented = window.localStorage.getItem('consented');
+    if (!consented) {
+      this.currentSurveyViewIndex = 0;
+    } else {
+      this.currentSurveyViewIndex = window.localStorage.getItem('mainViewIndex') || 1;
+    }
   }
-  async renderAllViews () {
-    await super.renderAllViews();
-    d3.select('.ConsentView').classed('hidden', this.redisplayConsent ||
-      window.localStorage.getItem('consented') !== null);
-    await Promise.all(this.views.map(view => view.render()));
-    // Now that all the views have finished rendering, set up metadata collection
-    // (relies on DOM elements already existing)
-    await this.setupJTM();
+  async advanceSurvey (viewIndex) {
+    if (!window.localStorage.getItem('consented')) {
+      viewIndex = 0;
+    }
+    super.advanceSurvey(viewIndex);
   }
 }
 
