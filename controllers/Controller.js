@@ -41,6 +41,8 @@ class Controller extends Model {
     const self = this;
     d3.selectAll('.inspectable')
       .on('click', function () {
+        d3.event.preventDefault();
+        d3.event.stopPropagation();
         self.glossary.show(this.innerText);
       }).on('touchend', function () {
         d3.event.preventDefault();
@@ -59,7 +61,7 @@ class Controller extends Model {
       });
 
     // TODO: this is an ugly patch for public / private fields, because pseudo-elements can't exist inside form fields. Move this:
-    d3.selectAll('input[type="text"], input[type="email"], textarea').each(function () {
+    d3.selectAll('input, textarea').each(function () {
       const privacyLogo = document.createElement('img');
       this.insertAdjacentElement('afterend', privacyLogo);
       d3.select(privacyLogo)

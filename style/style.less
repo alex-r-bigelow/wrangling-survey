@@ -101,6 +101,7 @@ details {
 }
 
 .field {
+  position: relative;
   margin: 1em;
   input[type="checkbox"],
   input[type="radio"] {
@@ -119,11 +120,19 @@ details {
 .privacyLogo {
   width: 1.25em;
   height: 1.25em;
-  position: relative;
-  left: 0.5em;
-  top: 0.25em;
   pointer-events: none;
   filter: @separatorImageFilter;
+}
+
+input + .privacyLogo {
+  position: absolute;
+  right: 0.5em;
+  top: 0.1em;
+}
+textarea + .privacyLogo {
+  position: absolute;
+  right: 0.5em;
+  bottom: 0.5em;
 }
 
 .inspectable {

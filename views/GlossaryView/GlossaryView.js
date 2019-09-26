@@ -19,7 +19,9 @@ class GlossaryView extends View {
         const element = d3.select(this);
         element.insert('h3', ':first-child')
           .text(this.dataset.term);
-        element.append('input')
+        element.append('div')
+          .classed('field', true)
+          .append('input')
           .attr('type', 'text')
           .classed('public', true)
           .attr('placeholder', 'Suggest an alternative');
@@ -34,6 +36,12 @@ class GlossaryView extends View {
       window.console.warn('No definition for term: ' + term);
     } else {
       this.terms[term].scrollIntoView();
+      d3.select(this.terms[term])
+        .transition().duration(1500)
+        .styleTween('box-shadow', () => {
+          let color = d3.interpolate('#002147', '#f7f7f7');
+          return t => `0 0 0 6px #f7f7f7, 0 0 0 9px ${color(t)}`;
+        });
     }
   }
 }
