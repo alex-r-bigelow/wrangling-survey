@@ -12,7 +12,7 @@ class DashboardView extends SurveyView {
     this.d3el.html(this.resources[1]);
 
     this.d3el.select('.DAS.button').on('click', () => {
-      window.location.replace('DAS.html');
+      window.location.href = 'DAS.html';
     });
   }
   draw () {
