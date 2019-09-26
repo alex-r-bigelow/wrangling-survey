@@ -27,6 +27,7 @@ class GlossaryView extends View {
   }
   draw () {}
   show (term) {
+    term = term.toLocaleLowerCase();
     window.controller.focusPane(this.d3el.node());
     this.d3el.select('details').attr('open', '');
     if (!this.terms[term]) {
