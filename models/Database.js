@@ -1,6 +1,8 @@
 /* globals sha256, d3 */
 import { Model } from '../node_modules/uki/dist/uki.esm.js';
 
+window.SANDBOX_MODE = true;
+
 /**
  * A sneaky way to use google forms as a cheap database. For each "table" that
  * you want:

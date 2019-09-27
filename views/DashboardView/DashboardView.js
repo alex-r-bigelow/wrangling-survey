@@ -16,7 +16,7 @@ class DashboardView extends SurveyView {
     });
   }
   draw () {
-
+    this.d3el.select('.idDisplay').text(window.controller.database.browserId);
   }
   isEnabled () {
     return true;

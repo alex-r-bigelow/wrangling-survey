@@ -1,7 +1,7 @@
 /* globals d3 */
-import { View } from '../../node_modules/uki/dist/uki.esm.js';
+import SurveyView from '../SurveyView/SurveyView.js';
 
-class GlossaryView extends View {
+class GlossaryView extends SurveyView {
   constructor () {
     super(d3.select('.GlossaryView'), [
       { type: 'text', url: 'views/GlossaryView/template.html' },
@@ -23,11 +23,22 @@ class GlossaryView extends View {
           .classed('field', true)
           .append('input')
           .attr('type', 'text')
+          .attr('data-key', `terminology`)
+          .attr('data-role', this.dataset.term)
           .classed('public', true)
           .attr('placeholder', 'Suggest an alternative');
       });
+    super.collectKeyElements();
   }
-  draw () {}
+  updateTerminology (terminology = {}) {
+    this.d3el.selectAll('[data-term]').each(function () {
+      const term = terminology[this.dataset.term] || this.dataset.term;
+      d3.select(this).select('h3').text(term);
+    });
+    d3.selectAll('.inspectable').each(function () {
+      this.innerText = terminology[this.dataset.term] || this.dataset.term;
+    });
+  }
   show (term) {
     term = term.toLocaleLowerCase();
     window.controller.focusPane(this.d3el.node());
@@ -43,6 +54,23 @@ class GlossaryView extends View {
           return t => `0 0 0 6px #f7f7f7, 0 0 0 9px ${color(t)}`;
         });
     }
+  }
+  isEnabled () {
+    return true;
+  }
+  validateForm (formValues) {
+    if (formValues.terminolgy) {
+      for (const [term, value] of Object.entries(formValues.terminology)) {
+        if (!value) {
+          delete formValues.terminolgy[term];
+        }
+      }
+    }
+
+    return {
+      valid: true,
+      invalidIds: {}
+    };
   }
 }
 

@@ -37,17 +37,19 @@ class Controller extends Model {
     }
     await this.ready;
 
-    // Attach event listeners to inspectable fields
+    // Attach event listeners to inspectable fields, and keep the original term
+    // for replacement
     const self = this;
     d3.selectAll('.inspectable')
+      .attr('data-term', function () { return this.innerText; })
       .on('click', function () {
         d3.event.preventDefault();
         d3.event.stopPropagation();
-        self.glossary.show(this.innerText);
+        self.glossary.show(this.dataset.term);
       }).on('touchend', function () {
         d3.event.preventDefault();
         d3.event.stopPropagation();
-        self.glossary.show(this.innerText);
+        self.glossary.show(this.dataset.term);
       });
 
     // For small screens, collapse large horizontal panes that aren't being used

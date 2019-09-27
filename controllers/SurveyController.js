@@ -132,6 +132,7 @@ class SurveyController extends Controller {
         d3.select(`#${invalidId}`).classed('invalid', true);
       }
     }
+    this.glossary.updateTerminology(formData.formValues.terminology);
     await Promise.all(this.surveyViews.map(view => view.render()));
   }
   get unfinishedResponse () {
@@ -149,7 +150,7 @@ class SurveyController extends Controller {
       formValues: {},
       viewStates: []
     };
-    for (const viewInstance of this.surveyViews) {
+    for (const viewInstance of [this.glossary].concat(this.surveyViews)) {
       const enabled = viewInstance.isEnabled(formData.formValues);
       if (enabled) {
         // Collect the current state of the fields
