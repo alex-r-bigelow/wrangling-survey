@@ -9,6 +9,7 @@ class GlossaryView extends SurveyView {
       { type: 'less', url: 'views/GlossaryView/style.less' }
     ]);
     this.terms = {};
+    this._connectedTerms = false;
   }
   setup () {
     const self = this;
@@ -30,13 +31,37 @@ class GlossaryView extends SurveyView {
       });
     super.collectKeyElements();
   }
+  connectTerminology () {
+    // Attach event listeners to inspectable fields, and keep the original term
+    // for replacement
+    const self = this;
+    d3.selectAll('.inspectable')
+      .attr('data-term', function () { return this.innerText.toLocaleLowerCase(); })
+      .attr('data-capitalize', function () { return this.innerText.match(/^[A-Z]/) && 'true'; })
+      .on('click', function () {
+        d3.event.preventDefault();
+        d3.event.stopPropagation();
+        self.show(this.dataset.term);
+      }).on('touchend', function () {
+        d3.event.preventDefault();
+        d3.event.stopPropagation();
+        self.show(this.dataset.term);
+      });
+    this._connectedTerms = true;
+  }
   updateTerminology (terminology = {}) {
+    if (!this._connectedTerms) {
+      this.connectTerminology();
+    }
     this.d3el.selectAll('[data-term]').each(function () {
       const term = terminology[this.dataset.term] || this.dataset.term;
       d3.select(this).select('h3').text(term);
     });
     d3.selectAll('.inspectable').each(function () {
       this.innerText = terminology[this.dataset.term] || this.dataset.term;
+      if (this.dataset.capitalize) {
+        this.innerText = this.innerText[0].toLocaleUpperCase() + this.innerText.slice(1);
+      }
     });
   }
   show (term) {
@@ -59,10 +84,10 @@ class GlossaryView extends SurveyView {
     return true;
   }
   validateForm (formValues) {
-    if (formValues.terminolgy) {
+    if (formValues.terminology) {
       for (const [term, value] of Object.entries(formValues.terminology)) {
         if (!value) {
-          delete formValues.terminolgy[term];
+          delete formValues.terminology[term];
         }
       }
     }

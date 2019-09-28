@@ -16,5 +16,11 @@ class DebriefView extends SurveyView {
   isEnabled () {
     return true;
   }
+  validateForm (formValues) {
+    return {
+      valid: true,
+      invalidIds: {}
+    };
+  }
 }
 export default DebriefView;

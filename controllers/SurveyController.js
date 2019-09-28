@@ -1,16 +1,45 @@
-/* globals d3 */
-import Controller from './Controller.js';
+/* globals d3, less */
+import { Model } from '../node_modules/uki/dist/uki.esm.js';
+import Database from '../models/Database.js';
+import GlossaryView from '../views/GlossaryView/GlossaryView.js';
 
-class SurveyController extends Controller {
+import recolorImageFilter from '../utils/recolorImageFilter.js';
+
+class SurveyController extends Model {
   constructor (tableName, viewClasses) {
     super();
+    this.database = new Database();
+    this.database.on('update', () => { this.renderAllViews(); });
+
+    this.glossary = new GlossaryView();
+    this.initialPaneIndex = 0;
 
     this.tableName = tableName;
     this.ownedResponseIndex = null;
 
     this.surveyViews = [];
     this.currentSurveyViewIndex = window.DEBUG_SURVEY_VIEW_INDEX || 0;
-    this.setupViews(viewClasses);
+
+    window.onresize = () => { this.renderAllViews(); };
+    (async () => {
+      await this.setupViews(viewClasses);
+      this.setupSurveyListeners();
+      // Is the user currently working on a response to this survey? If so,
+      // pre-populate with values they already chose
+      if (this.unfinishedResponse) {
+        for (const view of this.surveyViews) {
+          view.populateForm(this.unfinishedResponse);
+        }
+      }
+      this.glossary.connectTerminology();
+      this.finishSetup();
+      await less.pageLoadFinished;
+      // Wait for LESS to finish loading before applying our SVG
+      // filter hack
+      recolorImageFilter();
+      // Extra render call does form validation
+      this.renderAllViews();
+    })();
   }
   async setupViews (viewClasses) {
     const self = this;
@@ -36,25 +65,8 @@ class SurveyController extends Controller {
       // elements before the next cross-cutting steps
       return viewInstance.render(d3.select(node).select(`.${viewInstance.className}`));
     }));
-    // Now that all the views have finished rendering, set up stuff that relies
-    // on DOM elements already existing
-
-    // Is the user currently working on a response to this survey? If so,
-    // pre-populate with values they already chose
-    if (this.unfinishedResponse) {
-      for (const view of this.surveyViews) {
-        view.populateForm(this.unfinishedResponse);
-      }
-    }
-    this.setupSurveyListeners();
-    await this.finishSetup();
-    // Extra render call does form validation
-    this.renderAllViews();
   }
   setupSurveyListeners () {
-    if (this._alreadySetupSurveyListeners) {
-      return;
-    }
     let debounceTimeout;
     const self = this;
     const getDebouncedChangeHandler = (delay, refocus = false) => {
@@ -63,6 +75,7 @@ class SurveyController extends Controller {
         debounceTimeout = window.setTimeout(async () => {
           const formData = self.extractResponses();
           self.database.setResponse(self.tableName, formData.formValues);
+          self.glossary.updateTerminology(formData.formValues.terminology);
           await self.renderAllViews(formData);
           if (refocus) {
             this.focus();
@@ -79,7 +92,33 @@ class SurveyController extends Controller {
     for (const view of this.surveyViews) {
       view.on('formValuesChanged', standardHandler);
     }
-    this._alreadySetupSurveyListeners = true;
+  }
+  focusPane (target) {
+    d3.selectAll('.pageSlice').classed('unfocused', function () {
+      return this !== target;
+    });
+  }
+  finishSetup () {
+    const self = this;
+
+    // For small screens, collapse large horizontal panes that aren't being used
+    d3.selectAll('.pageSlice')
+      .classed('unfocused', (d, i) => i !== this.initialPaneIndex)
+      .on('click', function () {
+        if (d3.select(this).classed('unfocused')) {
+          self.focusPane(this);
+          d3.event.preventDefault();
+        }
+      });
+
+    // TODO: this is an ugly patch for public / private fields, because pseudo-elements can't exist inside form fields. Move this:
+    d3.selectAll('input, textarea').each(function () {
+      const privacyLogo = document.createElement('img');
+      this.insertAdjacentElement('afterend', privacyLogo);
+      d3.select(privacyLogo)
+        .classed('privacyLogo', true)
+        .attr('src', d3.select(this).classed('private') ? 'img/lock.svg' : 'img/eye.svg');
+    });
   }
   async advanceSurvey (viewIndex = this.currentSurveyViewIndex + 1) {
     const formData = this.extractResponses();
@@ -96,7 +135,6 @@ class SurveyController extends Controller {
   }
   async renderAllViews (formData = this.extractResponses()) {
     const self = this;
-    await super.renderAllViews();
     d3.select('.survey .wrapper')
       .selectAll('details')
       .attr('class', (d, i) => formData.viewStates[i].state)
@@ -132,7 +170,6 @@ class SurveyController extends Controller {
         d3.select(`#${invalidId}`).classed('invalid', true);
       }
     }
-    this.glossary.updateTerminology(formData.formValues.terminology);
     await Promise.all(this.surveyViews.map(view => view.render()));
   }
   get unfinishedResponse () {
