@@ -34,6 +34,7 @@ strong {
 details {
   margin-bottom: 1em;
   summary {
+    position: relative;
     white-space: nowrap;
     list-style: none;
     &::-webkit-details-marker {
@@ -44,6 +45,13 @@ details {
     border-radius: @borderRadius;
     border: 1px solid @shadowColor;
     padding: 0.5em @buttonTextPadding;
+    .statusIndicator {
+      position: absolute;
+      width: 1em;
+      height: 1em;
+      top: 0.75em;
+      right: 1em;
+    }
     &:hover {
       background: @interactableHoverGradient;
     }
@@ -59,6 +67,9 @@ details {
     }
     &:active {
       background: @selectedButtonActiveGradient;
+    }
+    .statusIndicator {
+      filter: @invertedTextColorImageFilter;
     }
   }
   & > div {
@@ -79,6 +90,15 @@ details {
   width: 1px;
   height: 100%;
   background: @separatorColor;
+}
+
+.spinner {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: fade(@shadowColor, 80%) center / 5em no-repeat url('../img/spinner.gif');
 }
 
 @media(max-width:@mobileCutoff) {

@@ -38,7 +38,8 @@ class SurveyController extends Model {
       // filter hack
       recolorImageFilter();
       // Extra render call does form validation
-      this.renderAllViews();
+      await this.renderAllViews();
+      d3.select('.spinner').style('display', 'none');
     })();
   }
   async setupViews (viewClasses) {
@@ -56,6 +57,8 @@ class SurveyController extends Model {
     const header = surveySections.append('summary');
     header.append('span')
       .text(d => d.humanLabel);
+    header.append('img')
+      .classed('statusIndicator', true);
     surveySections.append('div')
       .attr('class', d => d.className);
     await Promise.all(surveySections.nodes().map(node => {
@@ -141,7 +144,12 @@ class SurveyController extends Model {
       .property('open', (d, i) => i === this.currentSurveyViewIndex)
       .style('display', (d, i) => formData.viewStates[i].enabled ? null : 'none')
       .each(function (d, i) {
-        d3.select(this).select('.next.button')
+        const detailsElement = d3.select(this);
+        const state = formData.viewStates[i].state;
+        detailsElement.select('.statusIndicator')
+          .style('display', state === 'incomplete' || state === 'hidden' ? 'none' : null)
+          .attr('src', state === 'incomplete' || state === 'hidden' ? null : `img/${state}.svg`);
+        detailsElement.select('.next.button')
           .classed('disabled', !formData.viewStates[i].valid)
           .on('click', () => {
             if (!formData.viewStates[i].valid) {
@@ -151,7 +159,7 @@ class SurveyController extends Model {
               self.advanceSurvey();
             }
           });
-        d3.select(this).select('.submit.button')
+        detailsElement.select('.submit.button')
           .classed('disabled', !formData.valid)
           .on('click', async () => {
             if (formData.valid) {
@@ -169,6 +177,8 @@ class SurveyController extends Model {
       for (const invalidId of Object.keys(formData.invalidIds)) {
         d3.select(`#${invalidId}`).classed('invalid', true);
       }
+      d3.selectAll('.incomplete .statusIndicator')
+        .attr('src', `img/changesInvalid.svg`);
     }
     await Promise.all(this.surveyViews.map(view => view.render()));
   }
@@ -221,9 +231,9 @@ class SurveyController extends Model {
 
         // Store the state of the view, relative to
         if (viewState.valid) {
-          viewState.state = this.unfinishedResponse === null ? 'complete' : 'changesValid';
+          viewState.state = this.ownedResponseIndex === null ? 'complete' : 'changesValid';
         } else {
-          viewState.state = this.unfinishedResponse === null ? 'incomplete' : 'invalid';
+          viewState.state = this.ownedResponseIndex === null ? 'incomplete' : 'changesInvalid';
         }
         formData.viewStates.push(viewState);
       } else {
