@@ -165,5 +165,11 @@ class Database extends Model {
     await this.dataPromise;
     return this.ownedResponses[tableName];
   }
+  get contextIsConference () {
+    return ['VIS', 'Supercomputing'].indexOf(this.context) !== -1;
+  }
+  get contextIsDesignStudyReview () {
+    return this.context === 'DesignStudyReview';
+  }
 }
 export default Database;

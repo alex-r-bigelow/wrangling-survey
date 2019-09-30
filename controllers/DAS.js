@@ -8,7 +8,7 @@ import SpatialView from '../views/SpatialView/SpatialView.js';
 import TextView from '../views/TextView/TextView.js';
 import DebriefView from '../views/DebriefView/DebriefView.js';
 
-// window.DEBUG_SURVEY_VIEW_INDEX = 1;
+window.DEBUG_SURVEY_VIEW_INDEX = 0;
 
 class DAS extends SurveyController {
   constructor () {

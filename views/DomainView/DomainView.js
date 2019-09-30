@@ -30,6 +30,10 @@ class DomainView extends SurveyView {
       .data(this.exampleDatasets, d => d)
       .enter().append('option')
       .attr('value', d => d);
+
+    this.d3el.select('.designStudyReviewOnly')
+      .style('display', window.controller.database.contextIsDesignStudyReview ? null : 'none');
+
     super.collectKeyElements();
   }
   draw () {

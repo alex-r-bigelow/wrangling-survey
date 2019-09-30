@@ -11,12 +11,13 @@ class DashboardView extends SurveyView {
   setup () {
     this.d3el.html(this.resources[1]);
 
+    this.d3el.select('.idDisplay').text(window.controller.database.browserId);
+    this.d3el.select('.conferenceOnly')
+      .style('display', window.controller.database.contextIsConference ? null : 'none');
+
     this.d3el.select('.DAS.button').on('click', () => {
       window.location.href = 'DAS.html';
     });
-  }
-  draw () {
-    this.d3el.select('.idDisplay').text(window.controller.database.browserId);
   }
   isEnabled () {
     return true;
