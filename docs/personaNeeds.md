@@ -27,8 +27,10 @@ The survey we are designing, and the data that we are collecting, may be relevan
 
 # **PN.TVR** Theoretical Visualization Researchers
 - **PN.TVR.1** Need for a characterization of the design space for non-tabular data abstraction transformations
-  - 
 - **PN.TVR.2** Need to understand the extent to which our terminology is compatible with other domains
+- **PN.TVR.3** Need to understand the extent to which discrepancies between mental models and raw data:
+  - **PN.TVR.3.1** exist
+  - **PN.TVR.3.2** are problematic
 
 # **PN.VTD** Visualization Technique Developers
 - **PN.VTD.1** Needs real-world, crisply described examples of specific data abstractions that do not yet have adequate visualization support; our work could improve *a little* on current Maslow's hammer practices

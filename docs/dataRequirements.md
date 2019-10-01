@@ -28,7 +28,8 @@ Each of the following categories below corresponds to a distinct table of collec
 
 ## Why we need it now
 - Basis for ETS
-- WTB.1
+- PN.WTB.1
+- PN.TVR.3
 
 ## What
 1. User thinks of any real or hypothetical dataset (OR, one of us references a specific design study that we're summarizing)
@@ -50,8 +51,8 @@ Each of the following categories below corresponds to a distinct table of collec
 - Connected to other tables via random ID
 
 ## Why we need it now
-- WTB.2
-- TVR.1
+- PN.WTB.2
+- PN.TVR.1
 
 ## What
 For each of the four broad types that *didn't* "describe how you normally think about" the dataset, repeat step 3 of **DR.DAS**
@@ -64,8 +65,8 @@ For each of the four broad types that *didn't* "describe how you normally think 
 
 ## Why we're piloting it now
 - Already having this data will be important for DR.FTC and DR.CUE
-- WTB.3
-- TVR.2
+- PN.WTB.3
+- PN.TVR.2
 
 ## What
 - Throughout all activities, CS jargon will be presented, and users will be encouraged (**todo:** how?) to choose more appropriate terms for their domain
