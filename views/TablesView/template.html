@@ -1,19 +1,20 @@
 <h3>How many tables are in this dataset?</h3>
 <div class="field">
-  <input type="radio" data-key="${state}NTables" name="${state}NTables" data-checked-value="1" id="${state}OneTable" />
-  <label for="${state}One">1</label>
+  <div>
+    <input type="radio" data-key="${state}NTables" name="${state}NTables" data-checked-value="1" id="${state}OneTable" />
+    <label for="${state}One">1</label>
+  </div>
+  <div>
+    <input type="radio" data-key="${state}NTables" name="${state}NTables" data-checked-value="2" id="${state}TwoTables" />
+    <label for="${state}Two">2</label>
+  </div>
+  <div>
+    <input type="radio" data-key="${state}NTables" name="${state}NTables" data-checked-value="3+" id="${state}ThreeTables" />
+    <label for="${state}Three">&ge;3</label>
+  </div>
 </div>
-<div class="field">
-  <input type="radio" data-key="${state}NTables" name="${state}NTables" data-checked-value="2" id="${state}TwoTables" />
-  <label for="${state}Two">2</label>
-</div>
-<div class="field">
-  <input type="radio" data-key="${state}NTables" name="${state}NTables" data-checked-value="3+" id="${state}ThreeTables" />
-  <label for="${state}Three">&ge;3</label>
-</div>
-<h3>Please fill in examples of what a few headers, rows, and columns might look
-  like. Feel free to invent fake values.</h3>
-<small>Please remember that these examples will be public.</small>
+<h3>Please fill in examples of what a few headers, rows, and columns might look like.</h3>
+<p>Feel free to invent fake data, and please remember that these examples will be public.</p>
 <div class="exampleData field">
   <table class="firstTable">
     <thead>
@@ -60,18 +61,6 @@
   <img class="privacyLogo" src="img/eye.svg"/>
 </div>
 <h3>Would you expect any of the following to apply to, or exist in, any table?</h3>
-<div class="field">
-  <input type="checkbox" data-key="${state}TableNuances" data-flag="Categorical values" id="${state}CategorialValues" />
-  <label for="${state}CategorialValues"><span class="inspectable">Categorical</span> values</label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="${state}TableNuances" data-flag="Quantitative values" id="${state}QuantitativeValues" />
-  <label for="${state}QuantitativeValues"><span class="inspectable">Quantitative</span> values</label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="${state}TableNuances" data-flag="Ordinal values" id="${state}OrdinalValues" />
-  <label for="${state}OrdinalValues"><span class="inspectable">Ordinal</span> values</label>
-</div>
 <div class="field">
   <input type="checkbox" data-key="${state}TableNuances" data-flag="Multidimensional cells" id="${state}MultidimensionalCells" />
   <label for="${state}MultidimensionalCells"><span class="inspectable">Multidimensional cells</span></label>

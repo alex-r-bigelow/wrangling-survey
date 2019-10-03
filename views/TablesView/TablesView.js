@@ -7,7 +7,7 @@ class TablesView extends SurveyView {
       { type: 'text', url: 'views/TablesView/template.html' }
     ]);
     this.state = transform ? 'post' : 'init';
-    this.humanLabel = 'Tabular Data Details';
+    this.humanLabel = '<span class="inspectable">Tabular</span> Data Details';
   }
   get nTables () {
     const checkedElement = this.d3el.selectAll(`[data-key="${this.state}NTables"]`)

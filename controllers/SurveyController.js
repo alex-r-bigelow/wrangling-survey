@@ -55,8 +55,8 @@ class SurveyController extends Model {
         }
       });
     const header = surveySections.append('summary');
-    header.append('span')
-      .text(d => d.humanLabel);
+    header.append('div')
+      .html(d => d.humanLabel);
     header.append('img')
       .classed('statusIndicator', true);
     surveySections.append('div')
@@ -130,7 +130,6 @@ class SurveyController extends Model {
     while (this.surveyViews[viewIndex] && !this.surveyViews[viewIndex].isEnabled(formData.formValues)) {
       viewIndex++;
     }
-    this.database.setResponse(this.tableName, formData.formValues);
     if (this.surveyViews[viewIndex]) {
       this.currentSurveyViewIndex = viewIndex;
       this.forceInvalidFieldWarnings = false;

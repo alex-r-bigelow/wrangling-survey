@@ -73,9 +73,9 @@ class SurveyView extends IntrospectableMixin(View) {
 
       // Store the state of the view, relative to
       if (viewState.valid) {
-        viewState.state = this.ownedResponseIndex === null ? 'complete' : 'changesValid';
+        viewState.state = window.controller.ownedResponseIndex === null ? 'complete' : 'changesValid';
       } else {
-        viewState.state = this.ownedResponseIndex === null ? 'incomplete' : 'changesInvalid';
+        viewState.state = window.controller.ownedResponseIndex === null ? 'incomplete' : 'changesInvalid';
       }
       return viewState;
     } else {

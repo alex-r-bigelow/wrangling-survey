@@ -37,7 +37,7 @@ class SpatialView extends SurveyView {
       }
     };
     this.state = transform ? 'post' : 'init';
-    this.humanLabel = 'Spatial / Temporal Data Details';
+    this.humanLabel = '<span class="inspectable">Spatial</span> / <span class="inspectable">Temporal</span> Data Details';
   }
   get dimensions () {
     const spaceElement = this.d3el.selectAll(`[data-key="${this.state}NDimensions"]`)
