@@ -90,6 +90,8 @@ class SurveyController extends Model {
     d3.selectAll('[data-key]').on('change', standardHandler);
     d3.selectAll('[data-key][type="radio"], [data-key][type="checkbox"]')
       .on('click', standardHandler);
+    d3.selectAll('.likert [type="radio"]')
+      .on('click', standardHandler);
     d3.selectAll('textarea[data-key], [type="text"][data-key]')
       .on('keyup', getDebouncedChangeHandler(1000, true));
     for (const view of this.surveyViews) {
@@ -197,53 +199,11 @@ class SurveyController extends Model {
       formValues: {},
       viewStates: []
     };
-    for (const viewInstance of [this.glossary].concat(this.surveyViews)) {
-      const enabled = viewInstance.isEnabled(formData.formValues);
-      if (enabled) {
-        // Collect the current state of the fields
-        for (const element of viewInstance.keyElements) {
-          const key = element.dataset.key;
-          if (element.dataset.flag) {
-            // { data-key: [data-flag value, data-flag value, ...] }
-            formData.formValues[key] = formData.formValues[key] || [];
-            if (element.checked) {
-              formData.formValues[element.dataset.key].push(element.dataset.flag);
-            }
-          } else if (element.dataset.role) {
-            // { data-key: { data-role: element value } }
-            formData.formValues[key] = formData.formValues[key] || {};
-            formData.formValues[key][element.dataset.role] = element.value;
-          } else if (element.dataset.checkedValue) {
-            // { data-key: data-checkedValue }
-            if (element.checked) {
-              formData.formValues[key] = element.dataset.checkedValue;
-            }
-          } else {
-            // { data-key: element value }
-            formData.formValues[key] = element.value;
-          }
-        }
-        // Clean / validate values + flag invalid form elements
-        const viewState = viewInstance.validateForm(formData.formValues);
-
-        // Store whether the view should be visible
-        viewState.enabled = enabled;
-
-        // Store the state of the view, relative to
-        if (viewState.valid) {
-          viewState.state = this.ownedResponseIndex === null ? 'complete' : 'changesValid';
-        } else {
-          viewState.state = this.ownedResponseIndex === null ? 'incomplete' : 'changesInvalid';
-        }
-        formData.viewStates.push(viewState);
-      } else {
-        formData.viewStates.push({
-          valid: true,
-          enabled: false,
-          state: 'hidden',
-          invalidIds: {}
-        });
-      }
+    // Manipulate formValues for glossary, but don't store that state (important
+    // because renderAllViews relies on the same ordering as this.surveyViews)
+    this.glossary.computeStateFromFormValues(formData.formValues);
+    for (const viewInstance of this.surveyViews) {
+      formData.viewStates.push(viewInstance.computeStateFromFormValues(formData.formValues));
     }
     formData.valid = Object.values(formData.viewStates).every(viewState => viewState.valid);
     formData.invalidIds = Object.assign({}, ...Object.values(formData.viewStates).map(viewState => viewState.invalidIds || {}));

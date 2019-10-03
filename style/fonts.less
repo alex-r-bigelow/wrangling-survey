@@ -1,8 +1,32 @@
-@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro:600|Titillium+Web&display=swap:400,900');
-@bodyFontFamily: 'Titillium Web', Arial, serif;
-@bodyFontWeight: 400;
-@strongFontWeight: 900;
-@headerFontFamily: 'Titillium Web', Arial, sans-serif;
+/* titillium-web-regular - latin */
+@font-face {
+  font-family: 'Titillium Web';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Titillium Web Regular'), local('TitilliumWeb-Regular'),
+       url('../fonts/titillium-web-v8-latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('../fonts/titillium-web-v8-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+@normalFontWeight: 400;
+
+/* titillium-web-600 - latin */
+@font-face {
+  font-family: 'Titillium Web';
+  font-style: normal;
+  font-weight: 600;
+  src: local('Titillium Web SemiBold'), local('TitilliumWeb-SemiBold'),
+       url('../fonts/titillium-web-v8-latin-600.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('../fonts/titillium-web-v8-latin-600.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
 @headerFontWeight: 600;
-@fixedFontFamily: 'Source Code Pro', Courier, monospace;
-@fixedFontWeight: 600;
+
+/* titillium-web-900 - latin */
+@font-face {
+  font-family: 'Titillium Web';
+  font-style: normal;
+  font-weight: 900;
+  src: local('Titillium Web Black'), local('TitilliumWeb-Black'),
+       url('../fonts/titillium-web-v8-latin-900.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('../fonts/titillium-web-v8-latin-900.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+@strongFontWeight: 900;

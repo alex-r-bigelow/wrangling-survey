@@ -29,11 +29,7 @@ class TablesView extends SurveyView {
       .style('display', this.nestedStructures ? null : 'none');
   }
   isEnabled (formValues) {
-    if (formValues.datasetTypes['Tabular']) {
-      return this.state === 'init';
-    } else {
-      return this.state === 'post';
-    }
+    return formValues.tabularThinking && formValues.tabularThinking !== 'Never';
   }
   validateForm (formValues) {
     const nTables = formValues[`${this.state}NTables`];

@@ -79,11 +79,7 @@ class SpatialView extends SurveyView {
       });
   }
   isEnabled (formValues) {
-    if (formValues.datasetTypes['Spatial']) {
-      return this.state === 'init';
-    } else {
-      return this.state === 'post';
-    }
+    return formValues.spatialThinking && formValues.spatialThinking !== 'Never';
   }
   validateForm (formValues) {
     const invalidIds = {};

@@ -5,7 +5,6 @@ import DataTypeView from '../views/DataTypeView/DataTypeView.js';
 import TablesView from '../views/TablesView/TablesView.js';
 import NetworkView from '../views/NetworkView/NetworkView.js';
 import SpatialView from '../views/SpatialView/SpatialView.js';
-import TextView from '../views/TextView/TextView.js';
 import DebriefView from '../views/DebriefView/DebriefView.js';
 
 window.DEBUG_SURVEY_VIEW_INDEX = 1;
@@ -18,7 +17,6 @@ class DAS extends SurveyController {
       TablesView,
       NetworkView,
       SpatialView,
-      TextView,
       DebriefView
     ]);
 
