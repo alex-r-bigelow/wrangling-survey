@@ -155,6 +155,17 @@ details {
     box-shadow: 0 0 0 5px @errorColor;
   }
 }
+@media(max-width:@mobileCutoff) {
+  .likert {
+    display: block;
+    .likertChunk {
+      text-align: left;
+      label {
+        display: initial;
+      }
+    }
+  }
+}
 
 .buttonContainer {
   display: flex;
