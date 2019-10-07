@@ -127,6 +127,33 @@ details {
   input[type="radio"] {
     margin-right: 1em;
   }
+  & > div > .privacyLogo {
+    display: none;
+  }
+  & > div:nth-child(1) > .privacyLogo {
+    display: block;
+  }
+}
+
+.likert {
+  display: flex;
+  justify-content: space-between;
+  .likertChunk {
+    text-align: center;
+    .privacyLogo {
+      display: none;
+    }
+    label {
+      display: block;
+      max-width: 8em;
+    }
+  }
+  .likertChunk:nth-child(1) .privacyLogo {
+    display: block;
+  }
+  &.invalid {
+    box-shadow: 0 0 0 5px @errorColor;
+  }
 }
 
 .buttonContainer {

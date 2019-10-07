@@ -1,16 +1,16 @@
 <h3>How many tables are in this dataset?</h3>
 <div class="field">
   <div>
-    <input type="radio" data-key="${state}NTables" name="${state}NTables" data-checked-value="1" id="${state}OneTable" />
-    <label for="${state}One">1</label>
+    <input type="radio" data-key="nTables" name="NTables" data-checked-value="1" id="OneTable" />
+    <label for="One">1</label>
   </div>
   <div>
-    <input type="radio" data-key="${state}NTables" name="${state}NTables" data-checked-value="2" id="${state}TwoTables" />
-    <label for="${state}Two">2</label>
+    <input type="radio" data-key="nTables" name="NTables" data-checked-value="2" id="TwoTables" />
+    <label for="Two">2</label>
   </div>
   <div>
-    <input type="radio" data-key="${state}NTables" name="${state}NTables" data-checked-value="3+" id="${state}ThreeTables" />
-    <label for="${state}Three">&ge;3</label>
+    <input type="radio" data-key="nTables" name="NTables" data-checked-value="3+" id="ThreeTables" />
+    <label for="Three">&ge;3</label>
   </div>
 </div>
 <h3>Please fill in examples of what a few headers, rows, and columns might look like.</h3>
@@ -20,20 +20,20 @@
     <thead>
       <tr>
         <td></td>
-        <td><input data-key="${state}ExampleData" data-role="table1_H_1" id="${state}table1_H_1" placeholder="A"/></td>
-        <td><input data-key="${state}ExampleData" data-role="table1_H_2" id="${state}table1_H_2" placeholder="B"/></td>
+        <td><input data-key="exampleData" data-role="table1_H_1" id="table1_H_1" placeholder="A"/></td>
+        <td><input data-key="exampleData" data-role="table1_H_2" id="table1_H_2" placeholder="B"/></td>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><input data-key="${state}ExampleData" data-role="table1_1_H" id="${state}table1_1_H" placeholder="0"/></td>
-        <td><input data-key="${state}ExampleData" data-role="table1_1_1" id="${state}table1_1_1"/></td>
-        <td><input data-key="${state}ExampleData" data-role="table1_1_2" id="${state}table1_1_2"/></td>
+        <td><input data-key="exampleData" data-role="table1_1_H" id="table1_1_H" placeholder="0"/></td>
+        <td><input data-key="exampleData" data-role="table1_1_1" id="table1_1_1"/></td>
+        <td><input data-key="exampleData" data-role="table1_1_2" id="table1_1_2"/></td>
       </tr>
       <tr>
-        <td><input data-key="${state}ExampleData" data-role="table1_2_H" id="${state}table1_2_H" placeholder="1"/></td>
-        <td><input data-key="${state}ExampleData" data-role="table1_2_1" id="${state}table1_2_1"/></td>
-        <td><input data-key="${state}ExampleData" data-role="table1_2_2" id="${state}table1_2_2"/></td>
+        <td><input data-key="exampleData" data-role="table1_2_H" id="table1_2_H" placeholder="1"/></td>
+        <td><input data-key="exampleData" data-role="table1_2_1" id="table1_2_1"/></td>
+        <td><input data-key="exampleData" data-role="table1_2_2" id="table1_2_2"/></td>
       </tr>
     </tbody>
   </table>
@@ -41,20 +41,20 @@
     <thead>
       <tr>
         <td></td>
-        <td><input data-key="${state}ExampleData" data-role="table2_H_1" id="${state}table2_H_1" placeholder="A"/></td>
-        <td><input data-key="${state}ExampleData" data-role="table2_H_2" id="${state}table2_H_2" placeholder="B"/></td>
+        <td><input data-key="exampleData" data-role="table2_H_1" id="table2_H_1" placeholder="A"/></td>
+        <td><input data-key="exampleData" data-role="table2_H_2" id="table2_H_2" placeholder="B"/></td>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><input data-key="${state}ExampleData" data-role="table2_1_H" id="${state}table2_1_H" placeholder="0"/></td>
-        <td><input data-key="${state}ExampleData" data-role="table2_1_1" id="${state}table2_1_1"/></td>
-        <td><input data-key="${state}ExampleData" data-role="table2_1_2" id="${state}table2_1_2"/></td>
+        <td><input data-key="exampleData" data-role="table2_1_H" id="table2_1_H" placeholder="0"/></td>
+        <td><input data-key="exampleData" data-role="table2_1_1" id="table2_1_1"/></td>
+        <td><input data-key="exampleData" data-role="table2_1_2" id="table2_1_2"/></td>
       </tr>
       <tr>
-        <td><input data-key="${state}ExampleData" data-role="table2_2_H" id="${state}table2_2_H" placeholder="1"/></td>
-        <td><input data-key="${state}ExampleData" data-role="table2_2_1" id="${state}table2_2_1"/></td>
-        <td><input data-key="${state}ExampleData" data-role="table2_2_2" id="${state}table2_2_2"/></td>
+        <td><input data-key="exampleData" data-role="table2_2_H" id="table2_2_H" placeholder="1"/></td>
+        <td><input data-key="exampleData" data-role="table2_2_1" id="table2_2_1"/></td>
+        <td><input data-key="exampleData" data-role="table2_2_2" id="table2_2_2"/></td>
       </tr>
     </tbody>
   </table>
@@ -62,32 +62,32 @@
 </div>
 <h3>Would you expect any of the following to apply to, or exist in, any table?</h3>
 <div class="field">
-  <input type="checkbox" data-key="${state}TableNuances" data-flag="Multidimensional cells" id="${state}MultidimensionalCells" />
-  <label for="${state}MultidimensionalCells"><span class="inspectable">Multidimensional cells</span></label>
+  <input type="checkbox" data-key="tableNuances" data-flag="Multidimensional cells" id="MultidimensionalCells" />
+  <label for="MultidimensionalCells"><span class="inspectable">Multidimensional cells</span></label>
 </div>
 <div class="field">
-  <input type="checkbox" data-key="${state}TableNuances" data-flag="Nested cell structures" id="${state}NestedCellStructures" />
-  <label for="${state}NestedCellStructures"><span class="inspectable">Nested cell structures</span></label>
+  <input type="checkbox" data-key="tableNuances" data-flag="Nested cell structures" id="NestedCellStructures" />
+  <label for="NestedCellStructures"><span class="inspectable">Nested cell structures</span></label>
 </div>
 <div class="nested field">
   <h3>If you haven't already provided an example above, please describe the nested structure or give a short example here</h3>
-  <textarea data-key="${state}TableNestedExample" placeholder="Optional. Responses such as these are perfectly adequate:&#10;&nbsp;&nbsp;&nbsp;&nbsp;Comma-separated lists&#10;&nbsp;&nbsp;&nbsp;&nbsp;{&quot;a&quot;: 3, &quot;b&quot;: 4}&#10;Please remember that all responses are public."></textarea>
+  <textarea data-key="tableNestedExample" placeholder="Optional. Responses such as these are perfectly adequate:&#10;&nbsp;&nbsp;&nbsp;&nbsp;Comma-separated lists&#10;&nbsp;&nbsp;&nbsp;&nbsp;{&quot;a&quot;: 3, &quot;b&quot;: 4}&#10;Please remember that all responses are public."></textarea>
 </div>
 <div class="field">
-  <input type="checkbox" data-key="${state}TableNuances" data-flag="Foreign keys" id="${state}ForeignKeys" />
-  <label for="${state}ForeignKeys"><span class="inspectable">Foreign keys</span></label>
+  <input type="checkbox" data-key="tableNuances" data-flag="Foreign keys" id="ForeignKeys" />
+  <label for="ForeignKeys"><span class="inspectable">Foreign keys</span></label>
 </div>
 <div class="field">
-  <input type="checkbox" data-key="${state}TableNuances" data-flag="Implicit table relationships" id="${state}implicitTableRelationships" />
-  <label for="${state}implicitTableRelationships"><span class="inspectable">Implicit table relationships</span></label>
+  <input type="checkbox" data-key="tableNuances" data-flag="Implicit table relationships" id="implicitTableRelationships" />
+  <label for="implicitTableRelationships"><span class="inspectable">Implicit table relationships</span></label>
 </div>
 <div class="field">
-  <input type="checkbox" data-key="${state}TableNuances" data-flag="Empty cells" id="${state}EmptyCells" />
-  <label for="${state}EmptyCells">Empty cells</label>
+  <input type="checkbox" data-key="tableNuances" data-flag="Empty cells" id="EmptyCells" />
+  <label for="EmptyCells">Empty cells</label>
 </div>
 <h3>Are there any other characteristics that you would use to describe the table(s) in this dataset?</h3>
 <div class="field">
-  <textarea data-key="${state}TableMisc" placeholder="Optional.&#10;&#10;Please remember that these comments are public."></textarea>
+  <textarea data-key="tableMisc" placeholder="Optional.&#10;&#10;Please remember that these comments are public."></textarea>
 </div>
 <div class="buttonContainer">
   <div class="next button"><a></a><span class="label">Next</span></div>

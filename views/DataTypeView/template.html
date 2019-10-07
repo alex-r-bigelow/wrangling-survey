@@ -1,35 +1,67 @@
-<h3>How often do each of the following characterize how you would normally <strong>think</strong> about the dataset?</h3>
+<h3>How often do each of the following characterize how <strong>you</strong> interpret the dataset?</h3>
 
 <!-- General-purpose abstractions; you can almost always model data as one of these -->
 <div class="field">
   <p>The dataset is <span class="inspectable">tabular</span>; I think about it in terms of <span class="inspectable">row</span>s and <span class="inspectable">column</span>s.</p>
-  <div class="likert" data-key="tabularThinking" id="tabularThinking" data-likert="Never,Rarely,Sometimes,Very Often,Always"></div>
+  <div class="likert" data-key="tabularThinking" id="tabularThinking" data-likert="Never,Rarely,Sometimes,Very often,Always"></div>
 </div>
 <div class="field">
   <p>The dataset is a <span class="inspectable">network</span> or <span class="inspectable">hierarchy</span>; I think about it in terms of <span class="inspectable">node</span>s and <span class="inspectable">edge</span>s.</p>
-  <div class="likert" data-key="networkThinking" id="networkThinking" data-likert="Never,Rarely,Sometimes,Very Often,Always"></div>
+  <div class="likert" data-key="networkThinking" id="networkThinking" data-likert="Never,Rarely,Sometimes,Very often,Always"></div>
 </div>
 <div class="field">
   <p>The dataset is <span class="inspectable">spatial</span> or <span class="inspectable">temporal</span>; I think about it in terms of <span class="inspectable">point</span>s or <span class="inspectable">region</span>s in space or time.</p>
-  <div class="likert" data-key="spatialThinking" id="spatialThinking" data-likert="Never,Rarely,Sometimes,Very Often,Always"></div>
+  <div class="likert" data-key="spatialThinking" id="spatialThinking" data-likert="Never,Rarely,Sometimes,Very often,Always"></div>
 </div>
 <div class="field">
   <p>The dataset is <span class="inspectable">grouped</span>; I think about it in terms of <span class="inspectable">cluster</span>s or <span class="inspectable">set</span>s.</p>
-  <div class="likert" data-key="groupedThinking" id="groupedThinking" data-likert="Never,Rarely,Sometimes,Very Often,Always"></div>
+  <div class="likert" data-key="groupedThinking" id="groupedThinking" data-likert="Never,Rarely,Sometimes,Very often,Always"></div>
 </div>
 
 <!-- Additional mental models that could be independent of general-purpose abstractions, but are less likely to be able to model all datasets -->
 <div class="field">
   <p>The dataset is <span class="inspectable">textual</span>; I think about it in terms of <span class="inspectable">word</span>s or <span class="inspectable">document</span>s.</p>
-  <div class="likert" data-key="textualThinking" id="textualThinking" data-likert="Never,Rarely,Sometimes,Very Often,Always"></div>
+  <div class="likert" data-key="textualThinking" id="textualThinking" data-likert="Never,Rarely,Sometimes,Very often,Always"></div>
 </div>
 <div class="field">
   <p>The dataset is <span class="inspectable">media</span>; I think about it in terms of <span class="inspectable">image</span>s, <span class="inspectable">audio</span>, and/or <span class="inspectable">video</span>.</p>
-  <div class="likert" data-key="textualThinking" id="textualThinking" data-likert="Never,Rarely,Sometimes,Very Often,Always"></div>
+  <div class="likert" data-key="mediaThinking" id="mediaThinking" data-likert="Never,Rarely,Sometimes,Very often,Always"></div>
 </div>
 
+<h3>How accurately do each of the following characterize how <strong>a computer</strong> would interpret the raw dataset?</h3>
+<p>Please estimate the extent to which these concepts would be likely to exist as part of a file format, or inside a program.</p>
+
+<!-- General-purpose abstractions; you can almost always model data as one of these -->
+<div class="field">
+  <p>The dataset is <span class="inspectable">tabular</span>; a computer would store it in terms of <span class="inspectable">row</span>s and <span class="inspectable">column</span>s.</p>
+  <div class="likert" data-key="tabularRawData" id="tabularRawData" data-likert="Very inaccurate,Moderately inaccurate,Neither inaccurate nor accurate,Moderately accurate,Accurate"></div>
+</div>
+<div class="field">
+  <p>The dataset is a <span class="inspectable">network</span> or <span class="inspectable">hierarchy</span>; a computer would store it in terms of <span class="inspectable">node</span>s and <span class="inspectable">edge</span>s.</p>
+  <div class="likert" data-key="networkRawData" id="networkRawData" data-likert="Very inaccurate,Moderately inaccurate,Neither inaccurate nor accurate,Moderately accurate,Accurate"></div>
+</div>
+<div class="field">
+  <p>The dataset is <span class="inspectable">spatial</span> or <span class="inspectable">temporal</span>; a computer would store it in terms of <span class="inspectable">point</span>s or <span class="inspectable">region</span>s in space or time.</p>
+  <div class="likert" data-key="spatialRawData" id="spatialRawData" data-likert="Very inaccurate,Moderately inaccurate,Neither inaccurate nor accurate,Moderately accurate,Accurate"></div>
+</div>
+<div class="field">
+  <p>The dataset is <span class="inspectable">grouped</span>; a computer would store it in terms of <span class="inspectable">cluster</span>s or <span class="inspectable">set</span>s.</p>
+  <div class="likert" data-key="groupedRawData" id="groupedRawData" data-likert="Very inaccurate,Moderately inaccurate,Neither inaccurate nor accurate,Moderately accurate,Accurate"></div>
+</div>
+
+<!-- Additional mental models that could be independent of general-purpose abstractions, but are less likely to be able to model all datasets -->
+<div class="field">
+  <p>The dataset is <span class="inspectable">textual</span>; a computer would store it in terms of <span class="inspectable">word</span>s or <span class="inspectable">document</span>s.</p>
+  <div class="likert" data-key="textualRawData" id="textualRawData" data-likert="Very inaccurate,Moderately inaccurate,Neither inaccurate nor accurate,Moderately accurate,Accurate"></div>
+</div>
+<div class="field">
+  <p>The dataset is <span class="inspectable">media</span>; a computer would store it in terms of <span class="inspectable">image</span>s, <span class="inspectable">audio</span>, and/or <span class="inspectable">video</span>.</p>
+  <div class="likert" data-key="mediaRawData" id="mediaRawData" data-likert="Very inaccurate,Moderately inaccurate,Neither inaccurate nor accurate,Moderately accurate,Accurate"></div>
+</div>
+
+<h3>Other generalizations</h3>
 <div class="other field">
-  <p>Is there a similar generalization that we should have included? If so, please describe it in terms of its general structure (as opposed to its real-world meaning), in terms of how you think about it (not necessarily how it is stored on disk).</p>
+  <p>Is there a similar generalization that we should have included? If so, please describe it in terms of its general structure (as opposed to its real-world meaning), in terms of how you think about it, and/or how it would be represented inside a file format or program.</p>
   <textarea data-key="otherTypeExplanation" id="otherTypeExplanation" id="otherTypeExplanation" placeholder="Optional.&#10;&#10;Please remember that these comments are public."></textarea>
 </div>
 

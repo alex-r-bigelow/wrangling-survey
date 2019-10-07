@@ -128,5 +128,14 @@ class SurveyView extends IntrospectableMixin(View) {
       invalidIds: {}
     };
   }
+  requireFields (formValues, requiredFields) {
+    const invalidIds = {};
+    for (const field of requiredFields) {
+      if (formValues[field] === undefined) {
+        invalidIds[field] = true;
+      }
+    }
+    return invalidIds;
+  }
 }
 export default SurveyView;

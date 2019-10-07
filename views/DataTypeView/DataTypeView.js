@@ -18,9 +18,24 @@ class DataTypeView extends SurveyView {
     return true;
   }
   validateForm (formValues) {
-    let valid = true;
-    const invalidIds = {};
-    return { valid, invalidIds };
+    const invalidIds = this.requireFields(formValues, [
+      'tabularThinking',
+      'networkThinking',
+      'spatialThinking',
+      'groupedThinking',
+      'textualThinking',
+      'mediaThinking',
+      'tabularRawData',
+      'networkRawData',
+      'spatialRawData',
+      'groupedRawData',
+      'textualRawData',
+      'mediaRawData'
+    ]);
+    return {
+      valid: Object.keys(invalidIds).length === 0,
+      invalidIds
+    };
   }
 }
 export default DataTypeView;
