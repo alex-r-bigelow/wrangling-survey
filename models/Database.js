@@ -40,7 +40,7 @@ class Database extends Model {
 
     this.browserId = window.localStorage.getItem('browserId');
     if (this.browserId === null) {
-      this.browserId = sha256((new Date()).toISOString());
+      this.browserId = sha256((new Date()).toISOString() + Math.random());
       window.localStorage.setItem('browserId', this.browserId);
     }
 
