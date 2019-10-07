@@ -12,9 +12,9 @@ class ConsentView extends SurveyView {
     this.d3el.html(this.resources[1]);
     this.d3el.select('.agree').on('click', () => {
       window.localStorage.setItem('consented', 'true');
-      window.controller.renderAllViews();
       window.controller.advanceSurvey();
     });
+    this.collectKeyElements();
   }
   draw () {
     const consented = window.localStorage.getItem('consented');
@@ -27,9 +27,13 @@ class ConsentView extends SurveyView {
     return true;
   }
   validateForm (formValues) {
+    const invalidIds = {};
+    if (!window.localStorage.getItem('consented')) {
+      invalidIds['consentButton'] = true;
+    }
     return {
-      valid: true,
-      invalidIds: {}
+      valid: Object.keys(invalidIds).length === 0,
+      invalidIds
     };
   }
 }

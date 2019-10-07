@@ -40,6 +40,7 @@ class SurveyController extends Model {
       // Extra render call does form validation
       await this.renderAllViews();
       d3.select('.spinner').style('display', 'none');
+      this.trigger('load');
     })();
   }
   async setupViews (viewClasses) {
@@ -136,6 +137,7 @@ class SurveyController extends Model {
       this.surveyViews[viewIndex].trigger('open');
       this.renderAllViews(formData);
     }
+    return viewIndex;
   }
   async renderAllViews (formData = this.extractResponses()) {
     const self = this;
