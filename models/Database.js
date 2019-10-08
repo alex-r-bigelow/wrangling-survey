@@ -166,6 +166,45 @@ class Database extends Model {
     await this.dataPromise;
     return this.ownedResponses[tableName];
   }
+  getUserResponseSummary () {
+    const result = {
+      responses: {},
+      datasetList: [],
+      terminology: {}
+    };
+    // First copy all of this users' responses, and flag pending ones as such
+    for (const [ownedKey, ownedList] of Object.entries(this.ownedResponses)) {
+      result.responses[ownedKey] = JSON.parse(JSON.stringify(ownedList));
+    }
+    for (const [pendingKey, pendingStrings] of Object.entries(this.pendingResponseStrings)) {
+      result.responses[pendingKey] = result.responses[pendingKey] || [];
+      for (const pendingString of pendingStrings) {
+        const response = JSON.parse(pendingString);
+        response.pending = true;
+        result.responses[pendingKey].push(response);
+      }
+    }
+    // Combine all of the terminology, sorted by timestamp
+    const sortedTerminology = Object.values(result.responses)
+      .reduce((agg, responseList) => {
+        return agg.concat(responseList);
+      }, [])
+      .sort((a, b) => a.timestamp - b.timestamp)
+      .map(response => response.terminology || {});
+    Object.assign(result.terminology, ...sortedTerminology);
+    // Collect the datasets, and sort relevant explorations into them
+    result.datasetList = (result.responses['DR.DAS'] || []).map(dataset => {
+      dataset.alternateExplorations = {};
+      for (const targetType of ['tabular', 'network', 'spatial', 'textual', 'media']) {
+        dataset.alternateExplorations[targetType] = (result.responses['DR.ETS'] || [])
+          .filter(exploration => {
+            return exploration.targetType === targetType;
+          });
+      }
+      return dataset;
+    });
+    return result;
+  }
   get contextIsConference () {
     return ['VIS', 'Supercomputing'].indexOf(this.context) !== -1;
   }

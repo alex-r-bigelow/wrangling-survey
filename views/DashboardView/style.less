@@ -5,4 +5,29 @@
     font-weight: bold;
     text-align: center;
   }
+  .datasetTable {
+    border-collapse: collapse;
+    border-spacing: 0;
+    th {
+      font-weight: initial;
+      height: 7em;
+      white-space: nowrap;
+      vertical-align: bottom;
+      & > div {
+        transform: translate(26px, -8.5px) rotate(315deg);
+        width: 2.5em;
+        & > div {
+          width: fit-content;
+          border-bottom: 1px solid @separatorColor;
+        }
+      }
+    }
+    td {
+      &.bordered {
+        border-right: 1.5px solid @separatorColor;
+      }
+      text-align: center;
+      padding: 0.25em;
+    }
+  }
 }
