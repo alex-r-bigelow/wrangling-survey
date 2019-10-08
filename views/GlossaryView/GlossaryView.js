@@ -18,16 +18,14 @@ class GlossaryView extends SurveyView {
       .selectAll('[data-term]').each(function () {
         self.terms[this.dataset.term] = this;
         const element = d3.select(this);
-        element.insert('h3', ':first-child')
-          .text(this.dataset.term);
-        element.append('div')
-          .classed('field', true)
-          .append('input')
+        element.insert('input', ':first-child')
           .attr('type', 'text')
           .attr('data-key', `terminology`)
           .attr('data-role', this.dataset.term)
           .classed('public', true)
-          .attr('placeholder', 'Suggest an alternative');
+          .attr('placeholder', 'Suggest an alternate word');
+        element.insert('h3', ':first-child')
+          .text(this.dataset.term);
       });
     super.collectKeyElements();
   }

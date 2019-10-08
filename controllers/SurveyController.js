@@ -113,7 +113,15 @@ class SurveyController extends Model {
       .on('click', function () {
         if (d3.select(this).classed('unfocused')) {
           self.focusPane(this);
-          d3.event.preventDefault();
+          // If the user clicked an already-open section header, don't close it
+          const isOpenSectionHeader = [
+            d3.event.target,
+            d3.event.target.parentNode,
+            d3.event.target.parentNode.parentNode
+          ].some(node => node.open);
+          if (isOpenSectionHeader) {
+            d3.event.preventDefault();
+          }
         }
       });
 

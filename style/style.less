@@ -116,6 +116,9 @@ details {
       & > div {
         display: none;
       }
+      &.complete summary {
+        padding-right: 2.5em;
+      }
     }
   }
 }
@@ -198,6 +201,7 @@ textarea + .privacyLogo {
   font-weight: @headerFontWeight;
   cursor: help;
 }
+details[open] summary .inspectable,
 .selected.button .inspectable {
   color: @invertedInspectableColor;
 }
