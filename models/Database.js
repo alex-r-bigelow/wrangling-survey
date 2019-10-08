@@ -1,7 +1,7 @@
 /* globals sha256, d3 */
 import { Model } from '../node_modules/uki/dist/uki.esm.js';
 
-window.SANDBOX_MODE = true;
+// window.SANDBOX_MODE = true;
 
 /**
  * A sneaky way to use google forms as a cheap database. For each "table" that
@@ -124,6 +124,7 @@ class Database extends Model {
 
     // Make a fake, temporary form to submit to Google
     const hiddenFrame = d3.select('body').append('iframe')
+      .attr('sandbox', 'allow-same-origin allow-scripts allow-forms')
       .style('display', 'none');
     const frameDoc = hiddenFrame.node().contentDocument;
     let pollingInterval = window.setInterval(() => {
@@ -152,7 +153,7 @@ class Database extends Model {
     // Store the response as pending
     this.pendingResponseStrings[tableName] = this.pendingResponseStrings[tableName] || [];
     this.pendingResponseStrings[tableName].push(stringValues);
-    window.localStorage.setItem('pendingResponseStrings', JSON.stringify('pendingResponseStrings'));
+    window.localStorage.setItem('pendingResponseStrings', JSON.stringify(this.pendingResponseStrings));
     delete this.unfinishedResponses[tableName];
     window.localStorage.setItem('unfinishedResponses', JSON.stringify(this.unfinishedResponses));
     return this.updateData();

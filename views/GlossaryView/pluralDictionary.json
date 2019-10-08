@@ -5,7 +5,10 @@
     "tabular",
     "temporal",
     "textual",
-    "spatial"
+    "spatial",
+    "categorial",
+    "ordinal",
+    "quantitative"
   ],
   "irregular": {}
 }

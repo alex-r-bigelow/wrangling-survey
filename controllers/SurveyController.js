@@ -174,8 +174,8 @@ class SurveyController extends Model {
           .classed('disabled', !formData.valid)
           .on('click', async () => {
             if (formData.valid) {
-              this.database.setResponse(this.tableName, formData.formValues);
-              await this.database.submitResponse(this.tableName);
+              self.database.setResponse(self.tableName, formData.formValues);
+              await self.database.submitResponse(self.tableName);
               window.location.replace('/index.html');
             }
           });

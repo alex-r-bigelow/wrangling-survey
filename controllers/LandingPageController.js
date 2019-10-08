@@ -15,8 +15,19 @@ class LandingPageController extends SurveyController {
       SettingsView,
       DashboardView
     ]);
-    this.currentSurveyViewIndex = this.surveyViews.length;
+    this.currentSurveyViewIndex = this.surveyViews.length - 1;
     this.on('load', () => { this.advanceSurvey(); });
+  }
+  get unfinishedResponse () {
+    // Always treat contact settings as "unfinished;" we'll never have access to
+    // the submitted response in Google docs because it's private, but it will
+    // still be hanging around in pendingResponseStrings (and will never get
+    // cleared out)
+    const responseStrings = this.database.pendingResponseStrings[this.tableName];
+    if (!responseStrings) {
+      return null;
+    }
+    return JSON.parse(responseStrings[responseStrings.length - 1]);
   }
   async advanceSurvey (viewIndex = this.currentSurveyViewIndex + 1) {
     const formData = this.extractResponses();
