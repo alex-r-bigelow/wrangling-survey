@@ -1,4 +1,4 @@
-/* globals d3 */
+/* globals d3, pluralize */
 import SurveyView from '../SurveyView/SurveyView.js';
 
 class GlossaryView extends SurveyView {
@@ -6,6 +6,7 @@ class GlossaryView extends SurveyView {
     super(d3.select('.GlossaryView'), [
       { type: 'text', url: 'views/GlossaryView/template.html' },
       { type: 'text', url: 'docs/glossary.html' },
+      { type: 'json', url: 'views/GlossaryView/pluralDictionary.json' },
       { type: 'less', url: 'views/GlossaryView/style.less' }
     ]);
     this.terms = {};
@@ -27,6 +28,19 @@ class GlossaryView extends SurveyView {
         element.insert('h3', ':first-child')
           .text(this.dataset.term);
       });
+    // Add the plural dictionary
+    for (const [regex, replace] of Object.entries(this.resources[2].plural)) {
+      pluralize.addPluralRule(new window.RexExp(regex), replace);
+    }
+    for (const [regex, replace] of Object.entries(this.resources[2].singular)) {
+      pluralize.addSingularRule(new window.RexExp(regex), replace);
+    }
+    for (const term of this.resources[2].uncountable) {
+      pluralize.addUncountableRule(term);
+    }
+    for (const [singular, plural] of Object.entries(this.resources[2].irregular)) {
+      pluralize.addIrregularRule(singular, plural);
+    }
     super.collectKeyElements();
   }
   connectTerminology () {
@@ -34,7 +48,8 @@ class GlossaryView extends SurveyView {
     // for replacement
     const self = this;
     d3.selectAll('.inspectable')
-      .attr('data-term', function () { return this.innerText.toLocaleLowerCase(); })
+      .attr('data-term', function () { return pluralize.singular(this.innerText.toLocaleLowerCase()); })
+      .attr('data-pluralize', function () { return pluralize.isPlural(this.innerText); })
       .attr('data-capitalize', function () { return this.innerText.match(/^[A-Z]/) && 'true'; })
       .on('click', function () {
         d3.event.preventDefault();
@@ -57,6 +72,9 @@ class GlossaryView extends SurveyView {
     });
     d3.selectAll('.inspectable').each(function () {
       this.innerText = terminology[this.dataset.term] || this.dataset.term;
+      if (this.dataset.pluralize) {
+        this.innerText = pluralize.plural(this.innerText);
+      }
       if (this.dataset.capitalize) {
         this.innerText = this.innerText[0].toLocaleUpperCase() + this.innerText.slice(1);
       }

@@ -29,3 +29,7 @@ node_modules/js-sha256/*
 !node_modules/js-sha256/build/
 node_modules/js-sha256/build/*
 !node_modules/js-sha256/build/sha256.min.js
+
+!node_modules/pluralize/
+node_modules/pluralize/*
+!node_modules/pluralize/pluralize.js

@@ -6,16 +6,16 @@
   "DR.DAS": {
     "action": "https://docs.google.com/forms/d/e/13AVznATQwG8bEQQSIFSVEhvZv9zeabUhs_in1kJYr9I/formResponse",
     "field": "",
-    "publicData": "https://cors-anywhere.herokuapp.com/https://spreadsheets.google.com/tq?tqx=out:json&tq=&key=1hqRRKTyTvnGW_L09qgcWy44hAsIO2lyLBipSo6jQNGM"
+    "publicData": "https://my-cors-redirecter.herokuapp.com/https://spreadsheets.google.com/tq?tqx=out:json&tq=&key=1hqRRKTyTvnGW_L09qgcWy44hAsIO2lyLBipSo6jQNGM"
   },
   "DR.ETS": {
     "action": "https://docs.google.com/forms/d/e/1U9RQQ13vtVloj5ZGKGxD8byTtX6GKOoD4PoWSdiNwxM/formResponse",
     "field": "",
-    "publicData": "https://cors-anywhere.herokuapp.com/https://spreadsheets.google.com/tq?tqx=out:json&tq=&key=1TWzskmP_1fpfGNxc_7aXjGgzHIiqi_FaKlFzClL90oY"
+    "publicData": "https://my-cors-redirecter.herokuapp.com/https://spreadsheets.google.com/tq?tqx=out:json&tq=&key=1TWzskmP_1fpfGNxc_7aXjGgzHIiqi_FaKlFzClL90oY"
   },
   "DR.JTM": {
     "action": "https://docs.google.com/forms/d/e/1xKhdii7aStKUO-zDTjsuL9Vk7ajhuSMhrW7L0kPEL8g/formResponse",
     "field": "",
-    "publicData": "https://cors-anywhere.herokuapp.com/https://spreadsheets.google.com/tq?tqx=out:json&tq=&key=1TDpaf7J0ToDuR4gg3rycyyvvkw_oUnbvtiPq7pTBJKI"
+    "publicData": "https://my-cors-redirecter.herokuapp.com/https://spreadsheets.google.com/tq?tqx=out:json&tq=&key=1TDpaf7J0ToDuR4gg3rycyyvvkw_oUnbvtiPq7pTBJKI"
   }
 }
