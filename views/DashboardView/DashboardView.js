@@ -76,9 +76,13 @@ class DashboardView extends SurveyView {
     const buttonEnter = dasResponsesEnter.append('td').classed('explore', true)
       .append('div').classed('button', true);
     buttonEnter.append('a');
-    buttonEnter.append('span').classed('label', true).text('Explore');
+    buttonEnter.append('span').classed('label', true).text('Explore alternative');
     dasResponses.select('.explore .button').on('click', d => {
-      console.log('explore', d);
+      const params = new URLSearchParams(Object.assign({}, d.nextAlternates[0], {
+        datasetLabel: d.datasetLabel,
+        timestamp: d.timestamp
+      }));
+      window.location.href = `/ETS?${params.toString()}`;
     });
   }
   isEnabled () {

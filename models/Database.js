@@ -3,6 +3,9 @@ import { Model } from '../node_modules/uki/dist/uki.esm.js';
 
 // window.SANDBOX_MODE = true;
 
+const THINKING_ORDER = ['Never', 'Rarely', 'Sometimes', 'Very often', 'Always'];
+const RAW_DATA_ORDER = ['Very inaccurate', 'Moderately inaccurate', 'Neither inaccurate nor accurate', 'Moderately accurate', 'Accurate'];
+
 /**
  * A sneaky way to use google forms as a cheap database. For each "table" that
  * you want:
@@ -80,10 +83,8 @@ class Database extends Model {
               this.publicData[tableSpec[0]] = [];
             } else {
               this.publicData[tableSpec[0]] = rawTable.rows.map(row => {
-                // Combine Google's timestamp with the nested JSON in the cell
-                const timestamp = new Date(row.c[0].f);
                 const payloadString = row.c[1].v;
-                const result = Object.assign({ timestamp }, JSON.parse(payloadString));
+                const result = JSON.parse(payloadString);
                 // Before we add it to the public data, does this response belong to the current user?
                 if (result.browserId === this.browserId) {
                   this.ownedResponses[tableSpec[0]] = this.ownedResponses[tableSpec[0]] || [];
@@ -120,6 +121,8 @@ class Database extends Model {
     if (!anonymous) {
       responseValues.browserId = this.browserId;
     }
+    // We use our own timestamp instead of the one in Google sheets to avoid inconsistencies between pending and accepted responses
+    responseValues.timestamp = new Date().toISOString();
     const stringValues = JSON.stringify(responseValues);
 
     // Make a fake, temporary form to submit to Google
@@ -192,15 +195,50 @@ class Database extends Model {
       .sort((a, b) => a.timestamp - b.timestamp)
       .map(response => response.terminology || {});
     Object.assign(result.terminology, ...sortedTerminology);
-    // Collect the datasets, and sort relevant explorations into them
+    // Collect the datasets, sort relevant explorations into them, and determine
+    // the ideal next alternate to explore
     result.datasetList = (result.responses['DR.DAS'] || []).map(dataset => {
       dataset.alternateExplorations = {};
-      for (const targetType of ['tabular', 'network', 'spatial', 'textual', 'media']) {
+      dataset.nextAlternates = [];
+      for (const targetType of ['tabular', 'network', 'spatial', 'grouped', 'textual', 'media']) {
         dataset.alternateExplorations[targetType] = (result.responses['DR.ETS'] || [])
           .filter(exploration => {
             return exploration.targetType === targetType;
           });
+        dataset.nextAlternates.push({
+          targetType,
+          priorAlternateCount: dataset.alternateExplorations[targetType].length,
+          nativeThinking: dataset[targetType + 'Thinking'],
+          nativeRawData: dataset[targetType + 'RawData']
+        });
       }
+      // Sort the list of nextAternates...
+      dataset.nextAlternates.sort((a, b) => {
+        // First sort by the number of times the user has already explored this targetType
+        if (a.priorAlternateCount) {
+          if (b.priorAlternateCount) {
+            return a.priorAlternateCount - b.priorAlternateCount;
+          } else {
+            return 1;
+          }
+        } else if (b.priorAlternateCount) {
+          return -1;
+        }
+        // Next, sort by the most rare thinking interpretation
+        const thinkingDiff = THINKING_ORDER.indexOf(a.nativeThinking) - THINKING_ORDER.indexOf(b.nativeThinking);
+        if (thinkingDiff !== 0) {
+          return thinkingDiff;
+        }
+
+        // Next, sort by the most rare native interpretation
+        const rawDataDiff = RAW_DATA_ORDER.indexOf(a.nativeRawData) - RAW_DATA_ORDER.indexOf(b.nativeRawData);
+        if (rawDataDiff !== 0) {
+          return rawDataDiff;
+        }
+
+        // Finally, sort randomly
+        return Math.sign(Math.random() - 0.5);
+      });
       return dataset;
     });
     return result;

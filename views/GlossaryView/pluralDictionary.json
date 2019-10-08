@@ -6,6 +6,8 @@
     "temporal",
     "textual",
     "spatial",
+    "grouped",
+    "connected",
     "categorical",
     "ordinal",
     "quantitative"

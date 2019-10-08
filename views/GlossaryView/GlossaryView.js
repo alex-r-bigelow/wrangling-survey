@@ -49,7 +49,7 @@ class GlossaryView extends SurveyView {
     const self = this;
     d3.selectAll('.inspectable')
       .attr('data-term', function () { return pluralize.singular(this.innerText.toLocaleLowerCase()); })
-      .attr('data-pluralize', function () { return pluralize.isPlural(this.innerText); })
+      .attr('data-pluralize', function () { return pluralize.isPlural(this.innerText) && 'true'; })
       .attr('data-capitalize', function () { return this.innerText.match(/^[A-Z]/) && 'true'; })
       .on('click', function () {
         d3.event.preventDefault();
