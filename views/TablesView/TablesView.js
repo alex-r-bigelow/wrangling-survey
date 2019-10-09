@@ -29,7 +29,8 @@ class TablesView extends SurveyView {
       .style('display', this.nestedStructures ? null : 'none');
   }
   isEnabled (formValues) {
-    return formValues.tabularThinking && formValues.tabularThinking !== 'Never';
+    return (formValues.tabularThinking && formValues.tabularThinking !== 'Never') ||
+      (window.controller.params && window.controller.params.targetType === 'tabular');
   }
   validateForm (formValues) {
     const nTables = formValues[`${this.state}NTables`];

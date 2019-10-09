@@ -203,9 +203,9 @@ class SurveyController extends Model {
     const temp = await this.database.getOwnedResponse(this.tableName);
     return temp ? temp[this.ownedResponseIndex] : null;
   }
-  extractResponses () {
+  extractResponses (defaultFormValues = {}) {
     const formData = {
-      formValues: {},
+      formValues: Object.assign({}, defaultFormValues),
       viewStates: []
     };
     // Manipulate formValues for glossary, but don't store that state (important

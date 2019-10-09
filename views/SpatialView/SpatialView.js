@@ -1,4 +1,3 @@
-/* globals d3 */
 import SurveyView from '../SurveyView/SurveyView.js';
 
 class SpatialView extends SurveyView {
@@ -14,7 +13,8 @@ class SpatialView extends SurveyView {
     super.collectKeyElements();
   }
   isEnabled (formValues) {
-    return formValues.spatialThinking && formValues.spatialThinking !== 'Never';
+    return (formValues.spatialThinking && formValues.spatialThinking !== 'Never') ||
+      (window.controller.params && window.controller.params.targetType === 'spatial');
   }
   validateForm (formValues) {
     const invalidIds = {};

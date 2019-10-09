@@ -484,7 +484,8 @@ class NetworkView extends SurveyView {
     }
   }
   isEnabled (formValues) {
-    return formValues.networkThinking && formValues.networkThinking !== 'Never';
+    return (formValues.networkThinking && formValues.networkThinking !== 'Never') ||
+      (window.controller.params && window.controller.params.targetType === 'network');
   }
   validateForm (formValues) {
     formValues['exampleNetwork'] = this._exampleNetwork;

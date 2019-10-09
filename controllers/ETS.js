@@ -18,10 +18,21 @@ class ETS extends SurveyController {
       AlternateDebriefView
     ]);
 
-    // Redirect people to the main page until they've gone through the consent form
-    if (!window.localStorage.getItem('consented')) {
+    this.params = Object.fromEntries(new URLSearchParams(window.location.search));
+
+    const hasNeededParams = JSON.stringify(Object.keys(this.params).sort()) ===
+      '["datasetLabel","nativeRawData","nativeThinking","priorAlternateCount","targetType","timestamp"]';
+
+    // Redirect people to the main page if they haven't consented yet, or if
+    // the URL got mangled somehow
+    if (!window.localStorage.getItem('consented') || !hasNeededParams) {
       window.location.replace('/index.html');
     }
+
+    this.params.priorAlternateCount = parseInt(this.params.priorAlternateCount);
+  }
+  extractResponses (defaultFormValues = {}) {
+    return super.extractResponses(Object.assign({}, this.params, defaultFormValues));
   }
 }
 
