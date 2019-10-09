@@ -10,6 +10,9 @@ class AlternateDebriefView extends SurveyView {
   }
   setup () {
     this.d3el.html(this.resources[1]);
+    this.d3el.selectAll('.datasetLabel').text(window.controller.params.datasetLabel);
+    this.d3el.selectAll('.targetType').text(window.controller.params.targetType);
+    super.setupLikertFields();
     this.collectKeyElements();
   }
   isEnabled () {
