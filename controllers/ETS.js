@@ -30,7 +30,7 @@ class ETS extends SurveyController {
     // Redirect people to the main page if they haven't consented yet, or if
     // the URL got mangled somehow
     if (!window.localStorage.getItem('consented') || !hasNeededParams) {
-      window.location.replace('/index.html');
+      window.location.replace('index.html');
     }
 
     this.params.priorAlternateCount = parseInt(this.params.priorAlternateCount);

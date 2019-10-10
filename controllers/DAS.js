@@ -26,7 +26,7 @@ class DAS extends SurveyController {
 
     // Redirect people to the main page until they've gone through the consent form
     if (!window.localStorage.getItem('consented')) {
-      window.location.replace('/index.html');
+      window.location.replace('index.html');
     }
   }
 }
