@@ -16,6 +16,7 @@ class SurveyView extends IntrospectableMixin(View) {
   setupLikertFields () {
     this.d3el.selectAll('[data-likert]').each(function () {
       const scale = this.dataset.likert.split(',');
+      const inspectableTerms = (this.dataset.inspectable || '').split(',');
       let likertChunks = d3.select(this).selectAll('.likertChunk').data(scale);
       likertChunks.exit().remove();
       const likertChunksEnter = likertChunks.enter().append('div')
@@ -29,6 +30,7 @@ class SurveyView extends IntrospectableMixin(View) {
         .attr('value', d => d);
       likertChunksEnter.append('label')
         .attr('for', d => this.dataset.key + d.replace(/\s/g, ''))
+        .classed('inspectable', d => inspectableTerms.indexOf(d) !== -1)
         .text(d => d);
     });
   }

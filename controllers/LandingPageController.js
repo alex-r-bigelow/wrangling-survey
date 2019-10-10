@@ -5,8 +5,6 @@ import GdprView from '../views/GdprView/GdprView.js';
 import SettingsView from '../views/SettingsView/SettingsView.js';
 import DashboardView from '../views/DashboardView/DashboardView.js';
 
-// window.DEBUG_SURVEY_VIEW_INDEX = 3;
-
 class LandingPageController extends SurveyController {
   constructor () {
     super('DR.UID', [

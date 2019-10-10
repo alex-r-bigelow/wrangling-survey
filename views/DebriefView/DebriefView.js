@@ -10,6 +10,7 @@ class DebriefView extends SurveyView {
   }
   setup () {
     this.d3el.html(this.resources[1]);
+    super.setupLikertFields();
     super.collectKeyElements();
   }
   draw () {}

@@ -4,9 +4,10 @@ import AlternateIntroView from '../views/AlternateIntroView/AlternateIntroView.j
 import TablesView from '../views/TablesView/TablesView.js';
 import NetworkView from '../views/NetworkView/NetworkView.js';
 import SpatialView from '../views/SpatialView/SpatialView.js';
+import GroupedView from '../views/GroupedView/GroupedView.js';
+import TextualView from '../views/TextualView/TextualView.js';
+import MediaView from '../views/MediaView/MediaView.js';
 import AlternateDebriefView from '../views/AlternateDebriefView/AlternateDebriefView.js';
-
-// window.DEBUG_SURVEY_VIEW_INDEX = 1;
 
 class ETS extends SurveyController {
   constructor () {
@@ -15,6 +16,9 @@ class ETS extends SurveyController {
       TablesView,
       NetworkView,
       SpatialView,
+      GroupedView,
+      TextualView,
+      MediaView,
       AlternateDebriefView
     ]);
 

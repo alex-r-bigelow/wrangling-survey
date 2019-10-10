@@ -18,7 +18,7 @@ class SurveyController extends Model {
     this.ownedResponseIndex = null;
 
     this.surveyViews = [];
-    this.currentSurveyViewIndex = window.DEBUG_SURVEY_VIEW_INDEX || 0;
+    this.currentSurveyViewIndex = 0;
 
     window.onresize = () => { this.renderAllViews(); };
     (async () => {
