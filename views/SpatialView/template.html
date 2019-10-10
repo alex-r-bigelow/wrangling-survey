@@ -1,23 +1,8 @@
 <p class="introText">Please answer the following in terms of how <strong>you</strong> would interpret the dataset as <span class="inspectable">spatial</span> or <span class="inspectable">temporal</span>&mdash;not necessarily how it would be stored in a computer.</p>
 
-<h3>Including time, how many <span class="inspectable">dimensions</span> are needed to describe the space in which this dataset exists?</h3>
 <div class="field">
-  <div>
-    <input type="radio" data-key="nDimensions" name="nDimensions" data-checked-value="1" id="nDimensionsOne" />
-    <label for="nDimensionsOne">1</label>
-  </div>
-  <div>
-    <input type="radio" data-key="nDimensions" name="nDimensions" data-checked-value="2" id="nDimensionsTwo" />
-    <label for="nDimensionsTwo">2</label>
-  </div>
-  <div>
-    <input type="radio" data-key="nDimensions" name="nDimensions" data-checked-value="3" id="nDimensionsThree" />
-    <label for="nDimensionsThree">3</label>
-  </div>
-  <div>
-    <input type="radio" data-key="nDimensions" name="nDimensions" data-checked-value="4+" id="nDimensionsThree" />
-    <label for="nDimensionsThree">&ge;4</label>
-  </div>
+  <p>Including time, how many <span class="inspectable">dimensions</span> are needed to describe the space in which this dataset exists?</p>
+  <div class="likert" data-key="nDimensions" id="nDimensions" data-likert="1,2,3,&ge;4"></div>
 </div>
 
 <div class="field">
@@ -69,7 +54,7 @@
 
 <h3>Are there any other characteristics that you would use to describe the <span class="inspectable">spatial</span> or <span class="inspectable">temporal</span> aspect of the dataset?</h3>
 <div class="field">
-  <textarea data-key="SpatialMisc" placeholder="Optional.&#10;&#10;Please remember that these comments are public."></textarea>
+  <textarea data-key="spatialMisc" placeholder="Optional"></textarea>
 </div>
 <div class="buttonContainer">
   <div class="next button"><a></a><span class="label">Next</span></div>

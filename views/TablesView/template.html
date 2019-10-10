@@ -1,20 +1,10 @@
 <p class="introText">Please answer the following in terms of how <strong>you</strong> would interpret the dataset as <span class="inspectable">tabular</span>&mdash;not necessarily how it would be stored in a computer.</p>
 
-<h3>How many tables are in this dataset?</h3>
 <div class="field">
-  <div>
-    <input type="radio" data-key="nTables" name="NTables" data-checked-value="1" id="OneTable" />
-    <label for="One">1</label>
-  </div>
-  <div>
-    <input type="radio" data-key="nTables" name="NTables" data-checked-value="2" id="TwoTables" />
-    <label for="Two">2</label>
-  </div>
-  <div>
-    <input type="radio" data-key="nTables" name="NTables" data-checked-value="3+" id="ThreeTables" />
-    <label for="Three">&ge;3</label>
-  </div>
+  <p>How many tables are in this dataset?</p>
+  <div class="likert" data-key="nTables" id="nTables" data-likert="1,2,&ge;3"></div>
 </div>
+
 <h3 id="exampleTableData">Please fill in examples of what a few headers, rows, and columns might look like.</h3>
 <p>Feel free to invent fake data, and please remember that these examples will be public.</p>
 <div class="exampleTableData field">
@@ -89,7 +79,7 @@
 </div>
 <h3>Are there any other characteristics that you would use to describe the <span class="inspectable">tabular</span> nature of the dataset?</h3>
 <div class="field">
-  <textarea data-key="tableMisc" placeholder="Optional.&#10;&#10;Please remember that these comments are public."></textarea>
+  <textarea data-key="tableMisc" placeholder="Optional"></textarea>
 </div>
 <div class="buttonContainer">
   <div class="next button"><a></a><span class="label">Next</span></div>

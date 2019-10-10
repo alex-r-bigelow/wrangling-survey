@@ -7,7 +7,7 @@ import NetworkView from '../views/NetworkView/NetworkView.js';
 import SpatialView from '../views/SpatialView/SpatialView.js';
 import DebriefView from '../views/DebriefView/DebriefView.js';
 
-// window.DEBUG_SURVEY_VIEW_INDEX = 1;
+// window.DEBUG_SURVEY_VIEW_INDEX = 3;
 
 class DAS extends SurveyController {
   constructor () {

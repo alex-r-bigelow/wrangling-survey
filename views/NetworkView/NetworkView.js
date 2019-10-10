@@ -71,6 +71,7 @@ class NetworkView extends SurveyView {
     this.simulation = d3.forceSimulation()
       .force('charge', d3.forceManyBody());
 
+    super.setupLikertFields();
     super.collectKeyElements();
   }
   draw () {

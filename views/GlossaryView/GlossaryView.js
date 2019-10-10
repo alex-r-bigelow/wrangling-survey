@@ -49,8 +49,8 @@ class GlossaryView extends SurveyView {
     const self = this;
     d3.selectAll('.inspectable')
       .attr('data-term', function () { return pluralize.singular(this.innerText.toLocaleLowerCase()); })
-      .attr('data-pluralize', function () { return pluralize.isPlural(this.innerText) && 'true'; })
-      .attr('data-capitalize', function () { return this.innerText.match(/^[A-Z]/) && 'true'; })
+      .attr('data-pluralize', function () { return pluralize.isPlural(this.innerText) ? 'true' : null; })
+      .attr('data-capitalize', function () { return this.innerText.match(/^[A-Z]/) ? 'true' : null; })
       .on('click', function () {
         d3.event.preventDefault();
         d3.event.stopPropagation();

@@ -10,16 +10,16 @@ class TablesView extends SurveyView {
     this.humanLabel = '<span class="inspectable">Tabular</span> Data Details';
   }
   get nTables () {
-    const checkedElement = this.d3el.selectAll(`[data-key="${this.state}NTables"]`)
+    const checkedElement = this.d3el.selectAll(`[name="nTables"]`)
       .nodes().filter(element => element.checked)[0];
-    return checkedElement && checkedElement.dataset.checkedValue;
+    return checkedElement && checkedElement.value;
   }
   get nestedStructures () {
     return this.d3el.select(`[data-flag="Nested cell structures"]`).node().checked;
   }
   setup () {
-    const state = this.state; // eslint-disable-line no-unused-vars
-    this.d3el.html(eval('`' + this.resources[1] + '`')); // eslint-disable-line no-eval
+    this.d3el.html(this.resources[1]);
+    super.setupLikertFields();
     super.collectKeyElements();
   }
   draw () {

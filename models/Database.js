@@ -73,35 +73,38 @@ class Database extends Model {
         .filter(tableSpec => !!tableSpec[1].publicData)
         .map(tableSpec => {
           // Do a GET to pull each public data from its corresponding google sheet
-          return window.fetch(tableSpec[1].publicData, { method: 'GET' }).then(async serverResponse => {
-            const fullText = await serverResponse.text();
-            const jsonOnly = fullText.match(/{.*}/)[0];
-            // Parse the full JSON
-            const rawTable = JSON.parse(jsonOnly).table;
-            if (rawTable.parsedNumHeaders !== 1) {
-              // No responses yet; Google doesn't parse the header row
-              this.publicData[tableSpec[0]] = [];
-            } else {
-              this.publicData[tableSpec[0]] = rawTable.rows.map(row => {
-                const payloadString = row.c[1].v;
-                const result = JSON.parse(payloadString);
-                // Before we add it to the public data, does this response belong to the current user?
-                if (result.browserId === this.browserId) {
-                  this.ownedResponses[tableSpec[0]] = this.ownedResponses[tableSpec[0]] || [];
-                  this.ownedResponses[tableSpec[0]].push(result);
-                }
-                // Was this a pending response?
-                if (this.pendingResponseStrings[tableSpec[0]]) {
-                  const pendingResponseIndex = this.pendingResponseStrings[tableSpec[0]].indexOf(payloadString);
-                  if (pendingResponseIndex !== -1) {
-                    this.pendingResponseStrings[tableSpec[0]].splice(pendingResponseIndex, 1);
-                    window.localStorage.setItem('pendingResponseStrings', JSON.stringify(this.pendingResponseStrings));
+          return window.fetch(tableSpec[1].publicData, { method: 'GET' })
+            .then(async serverResponse => {
+              const fullText = await serverResponse.text();
+              const jsonOnly = fullText.match(/{.*}/)[0];
+              // Parse the full JSON
+              const rawTable = JSON.parse(jsonOnly).table;
+              if (rawTable.parsedNumHeaders !== 1) {
+                // No responses yet; Google doesn't parse the header row
+                this.publicData[tableSpec[0]] = [];
+              } else {
+                this.publicData[tableSpec[0]] = rawTable.rows.map(row => {
+                  const payloadString = row.c[1].v;
+                  const result = JSON.parse(payloadString);
+                  // Before we add it to the public data, does this response belong to the current user?
+                  if (result.browserId === this.browserId) {
+                    this.ownedResponses[tableSpec[0]] = this.ownedResponses[tableSpec[0]] || [];
+                    this.ownedResponses[tableSpec[0]].push(result);
                   }
-                }
-                return result;
-              });
-            }
-          });
+                  // Was this a pending response?
+                  if (this.pendingResponseStrings[tableSpec[0]]) {
+                    const pendingResponseIndex = this.pendingResponseStrings[tableSpec[0]].indexOf(payloadString);
+                    if (pendingResponseIndex !== -1) {
+                      this.pendingResponseStrings[tableSpec[0]].splice(pendingResponseIndex, 1);
+                      window.localStorage.setItem('pendingResponseStrings', JSON.stringify(this.pendingResponseStrings));
+                    }
+                  }
+                  return result;
+                });
+              }
+            }).catch(error => {
+              console.warn('Error accessing public data', error);
+            });
         });
       await Promise.all(dataPromises);
       this.loadingData = false;

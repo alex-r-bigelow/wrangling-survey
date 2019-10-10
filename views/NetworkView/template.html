@@ -1,51 +1,18 @@
 <p class="introText">Please answer the following in terms of how <strong>you</strong> would interpret the dataset as a <span class="inspectable">network</span> or <span class="inspectable">hierarchy</span>&mdash;not necessarily how it would be stored in a computer.</p>
 
-<h3 id="nodeClassCount">How many <span class="inspectable">node</span> <span class="inspectable">classes</span> are there?</h3>
 <div class="field">
-  <div>
-    <input type="radio" data-key="nodeClassCount" name="nodeClassCount" data-checked-value="1" />
-    <label for="OneNodeClass">1</label>
-  </div>
-  <div>
-    <input type="radio" data-key="nodeClassCount" name="nodeClassCount" data-checked-value="2" />
-    <label for="TwoNodeClass">2</label>
-  </div>
-  <div>
-    <input type="radio" data-key="nodeClassCount" name="nodeClassCount" data-checked-value="3+" />
-    <label for="ThreeNodeClass">&ge;3</label>
-  </div>
+  <p>How many <span class="inspectable">node</span> <span class="inspectable">classes</span> are there?</p>
+  <div class="likert" data-key="nodeClassCount" id="nodeClassCount" data-likert="1,2,&ge;3"></div>
 </div>
 
-<h3 id="edgeClassCount">How many <span class="inspectable">edge</span> <span class="inspectable">classes</span> are there?</h3>
 <div class="field">
-  <div>
-    <input type="radio" data-key="edgeClassCount" name="edgeClassCount" data-checked-value="1" />
-    <label for="OneEdgeClass">1</label>
-  </div>
-  <div>
-    <input type="radio" data-key="edgeClassCount" name="edgeClassCount" data-checked-value="2" />
-    <label for="TwoEdgeClass">2</label>
-  </div>
-  <div>
-    <input type="radio" data-key="edgeClassCount" name="edgeClassCount" data-checked-value="3+" />
-    <label for="ThreeEdgeClass">&ge;3</label>
-  </div>
+  <p>How many <span class="inspectable">edge</span> <span class="inspectable">classes</span> are there?</p>
+  <div class="likert" data-key="edgeClassCount" id="edgeClassCount" data-likert="1,2,&ge;3"></div>
 </div>
 
-<h3 id="edgeDirection">How would you characterize <span class="inspectable">edge</span> <span class="inspectable">direction</span>?</h3>
 <div class="field">
-  <div>
-    <input type="radio" data-key="edgeDirection" name="edgeDirection" data-checked-value="Directed" />
-    <label for="directed">Directed</label>
-  </div>
-  <div>
-    <input type="radio" data-key="edgeDirection" name="edgeDirection" data-checked-value="Undirected" />
-    <label for="undirected">Undirected</label>
-  </div>
-  <div>
-    <input type="radio" data-key="edgeDirection" name="edgeDirection" data-checked-value="Mixed" />
-    <label for="mixedDirection">Mixed</label>
-  </div>
+  <p>How would you characterize <span class="inspectable">edge</span> <span class="inspectable">direction</span>?</p>
+  <div class="likert" data-key="edgeDirection" id="edgeDirection" data-likert="Directed,Undirected,Mixed"></div>
 </div>
 
 <h3>Please create a few examples of what <span class="inspectable">nodes</span> and <span class="inspectable">edges</span> might look like.</h3>
@@ -76,8 +43,8 @@
 
 <h3>Would you expect any of the following to describe the network?</h3>
 <div class="field">
-  <input type="checkbox" data-key="networkDetails" data-flag="Tree" id="isTree" />
-  <label for="isTree">The network is a <span class="inspectable">hierarchy</span></label>
+  <input type="checkbox" data-key="networkDetails" data-flag="Hierarchy" id="isHierarchy" />
+  <label for="isHierarchy">The network is a <span class="inspectable">hierarchy</span></label>
 </div>
 <div class="field">
   <input type="checkbox" data-key="networkDetails" data-flag="Connected" id="connected" />
@@ -105,7 +72,7 @@
 </div>
 <h3>Are there any other characteristics that you would use to describe the network?</h3>
 <div class="field">
-  <textarea data-key="NetworkMisc" placeholder="Optional.&#10;&#10;Please remember that these comments are public."></textarea>
+  <textarea data-key="networkMisc" placeholder="Optional"></textarea>
 </div>
 <div class="buttonContainer">
   <div class="next button"><a></a><span class="label">Next</span></div>
