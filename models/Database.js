@@ -242,6 +242,15 @@ class Database extends Model {
         // Finally, sort randomly
         return Math.sign(Math.random() - 0.5);
       });
+      // Attach a list of other priors to each alternate:
+      for (const alternate of dataset.nextAlternates) {
+        alternate.otherPriors = JSON.stringify(dataset.nextAlternates.filter(otherAlternate => {
+          return otherAlternate.targetType !== alternate.targetType &&
+            (otherAlternate.priorAlternateCount > 0 ||
+             otherAlternate.nativeThinking !== 'Never' ||
+             otherAlternate.nativeRawData !== 'Very inaccurate');
+        }).map(otherAlternate => otherAlternate.targetType));
+      }
       return dataset;
     });
     return result;

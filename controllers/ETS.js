@@ -25,7 +25,7 @@ class ETS extends SurveyController {
     this.params = Object.fromEntries(new URLSearchParams(window.location.search));
 
     const hasNeededParams = JSON.stringify(Object.keys(this.params).sort()) ===
-      '["datasetLabel","nativeRawData","nativeThinking","priorAlternateCount","targetType","timestamp"]';
+      '["datasetLabel","nativeRawData","nativeThinking","otherPriors","priorAlternateCount","targetType","timestamp"]';
 
     // Redirect people to the main page if they haven't consented yet, or if
     // the URL got mangled somehow
@@ -34,6 +34,7 @@ class ETS extends SurveyController {
     }
 
     this.params.priorAlternateCount = parseInt(this.params.priorAlternateCount);
+    this.params.otherPriors = JSON.parse(this.params.otherPriors);
   }
   extractResponses (defaultFormValues = {}) {
     return super.extractResponses(Object.assign({}, this.params, defaultFormValues));

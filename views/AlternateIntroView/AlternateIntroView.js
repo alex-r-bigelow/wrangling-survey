@@ -32,9 +32,19 @@ class AlternateIntroView extends SurveyView {
       'textual': this.resources[8],
       'media': this.resources[9]
     };
+    this.targetTypeLabels = {
+      'tabular': '<span class="inspectable">tabular</span>',
+      'network': 'a <span class="inspectable">network</span> or <span class="inspectable">hierarchy</span>',
+      'spatial': '<span class="inspectable">spatial</span> or <span class="inspectable">temporal</span>',
+      'grouped': '<span class="inspectable">grouped</span>',
+      'textual': '<span class="inspectable">textual</span>',
+      'media': '<span class="inspectable">media</span>'
+    };
     this.d3el.selectAll('.datasetLabel').text(window.controller.params.datasetLabel);
-    this.d3el.selectAll('.targetType').text(window.controller.params.targetType);
+    this.d3el.selectAll('.targetType').html(this.targetTypeLabels[window.controller.params.targetType]);
     this.d3el.select('.creativeProdding').html(this.creativeProdding[window.controller.params.targetType]);
+    this.d3el.selectAll('.showIfPriorSpatial').style('display',
+      window.controller.params.otherPriors.indexOf('spatial') === -1 ? 'none' : null);
     this.collectKeyElements();
   }
   isEnabled () {

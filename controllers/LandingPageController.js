@@ -13,8 +13,8 @@ class LandingPageController extends SurveyController {
       SettingsView,
       DashboardView
     ]);
-    this.currentSurveyViewIndex = this.surveyViews.length - 1;
-    this.on('load', () => { this.advanceSurvey(); });
+    this.currentSurveyViewIndex = 0;
+    this.on('load', () => { this.advanceSurvey(this.surveyViews.length - 1); });
   }
   get unfinishedResponse () {
     // Always treat contact settings as "unfinished;" we'll never have access to
@@ -29,16 +29,24 @@ class LandingPageController extends SurveyController {
   }
   async advanceSurvey (viewIndex = this.currentSurveyViewIndex + 1) {
     const formData = this.extractResponses();
+    // First check if all the views up to viewIndex are either valid or disabled
     let forcedIndex = 0;
     while (this.surveyViews[forcedIndex] && forcedIndex < viewIndex) {
       if (this.surveyViews[forcedIndex].isEnabled(formData.formValues) &&
-          (!formData.viewStates[forcedIndex].valid)) {
+          !formData.viewStates[forcedIndex].valid) {
+        viewIndex = forcedIndex;
+        this.forceInvalidFieldWarnings = true;
         break;
       }
       forcedIndex++;
     }
-    this.forceInvalidFieldWarnings = forcedIndex < viewIndex;
-    viewIndex = forcedIndex;
+    if (forcedIndex === viewIndex) {
+      // We've made it this far okay; continue as long as views are disabled
+      this.forceInvalidFieldWarnings = false;
+      while (this.surveyViews[viewIndex] && !this.surveyViews[viewIndex].isEnabled(formData.formValues)) {
+        viewIndex++;
+      }
+    }
     if (this.surveyViews[viewIndex]) {
       this.currentSurveyViewIndex = viewIndex;
       this.surveyViews[viewIndex].trigger('open');
