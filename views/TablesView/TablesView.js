@@ -33,38 +33,7 @@ class TablesView extends SurveyView {
       (window.controller.params && window.controller.params.targetType === 'tabular');
   }
   validateForm (formValues) {
-    const nTables = formValues[`${this.state}NTables`];
-    let emptyCells = {};
-    const initExampleData = formValues[`${this.state}ExampleData`];
-    if (initExampleData) {
-      for (const [key, value] of Object.entries(initExampleData)) {
-        const [table, row, col] = key.match(/table([^_]*)_([^_]*)_([^_]*)/).slice(1, 4);
-        if (table === '2' && nTables === '1') {
-          // Clear out the unused table
-          initExampleData[key] = '';
-        } else if (!value && (row === 'H' || col === 'H')) {
-          // Use the placeholder values if the user didn't provide them for the headers
-          initExampleData[key] = this.d3el.select(`[data-role="${key}"]`).property('placeholder');
-        } else if (!value) {
-          // Note that there are empty cells
-          emptyCells[this.state + key] = true;
-        }
-      }
-    }
-
-    const nuanceFlags = formValues[`${this.state}TableNuances`];
-    if (!nuanceFlags || nuanceFlags.indexOf('Nested cell structures') === -1) {
-      delete formValues[`${this.state}TableNestedExample`];
-    }
-    let invalidIds = {};
-    if (nTables === undefined) {
-      invalidIds[`${this.state}OneTable`] = invalidIds[`${this.state}TwoTables`] = invalidIds[`${this.state}ThreeTables`] = true;
-    }
-    if (nuanceFlags && Object.keys(emptyCells).length > 0 && nuanceFlags.indexOf('Empty cells') === -1) {
-      invalidIds[`${this.state}EmptyCells`] = true;
-      Object.assign(invalidIds, emptyCells);
-    }
-
+    const invalidIds = {};
     return {
       valid: Object.keys(invalidIds).length === 0,
       invalidIds

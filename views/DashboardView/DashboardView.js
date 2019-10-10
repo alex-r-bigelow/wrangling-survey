@@ -82,7 +82,7 @@ class DashboardView extends SurveyView {
         datasetLabel: d.datasetLabel,
         timestamp: d.timestamp
       }));
-      window.location.href = `/ETS?${params.toString()}`;
+      window.location.href = `ETS?${params.toString()}`;
     });
   }
   isEnabled () {
