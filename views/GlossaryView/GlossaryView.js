@@ -48,9 +48,9 @@ class GlossaryView extends SurveyView {
     // for replacement
     const self = this;
     d3.selectAll('.inspectable')
-      .attr('data-term', function () { return pluralize.singular(this.innerText.toLocaleLowerCase()); })
-      .attr('data-pluralize', function () { return pluralize.isPlural(this.innerText) ? 'true' : null; })
-      .attr('data-capitalize', function () { return this.innerText.match(/^[A-Z]/) ? 'true' : null; })
+      .attr('data-term', function () { return pluralize.singular((this.dataset.coreTerm || this.innerText).toLocaleLowerCase()); })
+      .attr('data-pluralize', function () { return this.dataset.coreTerm || !pluralize.isPlural(this.innerText) ? null : 'true'; })
+      .attr('data-capitalize', function () { return (this.dataset.coreTerm || this.innerText).match(/^[A-Z]/) ? 'true' : null; })
       .on('click', function () {
         d3.event.preventDefault();
         d3.event.stopPropagation();
@@ -68,9 +68,12 @@ class GlossaryView extends SurveyView {
     }
     this.d3el.selectAll('[data-term]').each(function () {
       const term = terminology[this.dataset.term] || this.dataset.term;
-      d3.select(this).select('h3').text(term);
+      d3.select(this).select('h3').text(this.dataset.coreTerm || term);
     });
     d3.selectAll('.inspectable').each(function () {
+      if (this.dataset.coreTerm) {
+        return; // don't change something that deviates significantly enough from the coreTerm
+      }
       this.innerText = terminology[this.dataset.term] || this.dataset.term;
       if (this.dataset.pluralize) {
         this.innerText = pluralize.plural(this.innerText);

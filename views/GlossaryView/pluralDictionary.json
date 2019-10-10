@@ -10,7 +10,8 @@
     "connected",
     "categorical",
     "ordinal",
-    "quantitative"
+    "quantitative",
+    "metadata"
   ],
   "irregular": {}
 }
