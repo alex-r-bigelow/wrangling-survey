@@ -18,8 +18,9 @@ class GroupedView extends SurveyView {
       (window.controller.params && window.controller.params.targetType === 'grouped');
   }
   validateForm (formValues) {
-    const invalidIds = {};
-    // TODO
+    const invalidIds = super.requireFields(formValues, [
+      'numGroups'
+    ]);
     return {
       valid: Object.keys(invalidIds).length === 0,
       invalidIds

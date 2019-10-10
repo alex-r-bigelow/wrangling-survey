@@ -18,8 +18,9 @@ class SpatialView extends SurveyView {
       (window.controller.params && window.controller.params.targetType === 'spatial');
   }
   validateForm (formValues) {
-    const invalidIds = {};
-    // TODO
+    const invalidIds = super.requireFields(formValues, [
+      'nDimensions'
+    ]);
     return {
       valid: Object.keys(invalidIds).length === 0,
       invalidIds

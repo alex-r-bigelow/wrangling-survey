@@ -177,6 +177,9 @@ class SurveyController extends Model {
               self.database.setResponse(self.tableName, formData.formValues);
               await self.database.submitResponse(self.tableName);
               window.location.href = 'index.html';
+            } else if (!formData.viewStates[i].valid) {
+              self.forceInvalidFieldWarnings = true;
+              self.renderAllViews();
             }
           });
       });

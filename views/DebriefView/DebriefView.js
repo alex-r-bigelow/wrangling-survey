@@ -18,9 +18,14 @@ class DebriefView extends SurveyView {
     return true;
   }
   validateForm (formValues) {
+    const invalidIds = super.requireFields(formValues, [
+      'numItems',
+      'numAttributes',
+      'datasetSize'
+    ]);
     return {
-      valid: true,
-      invalidIds: {}
+      valid: Object.keys(invalidIds).length === 0,
+      invalidIds
     };
   }
 }

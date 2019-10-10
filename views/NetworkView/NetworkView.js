@@ -490,7 +490,11 @@ class NetworkView extends SurveyView {
   }
   validateForm (formValues) {
     formValues['exampleNetwork'] = this._exampleNetwork;
-    const invalidIds = {};
+    const invalidIds = super.requireFields(formValues, [
+      'nodeClassCount',
+      'edgeClassCount',
+      'edgeDirection'
+    ]);
     return { valid: Object.keys(invalidIds).length === 0, invalidIds };
   }
 }

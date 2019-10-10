@@ -33,7 +33,9 @@ class TablesView extends SurveyView {
       (window.controller.params && window.controller.params.targetType === 'tabular');
   }
   validateForm (formValues) {
-    const invalidIds = {};
+    const invalidIds = super.requireFields(formValues, [
+      'nTables'
+    ]);
     return {
       valid: Object.keys(invalidIds).length === 0,
       invalidIds

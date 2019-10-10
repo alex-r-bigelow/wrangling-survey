@@ -1,16 +1,30 @@
 <p class="introText">Please answer the following in terms of how <strong>you</strong> would interpret the dataset as <span class="inspectable">media</span>&mdash;not necessarily how it would be stored in a computer.</p>
 
-<h3>Would you expect any of the following to exist in the dataset?</h3>
+<h3>Color</h3>
 <div class="field">
-  <input type="checkbox" data-key="mediaDetails" data-checked-value="Images" id="mediaDetailsImages" />
-  <label class="inspectable" for="mediaDetailsImages">Images</label>
+  <p>How many <span class="inspectable">color channels</span> are there?</p>
+  <div class="likert" data-key="colorChannelCount" id="colorChannelCount" data-likert="0,1,2,3,&ge;4"></div>
+</div>
+
+<h3>Which of the following would you expect to exist in the dataset?</h3>
+<div class="field">
+  <input type="checkbox" data-key="mediaDetails" data-checked-value="RasterImages" id="mediaDetailsRasterImages" />
+  <label for="mediaDetailsRasterImages"><span class="inspectable">Raster</span> <span class="inspectable">images</span></label>
 </div>
 <div class="field">
-  <input type="checkbox" data-key="mediaDetails" data-checked-value="Images" id="mediaDetailsAudio" />
+  <input type="checkbox" data-key="mediaDetails" data-checked-value="VectorImages" id="mediaDetailsVectorImages" />
+  <label for="mediaDetailsVectorImages"><span class="inspectable">Vector</span> <span class="inspectable">images</span></label>
+</div>
+<div class="field">
+  <input type="checkbox" data-key="mediaDetails" data-checked-value="ImageSequences" id="mediaDetailsImageSequences" />
+  <label for="mediaDetailsImageSequences"><span class="inspectable">Image</span> sequences</label>
+</div>
+<div class="field">
+  <input type="checkbox" data-key="mediaDetails" data-checked-value="Audio" id="mediaDetailsAudio" />
   <label class="inspectable" for="mediaDetailsAudio">Audio</label>
 </div>
 <div class="field">
-  <input type="checkbox" data-key="mediaDetails" data-checked-value="Images" id="mediaDetailsVideos" />
+  <input type="checkbox" data-key="mediaDetails" data-checked-value="Videos" id="mediaDetailsVideos" />
   <label class="inspectable" for="mediaDetailsVideos">Videos</label>
 </div>
 

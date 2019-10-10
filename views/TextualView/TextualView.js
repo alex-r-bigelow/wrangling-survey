@@ -18,7 +18,10 @@ class TextualView extends SurveyView {
       (window.controller.params && window.controller.params.targetType === 'textual');
   }
   validateForm (formValues) {
-    const invalidIds = {};
+    const invalidIds = super.requireFields(formValues, [
+      'numDocuments',
+      'grammarType'
+    ]);
     // TODO
     return {
       valid: Object.keys(invalidIds).length === 0,
