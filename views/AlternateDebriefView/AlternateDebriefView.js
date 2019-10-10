@@ -19,9 +19,19 @@ class AlternateDebriefView extends SurveyView {
     return true;
   }
   validateForm (formValues) {
+    const invalidIds = super.requireFields(formValues, [
+      'hardToImagine',
+      'newQuestions',
+      'inaccurate',
+      'useful',
+      'moreLikely',
+      'needsNewData',
+      'planToReshape',
+      'hardInPractice'
+    ]);
     return {
-      valid: true,
-      invalidIds: {}
+      valid: Object.keys(invalidIds).length === 0,
+      invalidIds
     };
   }
 }
