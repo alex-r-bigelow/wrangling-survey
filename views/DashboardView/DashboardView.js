@@ -31,7 +31,7 @@ class DashboardView extends SurveyView {
     this.d3el.select('.datasetsCount')
       .text(`${nDatasets} dataset${nDatasets === 1 ? '' : 's'} described`);
     const nExplorations = (summary.responses['DR.ETS'] || []).length;
-    this.d3el.select('.terminologyCount')
+    this.d3el.select('.alternateCount')
       .text(`${nExplorations} alternate perspective${nExplorations === 1 ? '' : 's'} explored`);
 
     let dasResponses = this.d3el.select('.datasetTable tbody')
