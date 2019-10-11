@@ -47,6 +47,11 @@ class Database extends Model {
       window.localStorage.setItem('browserId', this.browserId);
     }
 
+    // Survey versioning, in case we need to purge / tweak pilot participants'
+    // localStorage in the future
+    this.surveyVersion = window.localStorage.getItem('surveyVersion') || '0.1.0';
+    window.localStorage.setItem('surveyVersion', this.surveyVersion);
+
     this.unfinishedResponses = window.localStorage.getItem('unfinishedResponses');
     this.unfinishedResponses = this.unfinishedResponses ? JSON.parse(this.unfinishedResponses) : {};
 
@@ -256,7 +261,7 @@ class Database extends Model {
     return result;
   }
   get contextIsConference () {
-    return ['VIS', 'Supercomputing'].indexOf(this.context) !== -1;
+    return ['VIS', 'Supercomputing', 'HDC_Pilot'].indexOf(this.context) !== -1;
   }
   get contextIsDesignStudyReview () {
     return this.context === 'DesignStudyReview';
