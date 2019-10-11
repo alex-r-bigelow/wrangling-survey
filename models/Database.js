@@ -58,11 +58,27 @@ class Database extends Model {
     this.pendingResponseStrings = window.localStorage.getItem('pendingResponseStrings');
     this.pendingResponseStrings = this.pendingResponseStrings ? JSON.parse(this.pendingResponseStrings) : {};
 
+    this.combineTerminology([
+      Object.values(this.unfinishedResponses),
+      Object.values(this.pendingResponseStrings).map(responseString => JSON.parse(responseString))
+    ]);
+
     this.loadingData = true;
 
     this.on('load', () => {
       this.updateData();
     });
+  }
+  combineTerminology (responseLists) {
+    // Combine all of the terminology, sorted by timestamp
+    this.terminology = {};
+    const sortedTerminology = responseLists
+      .reduce((agg, responseList) => {
+        return agg.concat(responseList);
+      }, [])
+      .sort((a, b) => a.timestamp - b.timestamp)
+      .map(response => response.terminology || {});
+    Object.assign(this.terminology, ...sortedTerminology);
   }
   async updateData () {
     if (this.loadingData && this.dataPromise) {
@@ -96,7 +112,7 @@ class Database extends Model {
                     this.ownedResponses[tableSpec[0]] = this.ownedResponses[tableSpec[0]] || [];
                     this.ownedResponses[tableSpec[0]].push(result);
                   }
-                  // Was this a pending response?
+                  // Was this a pending response? If so, we can clean it out
                   if (this.pendingResponseStrings[tableSpec[0]]) {
                     const pendingResponseIndex = this.pendingResponseStrings[tableSpec[0]].indexOf(payloadString);
                     if (pendingResponseIndex !== -1) {
@@ -112,6 +128,11 @@ class Database extends Model {
             });
         });
       await Promise.all(dataPromises);
+      this.combineTerminology([
+        Object.values(this.unfinishedResponses),
+        Object.values(this.pendingResponseStrings).map(responseString => JSON.parse(responseString)),
+        Object.values(this.ownedResponses)
+      ]);
       this.loadingData = false;
       this.trigger('update');
       resolve();
@@ -120,6 +141,7 @@ class Database extends Model {
   }
   setResponse (tableName, responseValues) {
     this.unfinishedResponses[tableName] = responseValues;
+    Object.assign(this.terminology, responseValues.terminology || {});
     window.localStorage.setItem('unfinishedResponses', JSON.stringify(this.unfinishedResponses));
   }
   async submitResponse (tableName, anonymous = false) {
@@ -195,14 +217,8 @@ class Database extends Model {
         result.responses[pendingKey].push(response);
       }
     }
-    // Combine all of the terminology, sorted by timestamp
-    const sortedTerminology = Object.values(result.responses)
-      .reduce((agg, responseList) => {
-        return agg.concat(responseList);
-      }, [])
-      .sort((a, b) => a.timestamp - b.timestamp)
-      .map(response => response.terminology || {});
-    Object.assign(result.terminology, ...sortedTerminology);
+    // Add the combined terminology from this and previous responses
+    Object.assign(result.terminology, this.terminology);
     // Collect the datasets, sort relevant explorations into them, and determine
     // the ideal next alternate to explore
     result.datasetList = (result.responses['DR.DAS'] || []).map(dataset => {

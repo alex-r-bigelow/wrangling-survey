@@ -9,7 +9,10 @@ class SurveyController extends Model {
   constructor (tableName, viewClasses) {
     super();
     this.database = new Database();
-    this.database.on('update', () => { this.renderAllViews(); });
+    this.database.on('update', () => {
+      this.renderAllViews();
+      this.glossary.updateTerminology(this.database.terminology);
+    });
 
     this.glossary = new GlossaryView();
     this.initialPaneIndex = 0;
@@ -24,6 +27,7 @@ class SurveyController extends Model {
     (async () => {
       await this.setupViews(viewClasses);
       this.setupSurveyListeners();
+      this.glossary.connectTerminology();
       // Is the user currently working on a response to this survey? If so,
       // pre-populate with values they already chose
       if (this.unfinishedResponse) {
@@ -31,7 +35,6 @@ class SurveyController extends Model {
           view.populateForm(this.unfinishedResponse);
         }
       }
-      this.glossary.connectTerminology();
       this.finishSetup();
       await less.pageLoadFinished;
       // Wait for LESS to finish loading before applying our SVG

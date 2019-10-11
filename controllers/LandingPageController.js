@@ -17,6 +17,9 @@ class LandingPageController extends SurveyController {
     this.on('load', () => { this.advanceSurvey(this.surveyViews.length - 1); });
   }
   get unfinishedResponse () {
+    if (super.unfinishedResponse) {
+      return super.unfinishedResponse;
+    }
     // Always treat contact settings as "unfinished;" we'll never have access to
     // the submitted response in Google docs because it's private, but it will
     // still be hanging around in pendingResponseStrings (and will never get
