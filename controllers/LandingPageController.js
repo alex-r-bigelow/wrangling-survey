@@ -3,6 +3,7 @@ import SurveyController from './SurveyController.js';
 import ConsentView from '../views/ConsentView/ConsentView.js';
 import GdprView from '../views/GdprView/GdprView.js';
 import SettingsView from '../views/SettingsView/SettingsView.js';
+import AboutView from '../views/AboutView/AboutView.js';
 import DashboardView from '../views/DashboardView/DashboardView.js';
 
 class LandingPageController extends SurveyController {
@@ -11,6 +12,7 @@ class LandingPageController extends SurveyController {
       ConsentView,
       GdprView,
       SettingsView,
+      AboutView,
       DashboardView
     ]);
     this.currentSurveyViewIndex = 0;
