@@ -18,10 +18,6 @@ class DomainView extends SurveyView {
       'Corpus of news articles'
     ];
   }
-  get datasetLabel () {
-    const labelElement = this.d3el.select('[data-key="datasetLabel"]').node();
-    return labelElement && labelElement.value;
-  }
   setup () {
     this.d3el.html(this.resources[1]);
 
@@ -31,24 +27,19 @@ class DomainView extends SurveyView {
       .enter().append('option')
       .attr('value', d => d);
 
-    this.d3el.select('.designStudyReviewOnly')
-      .style('display', window.controller.database.contextIsDesignStudyReview ? null : 'none');
-
     super.collectKeyElements();
-  }
-  draw () {
-    this.d3el.select('.next.button').classed('disabled', !this.datasetLabel);
   }
   isEnabled (formValues) {
     return true;
   }
   validateForm (formValues) {
-    const invalidIds = {};
-    const valid = !!formValues.datasetLabel;
-    if (!valid) {
-      invalidIds['datasetLabel'] = true;
-    }
-    return { valid, invalidIds };
+    const invalidIds = super.requireFields(formValues, [
+      'datasetLabel'
+    ]);
+    return {
+      valid: Object.keys(invalidIds).length === 0,
+      invalidIds
+    };
   }
 }
 export default DomainView;

@@ -1,6 +1,7 @@
 import SurveyController from './SurveyController.js';
 
 import DomainView from '../views/DomainView/DomainView.js';
+import BasicCharacteristicsView from '../views/BasicCharacteristicsView/BasicCharacteristicsView.js';
 import DataTypeView from '../views/DataTypeView/DataTypeView.js';
 import TablesView from '../views/TablesView/TablesView.js';
 import NetworkView from '../views/NetworkView/NetworkView.js';
@@ -14,6 +15,7 @@ class DAS extends SurveyController {
   constructor () {
     super('DR.DAS', [
       DomainView,
+      BasicCharacteristicsView,
       DataTypeView,
       TablesView,
       NetworkView,
