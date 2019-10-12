@@ -60,7 +60,7 @@ class Database extends Model {
 
     this.combineTerminology([
       Object.values(this.unfinishedResponses),
-      Object.values(this.pendingResponseStrings).map(responseString => JSON.parse(responseString))
+      this.getPendingResponses()
     ]);
 
     this.loadingData = true;
@@ -68,6 +68,11 @@ class Database extends Model {
     this.on('load', () => {
       this.updateData();
     });
+  }
+  getPendingResponses () {
+    return Object.values(this.pendingResponseStrings).reduce((agg, responseStringList) => {
+      return agg.concat(responseStringList.map(responseString => JSON.parse(responseString)));
+    }, []);
   }
   combineTerminology (responseLists) {
     // Combine all of the terminology, sorted by timestamp
@@ -130,7 +135,7 @@ class Database extends Model {
       await Promise.all(dataPromises);
       this.combineTerminology([
         Object.values(this.unfinishedResponses),
-        Object.values(this.pendingResponseStrings).map(responseString => JSON.parse(responseString)),
+        this.getPendingResponses(),
         Object.values(this.ownedResponses)
       ]);
       this.loadingData = false;
