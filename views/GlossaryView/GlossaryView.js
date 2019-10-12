@@ -28,6 +28,14 @@ class GlossaryView extends SurveyView {
         element.insert('h3', ':first-child')
           .text(this.dataset.term);
       });
+    this.d3el.select('.toggle.button').on('click', () => {
+      if (!this.d3el.classed('unfocused')) {
+        this.d3el.classed('unfocused', true);
+        d3.select('.survey.pageSlice').classed('unfocused', false);
+        // d3.event.preventDefault();
+        d3.event.stopPropagation();
+      }
+    });
     // Add the plural dictionary
     for (const [regex, replace] of Object.entries(this.resources[2].plural)) {
       pluralize.addPluralRule(new window.RexExp(regex), replace);
@@ -86,7 +94,6 @@ class GlossaryView extends SurveyView {
   show (term) {
     term = term.toLocaleLowerCase();
     window.controller.focusPane(this.d3el.node());
-    this.d3el.select('details').attr('open', '');
     if (!this.terms[term]) {
       window.console.warn('No definition for term: ' + term);
     } else {
