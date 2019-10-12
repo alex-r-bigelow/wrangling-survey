@@ -6,6 +6,13 @@ class SurveyView extends IntrospectableMixin(View) {
   constructor () {
     super(...arguments);
     this.keyElements = [];
+    this.on('open', () => {
+      let header = this.d3el.node();
+      header = header && d3.select(header.parentNode).select('summary').node();
+      if (header) {
+        header.scrollIntoView();
+      }
+    });
   }
   get className () {
     return this.type;
