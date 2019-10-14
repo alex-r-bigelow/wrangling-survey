@@ -9,27 +9,9 @@ class NetworkView extends SurveyView {
     ]);
     this.humanLabel = '<span class="inspectable">Network</span> / <span class="inspectable">Hierarchy</span> Data Details';
 
-    // Start out with a graph, so that people aren't confronted with
-    // an empty canvas
-    this._exampleNetwork = {
-      nodes: [
-        { label: '0' },
-        { label: '1' },
-        { label: '2' }
-      ],
-      edges: [
-        { source: 0, target: 1, directed: true },
-        { source: 1, target: 2, directed: true }
-      ]
-    };
-    this._selectedNode = null;
-    this._selectedEdge = null;
-
-    this._nodesChanged = true;
-    this._edgesChanged = true;
-
     this.on('open', () => {
       this._justOpened = true;
+      this.render();
     });
   }
   getNewNode () {
@@ -49,8 +31,65 @@ class NetworkView extends SurveyView {
   get sufficientNodesAndEdges () {
     return this._exampleNetwork.nodes.length >= 2 && this._exampleNetwork.edges.length >= 2;
   }
+  populateForm (formValues) {
+    super.populateForm(formValues);
+    this.populateNetwork(formValues['exampleNetwork']);
+    // The DOM will have been nuked by super.populateForm; force an immediate draw
+    this.draw();
+  }
+  parseFormNetwork (rawFields) {
+    // Reshape the extracted exampleNetwork into its actual form
+    const nodes = [];
+    let edges = {};
+    for (const [key, value] of Object.entries(rawFields)) {
+      const nodeMatch = key.match(/node(\d+)/);
+      if (nodeMatch) {
+        nodes.push({ label: value, index: parseInt(nodeMatch[1]) });
+      } else {
+        const edgeMatch = key.match(/edge(\d+)(.*)/);
+        const index = edgeMatch[1];
+        edges[index] = edges[index] || { index: parseInt(index) };
+        if (edgeMatch[2] === 'source') {
+          edges[index].source = parseInt(value);
+        } else if (edgeMatch[2] === 'target') {
+          edges[index].target = parseInt(value);
+        } else {
+          edges[index].directed = value;
+        }
+      }
+    }
+    nodes.sort((a, b) => a.index - b.index).forEach(node => { delete node.index; });
+    edges = Object.values(edges);
+    edges.sort((a, b) => a.index - b.index).forEach(edge => { delete edge.index; });
+    return { nodes, edges };
+  }
+  populateNetwork (exampleNetwork) {
+    this._exampleNetwork = exampleNetwork;
+    this._selectedNode = null;
+    this._selectedEdge = null;
+
+    this._nodesChanged = true;
+    this._edgesChanged = true;
+    this.render();
+  }
   setup () {
     this.d3el.html(this.resources[1]);
+
+    if (!this._exampleNetwork) {
+      // Start out with a graph, so that people aren't confronted with
+      // an empty canvas
+      this.populateNetwork({
+        nodes: [
+          { label: 'Please' },
+          { label: 'change' },
+          { label: 'me' }
+        ],
+        edges: [
+          { source: 0, target: 1, directed: true },
+          { source: 1, target: 2, directed: true }
+        ]
+      });
+    }
 
     this.d3el.select('.create.node.button').on('click', () => {
       this._exampleNetwork.nodes.push(this.getNewNode());
@@ -83,6 +122,16 @@ class NetworkView extends SurveyView {
     this.populateSelectMenus(this.d3el.selectAll('.edgeFields .target'), 'target', d => d.target);
     this.enableButtons(); // Important that this comes after populateSelectMenus
     this.drawNodeLinkDiagram();
+    if (this._nodesChanged || this._edgesChanged || this._justOpened) {
+      // Restart the simulation in any of the above scenarios, redo our list
+      // of key elements / their event listeners, and then clear those flags
+      this.simulation.alphaTarget(0.3).restart();
+      this.collectKeyElements();
+      this.setupSurveyListeners();
+      this._nodesChanged = false;
+      this._edgesChanged = false;
+      this._justOpened = false;
+    }
   }
   enableButtons () {
     const newEdge = this.getNewEdge();
@@ -132,8 +181,8 @@ class NetworkView extends SurveyView {
     }
   }
   drawNodeFields () {
-    let nodes = this.d3el.select('.nodeFields')
-      .selectAll('.field').data(this._exampleNetwork.nodes);
+    let nodes = this.d3el.select('.nodeFields').selectAll('.field')
+      .data(this._exampleNetwork.nodes, node => JSON.stringify(node));
     nodes.exit().remove();
     const nodesEnter = nodes.enter().append('div')
       .classed('node', true)
@@ -151,19 +200,9 @@ class NetworkView extends SurveyView {
       .attr('data-key', 'exampleNetwork')
       .attr('data-role', (d, i) => `node${i}`)
       .attr('id', (d, i) => `node${i}`);
-    const self = this;
-    let updateTimeout;
-    function updateLabel (d) {
-      window.clearTimeout(updateTimeout);
-      updateTimeout = window.setTimeout(() => {
-        d.label = this.value;
-        self.render();
-      }, 500);
-    }
+      // .property('value', d => d.label);
     nodes.select('input')
-      .property('value', d => d.label)
-      .on('change', updateLabel)
-      .on('keyup', updateLabel);
+      .property('value', d => d.label);
 
     const buttonEnter = nodesEnter.append('div')
       .classed('button', true);
@@ -177,9 +216,8 @@ class NetworkView extends SurveyView {
     });
   }
   drawEdgeFields () {
-    const self = this;
-    let edges = this.d3el.select('.edgeFields')
-      .selectAll('.field').data(this._exampleNetwork.edges);
+    let edges = this.d3el.select('.edgeFields').selectAll('.field')
+      .data(this._exampleNetwork.edges, edge => JSON.stringify(edge));
     edges.exit().remove();
     const edgesEnter = edges.enter().append('div')
       .classed('edge', true)
@@ -199,23 +237,11 @@ class NetworkView extends SurveyView {
       .attr('data-key', 'exampleNetwork')
       .attr('data-role', (d, i) => `edge${i}source`)
       .attr('id', (d, i) => `edge${i}source`);
-    edges.select('.source')
-      .on('change', function (d) {
-        d.source = this.value;
-        self._edgesChanged = true;
-        self.render();
-      });
     edgesEnter.append('select')
       .classed('target', true)
       .attr('data-key', 'exampleNetwork')
       .attr('data-role', (d, i) => `edge${i}target`)
       .attr('id', (d, i) => `edge${i}target`);
-    edges.select('.target')
-      .on('change', function (d) {
-        d.target = this.value;
-        self._edgesChanged = true;
-        self.render();
-      });
     const checkboxChunk = edgesEnter.append('div');
     checkboxChunk.append('input')
       .attr('type', 'checkbox')
@@ -223,12 +249,7 @@ class NetworkView extends SurveyView {
       .attr('data-role', (d, i) => `edge${i}directed`)
       .attr('id', (d, i) => `edge${i}directed`);
     edges.select('[type="checkbox"]')
-      .attr('checked', d => d.directed ? '' : null)
-      .on('change', d => {
-        d.directed = !d.directed;
-        this._edgesChanged = true;
-        this.render();
-      });
+      .property('checked', d => d.directed);
     checkboxChunk.append('label')
       .attr('for', (d, i) => `edge${i}directed`)
       .text('Directed');
@@ -256,10 +277,12 @@ class NetworkView extends SurveyView {
       .property('value', (d, i) => d === null ? 'null' : i - 1)
       .text(d => d === null ? `Choose a ${type} node` : d.node.label);
 
-    if (optionList.length === 1) {
-      selectMenus.property('selectedIndex', 0);
-    } else if (valueFunc) {
-      selectMenus.property('value', valueFunc);
+    if (this._nodesChanged || this._edgesChanged || this._justOpened) {
+      if (optionList.length === 1) {
+        selectMenus.property('selectedIndex', 0);
+      } else if (valueFunc) {
+        selectMenus.property('value', valueFunc);
+      }
     }
   }
   drawNodeLinkDiagram () {
@@ -474,22 +497,15 @@ class NetworkView extends SurveyView {
       edges.select('.visible').attr('d', computeEdge);
       nodes.attr('transform', d => `translate(${d.x},${d.y})`);
     });
-
-    if (this._nodesChanged || this._edgesChanged || this._justOpened) {
-      // Restart the simulation in any of the above scenarios, and clear those
-      // flags for future draw() calls
-      this.simulation.alphaTarget(0.3).restart();
-      this._nodesChanged = false;
-      this._edgesChanged = false;
-      this._justOpened = false;
-    }
   }
   isEnabled (formValues) {
     return (formValues.networkThinking && formValues.networkThinking !== 'Never') ||
       (window.controller.params && window.controller.params.targetType === 'network');
   }
   validateForm (formValues) {
-    formValues['exampleNetwork'] = this._exampleNetwork;
+    formValues.exampleNetwork = this.parseFormNetwork(formValues.exampleNetwork);
+    this.populateNetwork(formValues.exampleNetwork);
+
     const invalidIds = super.requireFields(formValues, [
       'nodeClassCount',
       'edgeClassCount',

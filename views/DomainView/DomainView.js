@@ -34,6 +34,7 @@ class DomainView extends SurveyView {
   }
   validateForm (formValues) {
     const invalidIds = super.requireFields(formValues, [
+      'domainDescription',
       'datasetLabel'
     ]);
     return {

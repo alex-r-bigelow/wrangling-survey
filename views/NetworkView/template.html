@@ -19,13 +19,14 @@
 <h3>Please create a few examples of what <span class="inspectable">nodes</span> and <span class="inspectable">edges</span> might look like.</h3>
 <p>Feel free to invent fake data, and please remember that these examples will be public.</p>
 <p><span class="inspectable">Nodes</span>:</p>
-<div class="nodeFields"></div>
 <div class="new node field">
   <input placeholder="Provide a node label (optional)"/>
-  <div class="create node button"><a></a><div class="label">Create <span class="inspectable">Node</span></div></div>
+  <div class="create node button"><a></a><div class="label">Create</div></div>
 </div>
+<hr/>
+<div class="nodeFields"></div>
+
 <p><span class="inspectable">Edges</span>:</p>
-<div class="edgeFields"></div>
 <div class="new edge field">
   <select class="source"></select>
   <select class="target"></select>
@@ -33,8 +34,10 @@
     <input type="checkbox" id="newEdgeDirected" class="directed"/>
     <label for="newEdgeDirected">Directed</label>
   </div>
-  <div class="create edge button"><a></a><div class="label">Create <span class="inspectable">Edge</span></div></div>
+  <div class="create edge button"><a></a><div class="label">Create</div></div>
 </div>
+<hr/>
+<div class="edgeFields"></div>
 <p>Preview:</p>
 <p class="insufficientNodesAndEdges">Please create at least two nodes and two edges</p>
 <svg class="exampleData" id="networkPreview">

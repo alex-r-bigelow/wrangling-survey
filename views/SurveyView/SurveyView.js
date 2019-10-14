@@ -41,6 +41,31 @@ class SurveyView extends IntrospectableMixin(View) {
         .text(d => d);
     });
   }
+  setupSurveyListeners () {
+    let debounceTimeout;
+    const getDebouncedChangeHandler = (delay, refocus = false) => {
+      return function () {
+        window.clearTimeout(debounceTimeout);
+        debounceTimeout = window.setTimeout(async () => {
+          const formData = window.controller.extractResponses();
+          window.controller.database.setResponse(window.controller.tableName, formData.formValues);
+          window.controller.glossary.updateTerminology(formData.formValues.terminology);
+          await window.controller.renderAllViews(formData);
+          if (refocus) {
+            this.focus();
+          }
+        }, delay);
+      };
+    };
+    const standardHandler = getDebouncedChangeHandler(0);
+    this.d3el.selectAll('[data-key]').on('change.survey', standardHandler);
+    this.d3el.selectAll('[data-key][type="radio"], [data-key][type="checkbox"]')
+      .on('click.survey', standardHandler);
+    this.d3el.selectAll('.likert [type="radio"]')
+      .on('click.survey', standardHandler);
+    this.d3el.selectAll('textarea[data-key], [type="text"][data-key]')
+      .on('keyup.survey', getDebouncedChangeHandler(1000, true));
+  }
   computeStateFromFormValues (formValues) {
     const enabled = this.isEnabled(formValues);
     if (enabled) {
@@ -63,7 +88,7 @@ class SurveyView extends IntrospectableMixin(View) {
         } else if (element.dataset.role) {
           // { data-key: { data-role: element value } }
           formValues[key] = formValues[key] || {};
-          formValues[key][element.dataset.role] = element.value;
+          formValues[key][element.dataset.role] = element.type === 'checkbox' ? element.checked : element.value;
         } else if (element.dataset.checkedValue) {
           // { data-key: data-checkedValue }
           if (element.checked) {
@@ -110,10 +135,14 @@ class SurveyView extends IntrospectableMixin(View) {
       } else if (this.dataset.role) {
         // { data-key: { data-role: element value } }
         let value = formValues[key] && formValues[this.dataset.role];
-        if (value === undefined) {
-          value = '';
+        if (this.type === 'checkbox') {
+          this.checked = !!value;
+        } else {
+          if (value === undefined) {
+            value = '';
+          }
+          this.value = value;
         }
-        this.value = value;
       } else if (this.dataset.checkedValue) {
         // { data-key: data-checkedValue }
         this.checked = formValues[key] === this.dataset.checkedValue;

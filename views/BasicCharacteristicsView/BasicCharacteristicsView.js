@@ -13,7 +13,7 @@ class BasicCharacteristicsView extends SurveyView {
 
     this.d3el.select('.designStudyReviewOnly')
       .style('display', window.controller.database.contextIsDesignStudyReview ? null : 'none');
-
+    super.setupLikertFields();
     super.collectKeyElements();
   }
   isEnabled (formValues) {

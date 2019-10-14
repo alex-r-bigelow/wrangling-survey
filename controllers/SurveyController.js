@@ -26,7 +26,6 @@ class SurveyController extends Model {
     window.onresize = () => { this.renderAllViews(); };
     (async () => {
       await this.setupViews(viewClasses);
-      this.setupSurveyListeners();
       this.glossary.connectTerminology();
       // Is the user currently working on a response to this survey? If so,
       // pre-populate with values they already chose
@@ -65,42 +64,14 @@ class SurveyController extends Model {
       .classed('statusIndicator', true);
     surveySections.append('div')
       .attr('class', d => d.className);
-    await Promise.all(surveySections.nodes().map(node => {
+    await Promise.all(surveySections.nodes().map(async node => {
       const d3el = d3.select(node);
       const viewInstance = d3el.datum();
       // Assign DOM elements to each view, and ensure views create all their DOM
       // elements before the next cross-cutting steps
-      return viewInstance.render(d3.select(node).select(`.${viewInstance.className}`));
+      await viewInstance.render(d3.select(node).select(`.${viewInstance.className}`));
+      viewInstance.setupSurveyListeners();
     }));
-  }
-  setupSurveyListeners () {
-    let debounceTimeout;
-    const self = this;
-    const getDebouncedChangeHandler = (delay, refocus = false) => {
-      return function () {
-        window.clearTimeout(debounceTimeout);
-        debounceTimeout = window.setTimeout(async () => {
-          const formData = self.extractResponses();
-          self.database.setResponse(self.tableName, formData.formValues);
-          self.glossary.updateTerminology(formData.formValues.terminology);
-          await self.renderAllViews(formData);
-          if (refocus) {
-            this.focus();
-          }
-        }, delay);
-      };
-    };
-    const standardHandler = getDebouncedChangeHandler(300);
-    d3.selectAll('[data-key]').on('change', standardHandler);
-    d3.selectAll('[data-key][type="radio"], [data-key][type="checkbox"]')
-      .on('click', standardHandler);
-    d3.selectAll('.likert [type="radio"]')
-      .on('click', standardHandler);
-    d3.selectAll('textarea[data-key], [type="text"][data-key]')
-      .on('keyup', getDebouncedChangeHandler(1000, true));
-    for (const view of this.surveyViews) {
-      view.on('formValuesChanged', standardHandler);
-    }
   }
   focusPane (target) {
     d3.selectAll('.pageSlice').classed('unfocused', function () {
