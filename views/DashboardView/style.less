@@ -1,9 +1,19 @@
 @import '../../style/colors.less';
 
 .DashboardView {
-  .idDisplay {
-    font-weight: bold;
-    text-align: center;
+  .conferenceOnly {
+    .split {
+      display: flex;
+      img {
+        height: 10.5em;
+        margin-right: 1em;
+      }
+    }
+    .idDisplay {
+      margin-top: 0;
+      font-weight: bold;
+      text-align: center;
+    }
   }
   .datasetTable {
     border-collapse: collapse;
