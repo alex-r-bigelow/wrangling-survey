@@ -10,7 +10,7 @@ class AboutView extends SurveyView {
   }
   setup () {
     this.d3el.html(this.resources[1]);
-    this.d3el.select('.protest.button').on('click', () => {
+    this.d3el.select('#firstProtestButton').on('click', () => {
       window.localStorage.setItem('firstProtest', 'true');
       window.controller.advanceSurvey();
     });

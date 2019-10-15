@@ -3,9 +3,14 @@ import { View } from '../../node_modules/uki/dist/uki.esm.js';
 import IntrospectableMixin from '../../utils/IntrospectableMixin.js';
 
 class SurveyView extends IntrospectableMixin(View) {
-  constructor () {
-    super(...arguments);
+  constructor (div, resourceList = []) {
+    super(div, resourceList.concat([
+      { type: 'text', url: 'views/SurveyView/protest.html' },
+      { type: 'text', url: 'views/SurveyView/wrongWay.html' }
+    ]));
     this.keyElements = [];
+    this.protesting = false;
+    this.wrongWay = false;
     this.on('open', () => {
       let header = this.d3el.node();
       header = header && d3.select(header.parentNode).select('summary').node();
@@ -66,6 +71,50 @@ class SurveyView extends IntrospectableMixin(View) {
     this.d3el.selectAll('textarea[data-key], [type="text"][data-key]')
       .on('keyup.survey', getDebouncedChangeHandler(1000, true));
   }
+  setupProtest () {
+    if (this.d3el.select('.protest.button').node()) {
+      this.d3el.insert('div', '.hideIfProtesting + *')
+        .classed('showIfProtesting', true)
+        .html(this.resources[this.resources.length - 2]);
+      this.d3el.select('.protest.button').on('click', () => {
+        this.protesting = true;
+        this.wrongWay = false;
+        const wrongWayReason = this.d3el.select('[data-key="wrongWay"]');
+        if (wrongWayReason) {
+          this.d3el.select('[data-key="protest"]')
+            .property(wrongWayReason);
+          this.d3el.select('[data-key="wrongWay"]')
+            .property('value', '');
+        }
+        this.drawProtest();
+      });
+    }
+    if (this.d3el.select('.wrongWay.button').node()) {
+      this.d3el.insert('div', '.hideIfProtesting + *')
+        .classed('showIfWrongWay', true)
+        .html(this.resources[this.resources.length - 1]);
+      this.d3el.select('.wrongWay.button').on('click', () => {
+        this.protesting = false;
+        this.wrongWay = true;
+        this.drawProtest();
+      });
+    }
+    this.d3el.select('.restore.button').on('click', () => {
+      this.protesting = false;
+      this.wrongWay = false;
+      this.d3el.selectAll('[data-key="protest"], [data-key="wrongWay"]')
+        .property('value', '');
+      this.drawProtest();
+    });
+    this.drawProtest();
+  }
+  drawProtest () {
+    this.d3el.select('.hideIfProtesting').style('display', this.protesting || this.wrongWay ? 'none' : null);
+    this.d3el.select('.protest.button').style('display', this.protesting ? 'none' : null);
+    this.d3el.select('.restore.button').style('display', this.protesting || this.wrongWay ? null : 'none');
+    this.d3el.select('.showIfProtesting').style('display', this.protesting ? null : 'none');
+    this.d3el.select('.showIfWrongWay').style('display', this.wrongWay ? null : 'none');
+  }
   computeStateFromFormValues (formValues) {
     const enabled = this.isEnabled(formValues);
     if (enabled) {
@@ -122,6 +171,13 @@ class SurveyView extends IntrospectableMixin(View) {
     }
   }
   populateForm (formValues) {
+    /* if (formValues.protest) {
+      this.protesting = true;
+      this.drawProtest();
+    } else if (formValues.wrongWay) {
+      this.wrongWay = true;
+      this.drawProtest();
+    } */
     this.d3el.selectAll('[data-key]').each(function () {
       const key = this.dataset.key;
       if (this.dataset.likert) {

@@ -1,49 +1,55 @@
-<div class="field">
-  <input type="checkbox" data-key="domainDetails" data-flag="priorExperience" id="priorExperience" />
-  <label for="priorExperience">I have worked with this kind of data before</label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="domainDetails" data-flag="hasDataNow" id="hasDataNow" />
-  <label for="hasDataNow">I have this kind of data now</label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="domainDetails" data-flag="plansToUse" id="plansToUse" />
-  <label for="plansToUse">I plan to collect or obtain this kind of data in the future</label>
-</div>
-<div class="field designStudyReviewOnly">
-  <input type="checkbox" data-key="domainDetails" data-flag="summaryOfDesignStudy" id="summaryOfDesignStudy" />
-  <label for="summaryOfDesignStudy">This is a summary of data described in an existing design study</label>
-</div>
+<div class="hideIfProtesting">
+  <div class="field">
+    <input type="checkbox" data-key="domainDetails" data-flag="priorExperience" id="priorExperience" />
+    <label for="priorExperience">I have worked with this kind of data before</label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="domainDetails" data-flag="hasDataNow" id="hasDataNow" />
+    <label for="hasDataNow">I have this kind of data now</label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="domainDetails" data-flag="plansToUse" id="plansToUse" />
+    <label for="plansToUse">I plan to collect or obtain this kind of data in the future</label>
+  </div>
+  <div class="field designStudyReviewOnly">
+    <input type="checkbox" data-key="domainDetails" data-flag="summaryOfDesignStudy" id="summaryOfDesignStudy" />
+    <label for="summaryOfDesignStudy">This is a summary of data described in an existing design study</label>
+  </div>
 
-<div class="field">
-  <p>Approximately how large is this dataset?</p>
-  <div class="likert" data-key="datasetSize" id="datasetSize" data-likert="Kilobytes,Megabytes,Gigabytes,Terabytes,&ge; Petabytes"></div>
-</div>
+  <div class="field">
+    <p>Approximately how large is this dataset?</p>
+    <div class="likert" data-key="datasetSize" id="datasetSize" data-likert="Kilobytes,Megabytes,Gigabytes,Terabytes,&ge; Petabytes"></div>
+  </div>
 
-<div class="field">
-  <p>Approximately how many <span class="inspectable">items</span> are in this dataset?</p>
-  <div class="likert" data-key="numItems" id="numItems" data-likert="Tens,Hundreds,Thousands,Millions,&ge; Billions"></div>
-</div>
+  <div class="field">
+    <p>Approximately how many <span class="inspectable">items</span> are in this dataset?</p>
+    <div class="likert" data-key="numItems" id="numItems" data-likert="Tens,Hundreds,Thousands,Millions,&ge; Billions"></div>
+  </div>
 
-<div class="field">
-  <p>Approximately how many <span class="inspectable">attributes</span> are in this dataset?</p>
-  <div class="likert" data-key="numAttributes" id="numAttributes" data-likert="Tens,Hundreds,Thousands,Millions,&ge; Billions"></div>
-</div>
+  <div class="field">
+    <p>Approximately how many <span class="inspectable">attributes</span> are in this dataset?</p>
+    <div class="likert" data-key="numAttributes" id="numAttributes" data-likert="Tens,Hundreds,Thousands,Millions,&ge; Billions"></div>
+  </div>
 
-<h3>Would you expect any of the following to exist in the dataset?</h3>
-<div class="field">
-  <input type="checkbox" data-key="miscDetails" data-flag="Categorical values" id="categorialValues" />
-  <label for="categorialValues"><span class="inspectable">Categorical</span> values</label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="miscDetails" data-flag="Ordinal values" id="ordinalValues" />
-  <label for="ordinalValues"><span class="inspectable">Ordinal</span> values</label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="miscDetails" data-flag="Quantitative values" id="quantitativeValues" />
-  <label for="quantitativeValues"><span class="inspectable">Quantitative</span> values</label>
+  <h3>Would you expect any of the following to exist in the dataset?</h3>
+  <div class="field">
+    <input type="checkbox" data-key="miscDetails" data-flag="Categorical values" id="categorialValues" />
+    <label for="categorialValues"><span class="inspectable">Categorical</span> values</label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="miscDetails" data-flag="Ordinal values" id="ordinalValues" />
+    <label for="ordinalValues"><span class="inspectable">Ordinal</span> values</label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="miscDetails" data-flag="Quantitative values" id="quantitativeValues" />
+    <label for="quantitativeValues"><span class="inspectable">Quantitative</span> values</label>
+  </div>
 </div>
 
 <div class="buttonContainer">
+  <div class="protest imgAndLabel button">
+    <a><img src="img/protest.svg"/></a>
+    <span class="label">Skip this section</span>
+  </div>
   <div class="next button"><a></a><span class="label">Next</span></div>
 </div>

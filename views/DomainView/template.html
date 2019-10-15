@@ -1,20 +1,26 @@
-<h3 class="analystFacing">Think of any dataset</h3>
-<p class="analystFacing">This can be a dataset that you currently work with; a dataset that you have worked with in the past; a dataset that you are simply familiar with; or even a hypothetical dataset that doesn't exist (yet).</p>
+<div class="hideIfProtesting">
+  <h3 class="analystFacing">Think of any dataset</h3>
+  <p class="analystFacing">This can be a dataset that you currently work with; a dataset that you have worked with in the past; a dataset that you are simply familiar with; or even a hypothetical dataset that doesn't exist (yet).</p>
 
-<div class="other field">
-  <p>Please describe the real-world meaning of the dataset (as opposed to its structure). How is it (or could) it be useful? What questions could it help you answer?</p>
-  <textarea data-key="domainDescription" id="domainDescription"  placeholder="Short responses such as the following are perfectly adequate:&#10;&#10;&nbsp;&nbsp;&nbsp;&nbsp;&#34;A collection of brain MRI scans that are used to investigate changes in brain shape as people age&#34;&#10;&nbsp;&nbsp;&nbsp;&nbsp;&#34;Survey responses that may help characterize the design space of data wrangling tools&#34;"></textarea>
-</div>
+  <div class="other field">
+    <p>Please describe the real-world meaning of the dataset (as opposed to its structure). How is it (or could) it be useful? What questions could it help you answer?</p>
+    <textarea data-key="domainDescription" id="domainDescription"  placeholder="Short responses such as the following are perfectly adequate:&#10;&#10;&nbsp;&nbsp;&nbsp;&nbsp;&#34;A collection of brain MRI scans that are used to investigate changes in brain shape as people age&#34;&#10;&nbsp;&nbsp;&nbsp;&nbsp;&#34;Survey responses that may help characterize the design space of data wrangling tools&#34;"></textarea>
+  </div>
 
-<p>If you choose a hypothetical dataset, or a dataset that you haven't yet worked with, some of the questions that we ask may require you to speculate. This is just fine; please feel free to submit creative responses!</p>
+  <p>If you choose a hypothetical dataset, or a dataset that you haven't yet worked with, some of the questions that we ask may require you to speculate. This is just fine; please feel free to submit creative responses!</p>
 
-<h3>Please choose a short label for this dataset</h3>
-<p>We will use this label in later parts of the survey, and in the public data that we release, to distinguish this dataset from any other responses that you submit.</p>
-<div class="field">
-  <input type="text" data-key="datasetLabel" id="datasetLabel" list="existingLabels"/><br/>
-  <datalist id="existingLabels"></datalist>
+  <h3>Please choose a short label for this dataset</h3>
+  <p>We will use this label in later parts of the survey, and in the public data that we release, to distinguish this dataset from any other responses that you submit.</p>
+  <div class="field">
+    <input type="text" data-key="datasetLabel" data-protest-default="No dataset label provided" id="datasetLabel" list="existingLabels"/><br/>
+    <datalist id="existingLabels"></datalist>
+  </div>
 </div>
 
 <div class="buttonContainer">
+  <div class="protest imgAndLabel button">
+    <a><img src="img/protest.svg"/></a>
+    <span class="label">Skip this section</span>
+  </div>
   <div class="next button"><a></a><span class="label">Next</span></div>
 </div>

@@ -33,9 +33,11 @@ class NetworkView extends SurveyView {
   }
   populateForm (formValues) {
     super.populateForm(formValues);
-    this.populateNetwork(formValues['exampleNetwork']);
-    // The DOM will have been nuked by super.populateForm; force an immediate draw
-    this.draw();
+    if (formValues['exampleNetwork']) {
+      this.populateNetwork(formValues['exampleNetwork']);
+      // The DOM will have been nuked by super.populateForm; force an immediate draw
+      this.draw();
+    }
   }
   parseFormNetwork (rawFields) {
     // Reshape the extracted exampleNetwork into its actual form

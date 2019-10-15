@@ -1,33 +1,52 @@
-<p class="introText">Please answer the following in terms of how <em>you</em> would interpret the dataset as <span class="inspectable">grouped</span>&mdash;not necessarily how it would be stored in a computer.</p>
+<div class="hideIfProtesting">
+  <p class="introText">Please answer the following in terms of how <em>you</em> would interpret the dataset as <span class="inspectable">grouped</span>&mdash;not necessarily how it would be stored in a computer.</p>
 
-<h3>Scale / Complexity</h3>
-<div class="field">
-  <p>Approximately how many <span class="inspectable">groups</span> are in this dataset?</p>
-  <div class="likert" data-key="numGroups" id="numGroups" data-likert="1,2,3,Tens,Hundreds,Thousands,&ge; Millions"></div>
+  <div class="wrongWay field">
+    <small>If this section feels like the survey has taken you in a wrong direction, please let us know by clicking this button instead of going back to change anything. We want to know if this happens!</small>
+    <div class="wrongWay imgAndLabel button">
+      <a><img src="img/wrongWay.svg"/></a>
+      <span class="label">Skip this section</span>
+    </div>
+  </div>
+
+  <h3>Scale / Complexity</h3>
+  <div class="field">
+    <p>Approximately how many <span class="inspectable">groups</span> are in this dataset?</p>
+    <div class="likert" data-key="numGroups" id="numGroups" data-likert="1,2,3,Tens,Hundreds,Thousands,&ge; Millions"></div>
+  </div>
+
+  <h3>Would you expect any of the following to exist in the dataset?</h3>
+  <div class="field">
+    <input type="checkbox" data-key="groupedDetails" data-checked-value="Clusters" id="groupedDetailsClusters" />
+    <label class="inspectable" for="groupedDetailsClusters">Clusters</label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="groupedDetails" data-checked-value="Sets" id="groupedDetailsSets" />
+    <label class="inspectable" for="groupedDetailsSets">Sets</label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="groupedDetails" data-checked-value="Partitions" id="groupedDetailsPartitions" />
+    <label class="inspectable" for="groupedDetailsPartitions">Partitions</label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="groupedDetails" data-checked-value="Intersections" id="groupedDetailsIntersections" />
+    <label for="groupedDetailsIntersections"><span class="inspectable">Group</span> <span class="inspectable">intersections</span></label>
+  </div>
+
+  <h3>Are there any other characteristics that you would use to describe the <span class="inspectable">grouped</span> aspect of the dataset?</h3>
+  <div class="field">
+    <textarea data-key="groupedMisc" placeholder="Optional"></textarea>
+  </div>
 </div>
 
-<h3>Would you expect any of the following to exist in the dataset?</h3>
-<div class="field">
-  <input type="checkbox" data-key="groupedDetails" data-checked-value="Clusters" id="groupedDetailsClusters" />
-  <label class="inspectable" for="groupedDetailsClusters">Clusters</label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="groupedDetails" data-checked-value="Sets" id="groupedDetailsSets" />
-  <label class="inspectable" for="groupedDetailsSets">Sets</label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="groupedDetails" data-checked-value="Partitions" id="groupedDetailsPartitions" />
-  <label class="inspectable" for="groupedDetailsPartitions">Partitions</label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="groupedDetails" data-checked-value="Intersections" id="groupedDetailsIntersections" />
-  <label for="groupedDetailsIntersections"><span class="inspectable">Group</span> <span class="inspectable">intersections</span></label>
-</div>
-
-<h3>Are there any other characteristics that you would use to describe the <span class="inspectable">grouped</span> aspect of the dataset?</h3>
-<div class="field">
-  <textarea data-key="groupedMisc" placeholder="Optional"></textarea>
-</div>
 <div class="buttonContainer">
+  <div class="restore imgAndLabel button">
+    <a><img src="img/restore.svg"/></a>
+    <span class="label">Restore this section</span>
+  </div>
+  <div class="protest imgAndLabel button">
+    <a><img src="img/protest.svg"/></a>
+    <span class="label">Skip this section</span>
+  </div>
   <div class="next button"><a></a><span class="label">Next</span></div>
 </div>
