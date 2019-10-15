@@ -70,41 +70,54 @@ class SurveyView extends IntrospectableMixin(View) {
       .on('click.survey', standardHandler);
     this.d3el.selectAll('textarea[data-key], [type="text"][data-key]')
       .on('keyup.survey', getDebouncedChangeHandler(1000, true));
+    this.on('surveyValuesChanged', standardHandler);
   }
   setupProtest () {
     if (this.d3el.select('.protest.button').node()) {
       this.d3el.insert('div', '.hideIfProtesting + *')
         .classed('showIfProtesting', true)
         .html(this.resources[this.resources.length - 2]);
+      this.d3el.select('.protestReason')
+        .attr('id', this.type + 'Protest')
+        .attr('data-key', this.type + 'Protest');
       this.d3el.select('.protest.button').on('click', () => {
         this.protesting = true;
         this.wrongWay = false;
-        const wrongWayReason = this.d3el.select('[data-key="wrongWay"]');
+        const wrongWayReason = this.d3el.select('.wrongWayReason').node().value;
         if (wrongWayReason) {
-          this.d3el.select('[data-key="protest"]')
-            .property(wrongWayReason);
-          this.d3el.select('[data-key="wrongWay"]')
+          this.d3el.select('.protestReason')
+            .property('value', wrongWayReason);
+          this.d3el.select('.wrongWayReason')
             .property('value', '');
+          this.trigger('surveyValuesChanged');
         }
         this.drawProtest();
       });
     }
     if (this.d3el.select('.wrongWay.button').node()) {
-      this.d3el.insert('div', '.hideIfProtesting + *')
-        .classed('showIfWrongWay', true)
-        .html(this.resources[this.resources.length - 1])
-        .select('.dataType').html(this.dataTypeLabel);
-      this.d3el.select('.wrongWay.button').on('click', () => {
-        this.protesting = false;
-        this.wrongWay = true;
-        this.drawProtest();
-      });
+      if (window.controller.allowWrongWay) {
+        this.d3el.insert('div', '.hideIfProtesting + *')
+          .classed('showIfWrongWay', true)
+          .html(this.resources[this.resources.length - 1])
+          .select('.dataType').html(this.dataTypeLabel);
+        this.d3el.select('.wrongWayReason')
+          .attr('id', this.type + 'WrongWay')
+          .attr('data-key', this.type + 'WrongWay');
+        this.d3el.select('.wrongWay.button').on('click', () => {
+          this.protesting = false;
+          this.wrongWay = true;
+          this.drawProtest();
+        });
+      } else {
+        this.d3el.select('.wrongWay.field').remove();
+      }
     }
     this.d3el.select('.restore.button').on('click', () => {
       this.protesting = false;
       this.wrongWay = false;
-      this.d3el.selectAll('[data-key="protest"], [data-key="wrongWay"]')
+      this.d3el.selectAll('.protestReason, .wrongWayReason')
         .property('value', '');
+      this.trigger('surveyValuesChanged');
       this.drawProtest();
     });
     this.drawProtest();
@@ -119,43 +132,69 @@ class SurveyView extends IntrospectableMixin(View) {
   computeStateFromFormValues (formValues) {
     const enabled = this.isEnabled(formValues);
     if (enabled) {
-      // Collect the current state of the fields
-      for (const element of this.keyElements) {
-        const key = element.dataset.key;
-        if (element.dataset.likert) {
-          // { data-key: radio value }
-          const checkedRadio = d3.select(element).selectAll('[type="radio"]').nodes()
-            .filter(d => d.checked)[0];
-          if (checkedRadio) {
-            formValues[key] = checkedRadio.value;
+      let viewState = {};
+
+      if (this.protesting) {
+        // If we're protesting, only include the relevant protest field, and values from data-protest-default
+        formValues[this.type + 'Protest'] = this.d3el.select('.protestReason').node().value;
+        for (const element of this.keyElements) {
+          if (element.dataset.protestDefault) {
+            formValues[element.dataset.key] = element.dataset.protestDefault;
           }
-        } else if (element.dataset.flag) {
-          // { data-key: [data-flag value, data-flag value, ...] }
-          formValues[key] = formValues[key] || [];
-          if (element.checked) {
-            formValues[element.dataset.key].push(element.dataset.flag);
-          }
-        } else if (element.dataset.role) {
-          // { data-key: { data-role: element value } }
-          formValues[key] = formValues[key] || {};
-          formValues[key][element.dataset.role] = element.type === 'checkbox' ? element.checked : element.value;
-        } else if (element.dataset.checkedValue) {
-          // { data-key: data-checkedValue }
-          if (element.checked) {
-            formValues[key] = element.dataset.checkedValue;
-          }
-        } else {
-          // { data-key: element value }
-          formValues[key] = element.value;
         }
+        viewState.valid = !!formValues[this.type + 'Protest'];
+        viewState.invalidIds = {};
+        if (!viewState.valid) {
+          viewState.invalidIds[this.type + 'Protest'] = true;
+        }
+      } else if (this.wrongWay) {
+        // If we're going the wrong way, only include the user's note, and override the Thinking value to Never
+        formValues[this.type + 'WrongWay'] = this.d3el.select('.wrongWayReason').node().value;
+        formValues[this.dataTypeLabel + 'Thinking'] = 'Never';
+        viewState.valid = !!formValues[this.type + 'WrongWay'];
+        viewState.invalidIds = {};
+        if (!viewState.valid) {
+          viewState.invalidIds[this.type + 'WrongWay'] = true;
+        }
+      } else {
+        // Collect the current state of the fields
+        for (const element of this.keyElements) {
+          const key = element.dataset.key;
+          if (element.dataset.likert) {
+            // { data-key: radio value }
+            const checkedRadio = d3.select(element).selectAll('[type="radio"]').nodes()
+              .filter(d => d.checked)[0];
+            if (checkedRadio) {
+              formValues[key] = checkedRadio.value;
+            }
+          } else if (element.dataset.flag) {
+            // { data-key: [data-flag value, data-flag value, ...] }
+            formValues[key] = formValues[key] || [];
+            if (element.checked) {
+              formValues[element.dataset.key].push(element.dataset.flag);
+            }
+          } else if (element.dataset.role) {
+            // { data-key: { data-role: element value } }
+            formValues[key] = formValues[key] || {};
+            formValues[key][element.dataset.role] = element.type === 'checkbox' ? element.checked : element.value;
+          } else if (element.dataset.checkedValue) {
+            // { data-key: data-checkedValue }
+            if (element.checked) {
+              formValues[key] = element.dataset.checkedValue;
+            }
+          } else {
+            // { data-key: element value }
+            formValues[key] = element.value;
+          }
+        }
+        // Clean / validate values + flag invalid form elements
+        viewState = this.validateForm(formValues);
       }
-      // Clean / validate values + flag invalid form elements
-      const viewState = this.validateForm(formValues);
 
-      // Store whether the view should be visible
-      viewState.enabled = enabled;
+      // Store that the view should be visible
+      viewState.enabled = true;
 
-      // Store the state of the view, relative to
+      // Store the state of the view, relative to whether or not the user is submitting a new response
       if (viewState.valid) {
         viewState.state = window.controller.ownedResponseIndex === null ? 'complete' : 'changesValid';
       } else {
@@ -172,13 +211,13 @@ class SurveyView extends IntrospectableMixin(View) {
     }
   }
   populateForm (formValues) {
-    /* if (formValues.protest) {
+    if (formValues[this.type + 'Protest']) {
       this.protesting = true;
       this.drawProtest();
-    } else if (formValues.wrongWay) {
+    } else if (formValues[this.type + 'WrongWay']) {
       this.wrongWay = true;
       this.drawProtest();
-    } */
+    }
     this.d3el.selectAll('[data-key]').each(function () {
       const key = this.dataset.key;
       if (this.dataset.likert) {

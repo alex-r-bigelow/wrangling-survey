@@ -1,70 +1,89 @@
-<p class="introText">Please answer the following in terms of how <em>you</em> would interpret the dataset as <span class="inspectable">spatial</span> or <span class="inspectable">temporal</span>&mdash;not necessarily how it would be stored in a computer.</p>
+<div class="hideIfProtesting">
+  <p class="introText">Please answer the following in terms of how <em>you</em> would interpret the dataset as <span class="inspectable">spatial</span> or <span class="inspectable">temporal</span>&mdash;not necessarily how it would be stored in a computer.</p>
 
-<h3>Dimensions</h3>
-<div class="field">
-  <p>Including time, how many <span class="inspectable">dimensions</span> are needed to describe the space in which this dataset exists?</p>
-  <div class="likert" data-key="nDimensions" id="nDimensions" data-likert="1,2,3,&ge;4"></div>
+  <div class="wrongWay field">
+    <small>If, on second thought, this does not describe the data:</small>
+    <div class="wrongWay imgAndLabel button">
+      <a><img src="img/wrongWay.svg"/></a>
+      <span class="label">Skip this section</span>
+    </div>
+  </div>
+
+  <h3>Dimensions</h3>
+  <div class="field">
+    <p>Including time, how many <span class="inspectable">dimensions</span> are needed to describe the space in which this dataset exists?</p>
+    <div class="likert" data-key="nDimensions" id="nDimensions" data-likert="1,2,3,&ge;4"></div>
+  </div>
+
+  <div class="field">
+    <input type="checkbox" data-key="SpatialNuances" data-flag="Temporal" id="isTemporal" />
+    <label for="isTemporal">One of the above <span class="inspectable">dimensions</span> is <span class="inspectable">temporal</span></label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="SpatialNuances" data-flag="Abstract Space" id="isAbstractSpace" />
+    <label for="isAbstractSpace">The space described above is abstract; i.e. its <span class="inspectable">dimensions</span> would not correspond to physical <span class="inspectable">dimensions</span> in the real universe</label>
+  </div>
+
+  <h3>Would you expect any of the following to exist in the dataset?</h3>
+  <div class="field">
+    <input type="checkbox" data-key="spatialDetails" data-checked-value="Points" id="spatialDetailsPoints" />
+    <label class="inspectable" for="spatialDetailsPoints">Points</label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="spatialDetails" data-checked-value="Intervals" id="spatialDetailsIntervals" />
+    <label class="inspectable" for="spatialDetailsIntervals">Intervals</label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="spatialDetails" data-checked-value="Vectors" id="spatialDetailsVectors" />
+    <label class="inspectable" for="spatialDetailsVectors">Vectors</label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="spatialDetails" data-checked-value="Tensors" id="spatialDetailsTensors" />
+    <label class="inspectable" for="spatialDetailsTensors">Tensors</label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="spatialDetails" data-checked-value="Lines" id="spatialDetailsLines" />
+    <label class="inspectable" for="spatialDetailsLines">Lines</label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="spatialDetails" data-checked-value="Areas" id="spatialDetailsAreas" />
+    <label class="inspectable" for="spatialDetailsAreas">Areas</label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="spatialDetails" data-checked-value="Areas" id="spatialDetailsPartitions" />
+    <label class="inspectable" for="spatialDetailsPartitions">Partitions</label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="spatialDetails" data-checked-value="Areas" id="spatialDetailsManifolds" />
+    <label class="inspectable" for="spatialDetailsManifolds">Manifolds</label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="spatialDetails" data-checked-value="Surfaces" id="spatialDetailsSurfaces" />
+    <label class="inspectable" for="spatialDetailsSurfaces">Surfaces</label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="spatialDetails" data-checked-value="Volumes" id="spatialDetailsVolumes" />
+    <label class="inspectable" for="spatialDetailsVolumes">Volumes</label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="spatialDetails" data-checked-value="Hypervolumes" id="spatialDetailsHypervolumes" />
+    <label class="inspectable" for="spatialDetailsHypervolumes">Hypervolumes</label>
+  </div>
+
+  <h3>Are there any other characteristics that you would use to describe the <span class="inspectable">spatial</span> or <span class="inspectable">temporal</span> aspect of the dataset?</h3>
+  <div class="field">
+    <textarea data-key="spatialMisc" placeholder="Optional"></textarea>
+  </div>
 </div>
 
-<div class="field">
-  <input type="checkbox" data-key="SpatialNuances" data-flag="Temporal" id="isTemporal" />
-  <label for="isTemporal">One of the above <span class="inspectable">dimensions</span> is <span class="inspectable">temporal</span></label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="SpatialNuances" data-flag="Abstract Space" id="isAbstractSpace" />
-  <label for="isAbstractSpace">The space described above is abstract; i.e. its <span class="inspectable">dimensions</span> would not correspond to physical <span class="inspectable">dimensions</span> in the real universe</label>
-</div>
-
-<h3>Would you expect any of the following to exist in the dataset?</h3>
-<div class="field">
-  <input type="checkbox" data-key="spatialDetails" data-checked-value="Points" id="spatialDetailsPoints" />
-  <label class="inspectable" for="spatialDetailsPoints">Points</label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="spatialDetails" data-checked-value="Intervals" id="spatialDetailsIntervals" />
-  <label class="inspectable" for="spatialDetailsIntervals">Intervals</label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="spatialDetails" data-checked-value="Vectors" id="spatialDetailsVectors" />
-  <label class="inspectable" for="spatialDetailsVectors">Vectors</label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="spatialDetails" data-checked-value="Tensors" id="spatialDetailsTensors" />
-  <label class="inspectable" for="spatialDetailsTensors">Tensors</label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="spatialDetails" data-checked-value="Lines" id="spatialDetailsLines" />
-  <label class="inspectable" for="spatialDetailsLines">Lines</label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="spatialDetails" data-checked-value="Areas" id="spatialDetailsAreas" />
-  <label class="inspectable" for="spatialDetailsAreas">Areas</label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="spatialDetails" data-checked-value="Areas" id="spatialDetailsPartitions" />
-  <label class="inspectable" for="spatialDetailsPartitions">Partitions</label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="spatialDetails" data-checked-value="Areas" id="spatialDetailsManifolds" />
-  <label class="inspectable" for="spatialDetailsManifolds">Manifolds</label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="spatialDetails" data-checked-value="Surfaces" id="spatialDetailsSurfaces" />
-  <label class="inspectable" for="spatialDetailsSurfaces">Surfaces</label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="spatialDetails" data-checked-value="Volumes" id="spatialDetailsVolumes" />
-  <label class="inspectable" for="spatialDetailsVolumes">Volumes</label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="spatialDetails" data-checked-value="Hypervolumes" id="spatialDetailsHypervolumes" />
-  <label class="inspectable" for="spatialDetailsHypervolumes">Hypervolumes</label>
-</div>
-
-<h3>Are there any other characteristics that you would use to describe the <span class="inspectable">spatial</span> or <span class="inspectable">temporal</span> aspect of the dataset?</h3>
-<div class="field">
-  <textarea data-key="spatialMisc" placeholder="Optional"></textarea>
-</div>
 <div class="buttonContainer">
+  <div class="restore imgAndLabel button">
+    <a><img src="img/restore.svg"/></a>
+    <span class="label">Restore this section</span>
+  </div>
+  <div class="protest imgAndLabel button">
+    <a><img src="img/protest.svg"/></a>
+    <span class="label">Skip this section</span>
+  </div>
   <div class="next button"><a></a><span class="label">Next</span></div>
 </div>

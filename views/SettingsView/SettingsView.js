@@ -13,7 +13,7 @@ class SettingsView extends SurveyView {
     if (!window.controller.unfinishedResponse && window.controller.database.context) {
       this.d3el.select('#context').node().value = window.controller.database.context;
     }
-    super.collectKeyElements();
+    this.collectKeyElements();
   }
   isEnabled () {
     return true;

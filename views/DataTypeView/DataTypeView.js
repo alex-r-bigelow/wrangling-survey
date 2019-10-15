@@ -10,8 +10,9 @@ class DataTypeView extends SurveyView {
   }
   setup () {
     this.d3el.html(this.resources[1]);
-    super.setupLikertFields();
-    super.collectKeyElements();
+    this.setupProtest();
+    this.setupLikertFields();
+    this.collectKeyElements();
   }
   draw () {}
   isEnabled (formValues) {

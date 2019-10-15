@@ -156,8 +156,12 @@ class Database extends Model {
     if (!anonymous) {
       responseValues.browserId = this.browserId;
     }
+
+    // Store the survey version number
+    responseValues.surveyVersion = this.surveyVersion;
+
     // We use our own timestamp instead of the one in Google sheets to avoid inconsistencies between pending and accepted responses
-    responseValues.timestamp = new Date().toISOString();
+    responseValues.submitTimestamp = new Date().toISOString();
     const stringValues = JSON.stringify(responseValues);
 
     // Make a fake, temporary form to submit to Google

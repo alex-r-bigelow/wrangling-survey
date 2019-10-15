@@ -1,33 +1,52 @@
-<p class="introText">Please answer the following in terms of how <em>you</em> would interpret the dataset as <span class="inspectable">textual</span>&mdash;not necessarily how it would be stored in a computer.</p>
+<div class="hideIfProtesting">
+  <p class="introText">Please answer the following in terms of how <em>you</em> would interpret the dataset as <span class="inspectable">textual</span>&mdash;not necessarily how it would be stored in a computer.</p>
 
-<h3>Scale / Complexity</h3>
-<div class="field">
-  <p>Approximately how many <span class="inspectable">documents</span> are in this dataset?</p>
-  <div class="likert" data-key="numDocuments" id="numDocuments" data-likert="0,1,2,Tens,Hundreds,Thousands,&ge; Millions"></div>
-</div>
-<div class="field">
-  <p>What kind of <span class="inspectable">grammar</span> would be needed to describe the syntax of the dataset?</p>
-  <div class="likert" data-key="grammarType" id="grammarType" data-likert="Regular,Context-free,Context-sensitive,Recursively enumerable,Other,I don't know" data-inspectable="Regular,Context-free,Context-sensitive,Recursively enumerable"></div>
+  <div class="wrongWay field">
+    <small>If, on second thought, this does not describe the data:</small>
+    <div class="wrongWay imgAndLabel button">
+      <a><img src="img/wrongWay.svg"/></a>
+      <span class="label">Skip this section</span>
+    </div>
+  </div>
+
+  <h3>Scale / Complexity</h3>
+  <div class="field">
+    <p>Approximately how many <span class="inspectable">documents</span> are in this dataset?</p>
+    <div class="likert" data-key="numDocuments" id="numDocuments" data-likert="0,1,2,Tens,Hundreds,Thousands,&ge; Millions"></div>
+  </div>
+  <div class="field">
+    <p>What kind of <span class="inspectable">grammar</span> would be needed to describe the syntax of the dataset?</p>
+    <div class="likert" data-key="grammarType" id="grammarType" data-likert="Regular,Context-free,Context-sensitive,Recursively enumerable,Other,I don't know" data-inspectable="Regular,Context-free,Context-sensitive,Recursively enumerable"></div>
+  </div>
+
+  <h3>Would you expect any of the following to exist in the dataset?</h3>
+  <div class="field">
+    <input type="checkbox" data-key="textualDetails" data-checked-value="Typography" id="textualDetailsTypography" />
+    <label class="inspectable" for="textualDetailsTypography">Typography</label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="textualDetails" data-checked-value="Delimiters" id="textualDetailsDelimiters" />
+    <label class="inspectable" for="textualDetailsDelimiters">Delimiters</label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="textualDetails" data-checked-value="SpecialCharacters" id="textualDetailsSpecialCharacters" />
+    <label for="textualDetailsSpecialCharacters">Other <span class="inspectable">special characters</span></label>
+  </div>
+
+  <h3>Are there any other characteristics that you would use to describe the <span class="inspectable">textual</span> aspect of the dataset?</h3>
+  <div class="field">
+    <textarea data-key="textualMisc" placeholder="Optional"></textarea>
+  </div>
 </div>
 
-<h3>Would you expect any of the following to exist in the dataset?</h3>
-<div class="field">
-  <input type="checkbox" data-key="textualDetails" data-checked-value="Typography" id="textualDetailsTypography" />
-  <label class="inspectable" for="textualDetailsTypography">Typography</label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="textualDetails" data-checked-value="Delimiters" id="textualDetailsDelimiters" />
-  <label class="inspectable" for="textualDetailsDelimiters">Delimiters</label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="textualDetails" data-checked-value="SpecialCharacters" id="textualDetailsSpecialCharacters" />
-  <label for="textualDetailsSpecialCharacters">Other <span class="inspectable">special characters</span></label>
-</div>
-
-<h3>Are there any other characteristics that you would use to describe the <span class="inspectable">textual</span> aspect of the dataset?</h3>
-<div class="field">
-  <textarea data-key="textualMisc" placeholder="Optional"></textarea>
-</div>
 <div class="buttonContainer">
+  <div class="restore imgAndLabel button">
+    <a><img src="img/restore.svg"/></a>
+    <span class="label">Restore this section</span>
+  </div>
+  <div class="protest imgAndLabel button">
+    <a><img src="img/protest.svg"/></a>
+    <span class="label">Skip this section</span>
+  </div>
   <div class="next button"><a></a><span class="label">Next</span></div>
 </div>

@@ -1,83 +1,102 @@
-<p class="introText">Please answer the following in terms of how <em>you</em> would interpret the dataset as <span class="inspectable">tabular</span>&mdash;not necessarily how it would be stored in a computer.</p>
+<div class="hideIfProtesting">
+  <p class="introText">Please answer the following in terms of how <em>you</em> would interpret the dataset as <span class="inspectable">tabular</span>&mdash;not necessarily how it would be stored in a computer.</p>
 
-<h3>Scale / Complexity</h3>
-<div class="field">
-  <p>How many tables are in this dataset?</p>
-  <div class="likert" data-key="nTables" id="nTables" data-likert="1,2,3,Tens,Hundreds,Thousands,&ge; Millions"></div>
+  <div class="wrongWay field">
+    <small>If, on second thought, this does not describe the data:</small>
+    <div class="wrongWay imgAndLabel button">
+      <a><img src="img/wrongWay.svg"/></a>
+      <span class="label">Skip this section</span>
+    </div>
+  </div>
+
+  <h3>Scale / Complexity</h3>
+  <div class="field">
+    <p>How many tables are in this dataset?</p>
+    <div class="likert" data-key="nTables" id="nTables" data-likert="1,2,3,Tens,Hundreds,Thousands,&ge; Millions"></div>
+  </div>
+
+  <h3 id="exampleTableData">Please fill in examples of what a few headers, rows, and columns might look like.</h3>
+  <p>Feel free to invent fake data, and please remember that these examples will be public.</p>
+  <div class="exampleTableData field">
+    <table class="firstTable">
+      <thead>
+        <tr>
+          <td></td>
+          <td><input data-key="exampleTableData" data-role="table1_H_1" id="table1_H_1" placeholder="A"/></td>
+          <td><input data-key="exampleTableData" data-role="table1_H_2" id="table1_H_2" placeholder="B"/></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input data-key="exampleTableData" data-role="table1_1_H" id="table1_1_H" placeholder="0"/></td>
+          <td><input data-key="exampleTableData" data-role="table1_1_1" id="table1_1_1"/></td>
+          <td><input data-key="exampleTableData" data-role="table1_1_2" id="table1_1_2"/></td>
+        </tr>
+        <tr>
+          <td><input data-key="exampleTableData" data-role="table1_2_H" id="table1_2_H" placeholder="1"/></td>
+          <td><input data-key="exampleTableData" data-role="table1_2_1" id="table1_2_1"/></td>
+          <td><input data-key="exampleTableData" data-role="table1_2_2" id="table1_2_2"/></td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="secondTable">
+      <thead>
+        <tr>
+          <td></td>
+          <td><input data-key="exampleTableData" data-role="table2_H_1" id="table2_H_1" placeholder="A"/></td>
+          <td><input data-key="exampleTableData" data-role="table2_H_2" id="table2_H_2" placeholder="B"/></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input data-key="exampleTableData" data-role="table2_1_H" id="table2_1_H" placeholder="0"/></td>
+          <td><input data-key="exampleTableData" data-role="table2_1_1" id="table2_1_1"/></td>
+          <td><input data-key="exampleTableData" data-role="table2_1_2" id="table2_1_2"/></td>
+        </tr>
+        <tr>
+          <td><input data-key="exampleTableData" data-role="table2_2_H" id="table2_2_H" placeholder="1"/></td>
+          <td><input data-key="exampleTableData" data-role="table2_2_1" id="table2_2_1"/></td>
+          <td><input data-key="exampleTableData" data-role="table2_2_2" id="table2_2_2"/></td>
+        </tr>
+      </tbody>
+    </table>
+    <img class="privacyLogo" src="img/eye.svg"/>
+  </div>
+  <h3>Would you expect any of the following to apply to, or exist in, any table?</h3>
+  <div class="field">
+    <input type="checkbox" data-key="tabularDetails" data-flag="Multidimensional cells" id="MultidimensionalCells" />
+    <label for="MultidimensionalCells"><span class="inspectable">Multidimensional cells</span></label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="tabularDetails" data-flag="Nested cell structures" id="NestedCellStructures" />
+    <label for="NestedCellStructures"><span class="inspectable">Nested cell structures</span></label>
+  </div>
+  <div class="nested field">
+    <p>If you haven't already provided an example above, please describe the nested structure or give a short example here</p>
+    <textarea data-key="tableNestedExample" placeholder="Short responses such as the following are perfectly adequate:&#10;&nbsp;&nbsp;&nbsp;&nbsp;Comma-separated lists&#10;&nbsp;&nbsp;&nbsp;&nbsp;{&quot;a&quot;: 3, &quot;b&quot;: 4}"></textarea>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="tabularDetails" data-flag="Foreign keys" id="ForeignKeys" />
+    <label for="ForeignKeys"><span class="inspectable">Foreign keys</span></label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="tabularDetails" data-flag="Empty cells" id="EmptyCells" />
+    <label for="EmptyCells">Empty <span class="inspectable">cells</span></label>
+  </div>
+  <h3>Are there any other characteristics that you would use to describe the <span class="inspectable">tabular</span> nature of the dataset?</h3>
+  <div class="field">
+    <textarea data-key="tableMisc" placeholder="Optional"></textarea>
+  </div>
 </div>
 
-<h3 id="exampleTableData">Please fill in examples of what a few headers, rows, and columns might look like.</h3>
-<p>Feel free to invent fake data, and please remember that these examples will be public.</p>
-<div class="exampleTableData field">
-  <table class="firstTable">
-    <thead>
-      <tr>
-        <td></td>
-        <td><input data-key="exampleTableData" data-role="table1_H_1" id="table1_H_1" placeholder="A"/></td>
-        <td><input data-key="exampleTableData" data-role="table1_H_2" id="table1_H_2" placeholder="B"/></td>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><input data-key="exampleTableData" data-role="table1_1_H" id="table1_1_H" placeholder="0"/></td>
-        <td><input data-key="exampleTableData" data-role="table1_1_1" id="table1_1_1"/></td>
-        <td><input data-key="exampleTableData" data-role="table1_1_2" id="table1_1_2"/></td>
-      </tr>
-      <tr>
-        <td><input data-key="exampleTableData" data-role="table1_2_H" id="table1_2_H" placeholder="1"/></td>
-        <td><input data-key="exampleTableData" data-role="table1_2_1" id="table1_2_1"/></td>
-        <td><input data-key="exampleTableData" data-role="table1_2_2" id="table1_2_2"/></td>
-      </tr>
-    </tbody>
-  </table>
-  <table class="secondTable">
-    <thead>
-      <tr>
-        <td></td>
-        <td><input data-key="exampleTableData" data-role="table2_H_1" id="table2_H_1" placeholder="A"/></td>
-        <td><input data-key="exampleTableData" data-role="table2_H_2" id="table2_H_2" placeholder="B"/></td>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><input data-key="exampleTableData" data-role="table2_1_H" id="table2_1_H" placeholder="0"/></td>
-        <td><input data-key="exampleTableData" data-role="table2_1_1" id="table2_1_1"/></td>
-        <td><input data-key="exampleTableData" data-role="table2_1_2" id="table2_1_2"/></td>
-      </tr>
-      <tr>
-        <td><input data-key="exampleTableData" data-role="table2_2_H" id="table2_2_H" placeholder="1"/></td>
-        <td><input data-key="exampleTableData" data-role="table2_2_1" id="table2_2_1"/></td>
-        <td><input data-key="exampleTableData" data-role="table2_2_2" id="table2_2_2"/></td>
-      </tr>
-    </tbody>
-  </table>
-  <img class="privacyLogo" src="img/eye.svg"/>
-</div>
-<h3>Would you expect any of the following to apply to, or exist in, any table?</h3>
-<div class="field">
-  <input type="checkbox" data-key="tabularDetails" data-flag="Multidimensional cells" id="MultidimensionalCells" />
-  <label for="MultidimensionalCells"><span class="inspectable">Multidimensional cells</span></label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="tabularDetails" data-flag="Nested cell structures" id="NestedCellStructures" />
-  <label for="NestedCellStructures"><span class="inspectable">Nested cell structures</span></label>
-</div>
-<div class="nested field">
-  <p>If you haven't already provided an example above, please describe the nested structure or give a short example here</p>
-  <textarea data-key="tableNestedExample" placeholder="Short responses such as the following are perfectly adequate:&#10;&nbsp;&nbsp;&nbsp;&nbsp;Comma-separated lists&#10;&nbsp;&nbsp;&nbsp;&nbsp;{&quot;a&quot;: 3, &quot;b&quot;: 4}"></textarea>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="tabularDetails" data-flag="Foreign keys" id="ForeignKeys" />
-  <label for="ForeignKeys"><span class="inspectable">Foreign keys</span></label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="tabularDetails" data-flag="Empty cells" id="EmptyCells" />
-  <label for="EmptyCells">Empty <span class="inspectable">cells</span></label>
-</div>
-<h3>Are there any other characteristics that you would use to describe the <span class="inspectable">tabular</span> nature of the dataset?</h3>
-<div class="field">
-  <textarea data-key="tableMisc" placeholder="Optional"></textarea>
-</div>
 <div class="buttonContainer">
+  <div class="restore imgAndLabel button">
+    <a><img src="img/restore.svg"/></a>
+    <span class="label">Restore this section</span>
+  </div>
+  <div class="protest imgAndLabel button">
+    <a><img src="img/protest.svg"/></a>
+    <span class="label">Skip this section</span>
+  </div>
   <div class="next button"><a></a><span class="label">Next</span></div>
 </div>

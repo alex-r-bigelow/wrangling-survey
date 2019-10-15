@@ -49,7 +49,7 @@ class GlossaryView extends SurveyView {
     for (const [singular, plural] of Object.entries(this.resources[2].irregular)) {
       pluralize.addIrregularRule(singular, plural);
     }
-    super.collectKeyElements();
+    this.collectKeyElements();
   }
   connectTerminology () {
     // Attach event listeners to inspectable fields, and keep the original term

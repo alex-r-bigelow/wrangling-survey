@@ -45,7 +45,6 @@ class AlternateIntroView extends SurveyView {
     this.d3el.select('.creativeProdding').html(this.creativeProdding[window.controller.params.targetType]);
     this.d3el.selectAll('.showIfPriorSpatial').style('display',
       window.controller.params.otherPriors.indexOf('spatial') === -1 ? 'none' : null);
-    this.collectKeyElements();
   }
   isEnabled () {
     return true;

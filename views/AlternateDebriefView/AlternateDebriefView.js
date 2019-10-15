@@ -20,7 +20,8 @@ class AlternateDebriefView extends SurveyView {
     };
     this.d3el.selectAll('.datasetLabel').text(window.controller.params.datasetLabel);
     this.d3el.selectAll('.targetType').html(this.targetTypeLabels[window.controller.params.targetType]);
-    super.setupLikertFields();
+    this.setupProtest();
+    this.setupLikertFields();
     this.collectKeyElements();
   }
   isEnabled () {

@@ -1,83 +1,102 @@
-<p class="introText">Please answer the following in terms of how <em>you</em> would interpret the dataset as a <span class="inspectable">network</span> or <span class="inspectable">hierarchy</span>&mdash;not necessarily how it would be stored in a computer.</p>
+<div class="hideIfProtesting">
+  <p class="introText">Please answer the following in terms of how <em>you</em> would interpret the dataset as a <span class="inspectable">network</span> or <span class="inspectable">hierarchy</span>&mdash;not necessarily how it would be stored in a computer.</p>
 
-<h3>Scale / Complexity</h3>
-<div class="field">
-  <p>How many <span class="inspectable">node</span> <span class="inspectable">classes</span> are there?</p>
-  <div class="likert" data-key="nodeClassCount" id="nodeClassCount" data-likert="1,2,&ge;3"></div>
-</div>
-
-<div class="field">
-  <p>How many <span class="inspectable">edge</span> <span class="inspectable">classes</span> are there?</p>
-  <div class="likert" data-key="edgeClassCount" id="edgeClassCount" data-likert="1,2,&ge;3"></div>
-</div>
-
-<div class="field">
-  <p>How would you characterize <span class="inspectable">edge</span> <span class="inspectable">direction</span>?</p>
-  <div class="likert" data-key="edgeDirection" id="edgeDirection" data-likert="Directed,Undirected,Mixed"></div>
-</div>
-
-<h3>Please create a few examples of what <span class="inspectable">nodes</span> and <span class="inspectable">edges</span> might look like.</h3>
-<p>Feel free to invent fake data, and please remember that these examples will be public.</p>
-<p><span class="inspectable">Nodes</span>:</p>
-<div class="new node field">
-  <input placeholder="Provide a node label (optional)"/>
-  <div class="create node button"><a></a><div class="label">Create</div></div>
-</div>
-<hr/>
-<div class="nodeFields"></div>
-
-<p><span class="inspectable">Edges</span>:</p>
-<div class="new edge field">
-  <select class="source"></select>
-  <select class="target"></select>
-  <div>
-    <input type="checkbox" id="newEdgeDirected" class="directed"/>
-    <label for="newEdgeDirected">Directed</label>
+  <div class="wrongWay field">
+    <small>If, on second thought, this does not describe the data:</small>
+    <div class="wrongWay imgAndLabel button">
+      <a><img src="img/wrongWay.svg"/></a>
+      <span class="label">Skip this section</span>
+    </div>
   </div>
-  <div class="create edge button"><a></a><div class="label">Create</div></div>
-</div>
-<hr/>
-<div class="edgeFields"></div>
-<p>Preview:</p>
-<p class="insufficientNodesAndEdges">Please create at least two nodes and two edges</p>
-<svg class="exampleData" id="networkPreview">
-  <g class="edgeLayer"></g>
-  <g class="nodeLayer"></g>
-</svg>
 
-<h3>Would you expect any of the following to describe the network?</h3>
-<div class="field">
-  <input type="checkbox" data-key="networkDetails" data-flag="Hierarchy" id="isHierarchy" />
-  <label for="isHierarchy">The network is a <span class="inspectable">hierarchy</span></label>
+  <h3>Scale / Complexity</h3>
+  <div class="field">
+    <p>How many <span class="inspectable">node</span> <span class="inspectable">classes</span> are there?</p>
+    <div class="likert" data-key="nodeClassCount" id="nodeClassCount" data-likert="1,2,&ge;3"></div>
+  </div>
+
+  <div class="field">
+    <p>How many <span class="inspectable">edge</span> <span class="inspectable">classes</span> are there?</p>
+    <div class="likert" data-key="edgeClassCount" id="edgeClassCount" data-likert="1,2,&ge;3"></div>
+  </div>
+
+  <div class="field">
+    <p>How would you characterize <span class="inspectable">edge</span> <span class="inspectable">direction</span>?</p>
+    <div class="likert" data-key="edgeDirection" id="edgeDirection" data-likert="Directed,Undirected,Mixed"></div>
+  </div>
+
+  <h3>Please create a few examples of what <span class="inspectable">nodes</span> and <span class="inspectable">edges</span> might look like.</h3>
+  <p>Feel free to invent fake data, and please remember that these examples will be public.</p>
+  <p><span class="inspectable">Nodes</span>:</p>
+  <div class="new node field">
+    <input placeholder="Provide a node label (optional)"/>
+    <div class="create node button"><a></a><div class="label">Create</div></div>
+  </div>
+  <hr/>
+  <div class="nodeFields"></div>
+
+  <p><span class="inspectable">Edges</span>:</p>
+  <div class="new edge field">
+    <select class="source"></select>
+    <select class="target"></select>
+    <div>
+      <input type="checkbox" id="newEdgeDirected" class="directed"/>
+      <label for="newEdgeDirected">Directed</label>
+    </div>
+    <div class="create edge button"><a></a><div class="label">Create</div></div>
+  </div>
+  <hr/>
+  <div class="edgeFields"></div>
+  <p>Preview:</p>
+  <p class="insufficientNodesAndEdges">Please create at least two nodes and two edges</p>
+  <svg class="exampleData" id="networkPreview">
+    <g class="edgeLayer"></g>
+    <g class="nodeLayer"></g>
+  </svg>
+
+  <h3>Would you expect any of the following to describe the network?</h3>
+  <div class="field">
+    <input type="checkbox" data-key="networkDetails" data-flag="Hierarchy" id="isHierarchy" />
+    <label for="isHierarchy">The network is a <span class="inspectable">hierarchy</span></label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="networkDetails" data-flag="Connected" id="connected" />
+    <label for="connected">The network is <span class="inspectable">connected</span></label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="networkDetails" data-flag="Cycles" id="hasCycles" />
+    <label for="hasCycles">The network contains <span class="inspectable">cycles</span></label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="networkDetails" data-flag="Parallel Edges" id="hasParallel" />
+    <label for="hasParallel">The network contains <span class="inspectable">parallel edges</span></label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="networkDetails" data-flag="Self Edges" id="hasSelfEdges" />
+    <label for="hasSelfEdges">The network contains <span class="inspectable">self-edges</span></label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="networkDetails" data-flag="Supernodes" id="hasSupernodes" />
+    <label for="hasSupernodes">The network contains <span class="inspectable">supernodes</span></label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="networkDetails" data-flag="Hyperedges" id="hasHyperEdges" />
+    <label for="hasHyperEdges">The network contains <span class="inspectable">hyperedges</span></label>
+  </div>
+  <h3>Are there any other characteristics that you would use to describe the network?</h3>
+  <div class="field">
+    <textarea data-key="networkMisc" placeholder="Optional"></textarea>
+  </div>
 </div>
-<div class="field">
-  <input type="checkbox" data-key="networkDetails" data-flag="Connected" id="connected" />
-  <label for="connected">The network is <span class="inspectable">connected</span></label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="networkDetails" data-flag="Cycles" id="hasCycles" />
-  <label for="hasCycles">The network contains <span class="inspectable">cycles</span></label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="networkDetails" data-flag="Parallel Edges" id="hasParallel" />
-  <label for="hasParallel">The network contains <span class="inspectable">parallel edges</span></label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="networkDetails" data-flag="Self Edges" id="hasSelfEdges" />
-  <label for="hasSelfEdges">The network contains <span class="inspectable">self-edges</span></label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="networkDetails" data-flag="Supernodes" id="hasSupernodes" />
-  <label for="hasSupernodes">The network contains <span class="inspectable">supernodes</span></label>
-</div>
-<div class="field">
-  <input type="checkbox" data-key="networkDetails" data-flag="Hyperedges" id="hasHyperEdges" />
-  <label for="hasHyperEdges">The network contains <span class="inspectable">hyperedges</span></label>
-</div>
-<h3>Are there any other characteristics that you would use to describe the network?</h3>
-<div class="field">
-  <textarea data-key="networkMisc" placeholder="Optional"></textarea>
-</div>
+
 <div class="buttonContainer">
+  <div class="restore imgAndLabel button">
+    <a><img src="img/restore.svg"/></a>
+    <span class="label">Restore this section</span>
+  </div>
+  <div class="protest imgAndLabel button">
+    <a><img src="img/protest.svg"/></a>
+    <span class="label">Skip this section</span>
+  </div>
   <div class="next button"><a></a><span class="label">Next</span></div>
 </div>

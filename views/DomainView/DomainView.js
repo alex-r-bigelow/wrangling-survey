@@ -27,7 +27,8 @@ class DomainView extends SurveyView {
       .enter().append('option')
       .attr('value', d => d);
 
-    super.collectKeyElements();
+    this.setupProtest();
+    this.collectKeyElements();
   }
   isEnabled (formValues) {
     return true;

@@ -30,6 +30,8 @@ class DAS extends SurveyController {
     if (!window.localStorage.getItem('consented')) {
       window.location.replace('index.html');
     }
+
+    this.allowWrongWay = true;
   }
 }
 
