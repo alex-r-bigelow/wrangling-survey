@@ -83,9 +83,9 @@ class NetworkView extends SurveyView {
       // an empty canvas
       this.populateNetwork({
         nodes: [
-          { label: 'Please' },
-          { label: 'change' },
-          { label: 'me' }
+          { label: 'Please change' },
+          { label: 'this example' },
+          { label: 'network' }
         ],
         edges: [
           { source: 0, target: 1, directed: true },
