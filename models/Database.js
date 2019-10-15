@@ -285,10 +285,10 @@ class Database extends Model {
     return result;
   }
   get contextIsConference () {
-    return ['VIS', 'Supercomputing', 'HDC_Pilot'].indexOf(this.context) !== -1;
+    return ['VIS', 'Supercomputing'].indexOf(this.context) !== -1;
   }
   get contextIsArizona () {
-    return ['HackyHour', 'CoffeeAndCode', 'UofA'].indexOf(this.context) !== -1;
+    return ['HackyHour', 'CoffeeAndCode', 'UofA', 'HDC_Pilot'].indexOf(this.context) !== -1;
   }
   get contextIsDesignStudyReview () {
     return this.context === 'DesignStudyReview';
