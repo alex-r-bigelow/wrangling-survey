@@ -7,6 +7,7 @@ class SpatialView extends SurveyView {
       { type: 'text', url: 'views/SpatialView/template.html' }
     ]);
     this.humanLabel = '<span class="inspectable">Spatial</span> / <span class="inspectable">Temporal</span> Data Details';
+    this.dataTypeLabel = '<span class="inspectable">spatial</span> / <span class="inspectable">temporal</span>';
   }
   setup () {
     this.d3el.html(this.resources[1]);

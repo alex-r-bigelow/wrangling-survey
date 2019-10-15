@@ -7,6 +7,7 @@ class MediaView extends SurveyView {
       { type: 'text', url: 'views/MediaView/template.html' }
     ]);
     this.humanLabel = '<span class="inspectable">Media</span> Data Details';
+    this.dataTypeLabel = '<span class="inspectable">media</span>';
   }
   setup () {
     this.d3el.html(this.resources[1]);

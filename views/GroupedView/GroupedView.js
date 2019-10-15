@@ -7,6 +7,7 @@ class GroupedView extends SurveyView {
       { type: 'text', url: 'views/GroupedView/template.html' }
     ]);
     this.humanLabel = '<span class="inspectable">Grouped</span> Data Details';
+    this.dataTypeLabel = '<span class="inspectable">grouped</span>';
   }
   setup () {
     this.d3el.html(this.resources[1]);

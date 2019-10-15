@@ -92,7 +92,8 @@ class SurveyView extends IntrospectableMixin(View) {
     if (this.d3el.select('.wrongWay.button').node()) {
       this.d3el.insert('div', '.hideIfProtesting + *')
         .classed('showIfWrongWay', true)
-        .html(this.resources[this.resources.length - 1]);
+        .html(this.resources[this.resources.length - 1])
+        .select('.dataType').html(this.dataTypeLabel);
       this.d3el.select('.wrongWay.button').on('click', () => {
         this.protesting = false;
         this.wrongWay = true;

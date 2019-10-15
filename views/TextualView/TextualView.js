@@ -7,6 +7,7 @@ class TextualView extends SurveyView {
       { type: 'text', url: 'views/TextualView/template.html' }
     ]);
     this.humanLabel = '<span class="inspectable">Textual</span> Data Details';
+    this.dataTypeLabel = '<span class="inspectable">textual</span>';
   }
   setup () {
     this.d3el.html(this.resources[1]);

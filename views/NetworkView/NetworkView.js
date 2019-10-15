@@ -8,6 +8,7 @@ class NetworkView extends SurveyView {
       { type: 'text', url: 'views/NetworkView/template.html' }
     ]);
     this.humanLabel = '<span class="inspectable">Network</span> / <span class="inspectable">Hierarchy</span> Data Details';
+    this.dataTypeLabel = '<span class="inspectable">network</span> / <span class="inspectable">hierarchical</span>';
 
     this.on('open', () => {
       this._justOpened = true;
@@ -202,7 +203,6 @@ class NetworkView extends SurveyView {
       .attr('data-key', 'exampleNetwork')
       .attr('data-role', (d, i) => `node${i}`)
       .attr('id', (d, i) => `node${i}`);
-      // .property('value', d => d.label);
     nodes.select('input')
       .property('value', d => d.label);
 
