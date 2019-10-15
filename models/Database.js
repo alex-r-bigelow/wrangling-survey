@@ -52,7 +52,7 @@ class Database extends Model {
     window.localStorage.setItem('surveyVersion', this.surveyVersion);
 
     this.unfinishedResponses = window.localStorage.getItem('unfinishedResponses');
-    this.unfinishedResponses = this.unfinishedResponses ? JSON.parse(this.unfinishedResponses) : {};
+    this.unfinishedResponses = this.unfinishedResponses ? JSON.parse(this.unfinishedResponses) : { startTimestamp: new Date().toISOString() };
 
     this.pendingResponseStrings = window.localStorage.getItem('pendingResponseStrings');
     this.pendingResponseStrings = this.pendingResponseStrings ? JSON.parse(this.pendingResponseStrings) : {};
@@ -80,7 +80,7 @@ class Database extends Model {
       .reduce((agg, responseList) => {
         return agg.concat(responseList);
       }, [])
-      .sort((a, b) => a.timestamp - b.timestamp)
+      .sort((a, b) => new Date(a.submitTimestamp) - new Date(b.submitTimestamp))
       .map(response => response.terminology || {});
     Object.assign(this.terminology, ...sortedTerminology);
   }
