@@ -48,7 +48,7 @@ class Database extends Model {
 
     // Survey versioning, in case we need to purge / tweak pilot participants'
     // localStorage in the future
-    this.surveyVersion = window.localStorage.getItem('surveyVersion') || '0.1.0';
+    this.surveyVersion = window.localStorage.getItem('surveyVersion') || '0.1.1';
     window.localStorage.setItem('surveyVersion', this.surveyVersion);
 
     this.unfinishedResponses = window.localStorage.getItem('unfinishedResponses');
