@@ -101,6 +101,7 @@ class SurveyController extends Model {
           }
         }
       });
+    this.glossary.render();
 
     // TODO: this is an ugly patch for public / private fields, because pseudo-elements can't exist inside form fields. Move this:
     d3.selectAll('input, textarea').each(function () {

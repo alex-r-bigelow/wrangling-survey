@@ -28,14 +28,17 @@ class GlossaryView extends SurveyView {
         element.insert('h3', ':first-child')
           .text(this.dataset.term);
       });
-    this.d3el.select('.toggle.button').on('click', () => {
+    const toggle = () => {
       if (!this.d3el.classed('unfocused')) {
         this.d3el.classed('unfocused', true);
         d3.select('.survey.pageSlice').classed('unfocused', false);
         // d3.event.preventDefault();
         d3.event.stopPropagation();
       }
-    });
+      this.render();
+    };
+    this.d3el.select('.toggle.button').on('click', toggle);
+    this.d3el.select('.collapse.button').on('click', toggle);
     // Add the plural dictionary
     for (const [regex, replace] of Object.entries(this.resources[2].plural)) {
       pluralize.addPluralRule(new window.RexExp(regex), replace);
@@ -50,6 +53,11 @@ class GlossaryView extends SurveyView {
       pluralize.addIrregularRule(singular, plural);
     }
     this.collectKeyElements();
+  }
+  draw () {
+    const focused = !this.d3el.classed('unfocused');
+    this.d3el.select('.collapse.button img')
+      .attr('src', focused ? 'img/collapse.svg' : 'img/expand.svg');
   }
   connectTerminology () {
     // Attach event listeners to inspectable fields, and keep the original term
@@ -105,6 +113,7 @@ class GlossaryView extends SurveyView {
           return t => `0 0 0 6px #f7f7f7, 0 0 0 9px ${color(t)}`;
         });
     }
+    this.render();
   }
   isEnabled () {
     return true;

@@ -1,11 +1,17 @@
 @import '../../style/colors.less';
+@import '../../style/measurements.less';
 
 .GlossaryView {
-  .button {
+  .toggle.button {
     width: 100%;
     min-width: -webkit-fit-content;
     min-width: -moz-fit-content;
     min-width: fit-content;
+  }
+  .collapse.button {
+    position: absolute;
+    right: 1.5em;
+    bottom: 1em;
   }
   &.unfocused {
     height: 5em;
