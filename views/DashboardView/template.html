@@ -1,21 +1,19 @@
 <h3>Your progress</h3>
-<p>Feel free to take the survey as many times as you wish.</p>
 <ul>
-  <li class="datasetsCount">0 datasets described</li>
-  <li class="alternateCount">0 alternate perspectives explored</li>
-  <li class="terminologyCount">0 alternate terms suggested</li>
+  <li><img class="inlineImage" src="img/describe.svg"/><span class="datasetsCount">0 datasets described</span></li>
+  <li><img class="inlineImage" src="img/exploration.svg"/><span class="alternateCount">0 alternate perspectives explored</span></li>
+  <li><img class="inlineImage" src="img/terminology.svg"/><span class="terminologyCount">0 alternate terms suggested</span></li>
 </ul>
+<p>Feel free to take the survey as many times as you wish.</p>
 
-<div class="conferenceOnly">
-  <h3>How to redeem your responses for a plushie</h3>
-
+<div class="plushieInfo">
   <div class="split">
-    <img src="img/plushies.jpg"/>
+    <img src="img/plushies.jpg" class="plushie"/>
     <div>
-      <p>While supplies last, show this screen to someone at the University of Arizona table after completing at least:</p>
+      <p>While supplies last, show this screen <span class="directions"></span> after completing at least:</p>
       <ul>
-        <li>One dataset description</li>
-        <li>One alternative perspective</li>
+        <li><img class="inlineImage" src="img/describe.svg"/>One dataset description</li>
+        <li><img class="inlineImage" src="img/exploration.svg"/>One alternate perspective exploration</li>
       </ul>
       <p>Your random ID is:</p>
     </div>
@@ -23,12 +21,12 @@
   <p class="idDisplay"></p>
 </div>
 
-<h3>Datasets</h3>
+<div class="scrollHint">scroll right -></div>
+
 <table class="datasetTable">
   <thead>
-    <th><div><div>&nbsp;</div></div></th>
-    <th><div><div>&nbsp;</div></div></th>
-    <th><div><div>Status</div></div></th>
+    <th class="labelHeader"><div><div>Dataset</div></div></th>
+    <th class="statusHeader"><div><div>Status</div></div></th>
     <th><div><div><span class="inspectable">Tabular</span> explorations</div></div></th>
     <th><div><div><span class="inspectable">Network</span> / <span class="inspectable">Hierarchy</span> explorations</div></div></th>
     <th><div><div><span class="inspectable">Spatial</span> / <span class="inspectable">Temporal</span> explorations</div></div></th>
@@ -39,8 +37,8 @@
   <tbody></tbody>
 </table>
 
-<div class="DAS button">
-  <a></a>
+<div class="DAS imgAndLabel button">
+  <a><img src="img/describe.svg"/></a>
   <div class="label">Describe a new dataset</div>
 </div>
 

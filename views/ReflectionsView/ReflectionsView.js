@@ -6,7 +6,7 @@ class ReflectionsView extends SurveyView {
       { type: 'less', url: 'views/ReflectionsView/style.less' },
       { type: 'text', url: 'views/ReflectionsView/template.html' }
     ]);
-    this.humanLabel = 'Debrief';
+    this.humanLabel = 'Reflections';
   }
   setup () {
     this.d3el.html(this.resources[1]);

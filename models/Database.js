@@ -31,15 +31,14 @@ class Database extends Model {
     ]);
 
     const params = new URLSearchParams(window.location.search);
-
-    this.context = window.localStorage.getItem('context');
+    this.context = params.get('context');
     if (!this.context) {
-      const temp = params.get('context');
-      if (temp) {
-        this.context = temp;
-        window.localStorage.setItem('context', this.context);
+      this.context = window.localStorage.getItem('context');
+      if (!this.context) {
+        this.context = 'unknown';
       }
     }
+    window.localStorage.setItem('context', this.context);
 
     this.browserId = window.localStorage.getItem('browserId');
     if (this.browserId === null) {
@@ -287,6 +286,9 @@ class Database extends Model {
   }
   get contextIsConference () {
     return ['VIS', 'Supercomputing', 'HDC_Pilot'].indexOf(this.context) !== -1;
+  }
+  get contextIsArizona () {
+    return ['HackyHour', 'CoffeeAndCode', 'UofA'].indexOf(this.context) !== -1;
   }
   get contextIsDesignStudyReview () {
     return this.context === 'DesignStudyReview';

@@ -12,8 +12,13 @@ class DashboardView extends SurveyView {
     this.d3el.html(this.resources[1]);
 
     this.d3el.select('.idDisplay').text(window.controller.database.browserId);
-    this.d3el.select('.conferenceOnly')
-      .style('display', window.controller.database.contextIsConference ? null : 'none');
+    const plushieDirections = window.controller.database.contextIsConference
+      ? 'to someone at the University of Arizona table'
+      : window.controller.database.contextIsArizona
+        ? 'at Gould-Simpson Room 826 during business hours' : null;
+    this.d3el.select('.plushieInfo')
+      .style('display', plushieDirections ? null : 'none')
+      .select('.directions').text(plushieDirections);
 
     this.d3el.select('.DAS.button').on('click', () => {
       window.location.href = 'DAS.html';
@@ -45,38 +50,35 @@ class DashboardView extends SurveyView {
     dasResponsesEnter.append('td').classed('datasetLabel', true);
     dasResponses.select('.datasetLabel').text(d => d.datasetLabel);
 
-    // Timestamp
-    dasResponsesEnter.append('td').classed('date', true);
-    dasResponses.select('.date').text(d => new Date(d.submitTimestamp).toLocaleDateString());
-
     // Status
-    dasResponsesEnter.append('td').classed('status', true).classed('bordered', true);
-    dasResponses.select('.status').classed('pending', d => !!d.pending);
+    dasResponsesEnter.append('td').classed('status', true).append('small');
+    dasResponses.select('.status small').html(d => d.pending ? 'review<br/>pending' : 'submission<br/>accepted');
 
     // Tabular
-    dasResponsesEnter.append('td').classed('tabular', true).classed('bordered', true);
+    dasResponsesEnter.append('td').classed('tabular', true);
     dasResponses.select('.tabular').text(d => d.alternateExplorations.tabular.length);
 
     // Network / Hierarchy
-    dasResponsesEnter.append('td').classed('network', true).classed('bordered', true);
+    dasResponsesEnter.append('td').classed('network', true);
     dasResponses.select('.network').text(d => d.alternateExplorations.network.length);
 
     // Spatial / Temporal
-    dasResponsesEnter.append('td').classed('spatial', true).classed('bordered', true);
+    dasResponsesEnter.append('td').classed('spatial', true);
     dasResponses.select('.spatial').text(d => d.alternateExplorations.spatial.length);
 
     // Textual
-    dasResponsesEnter.append('td').classed('textual', true).classed('bordered', true);
+    dasResponsesEnter.append('td').classed('textual', true);
     dasResponses.select('.textual').text(d => d.alternateExplorations.textual.length);
 
     // Media
-    dasResponsesEnter.append('td').classed('media', true).classed('bordered', true);
+    dasResponsesEnter.append('td').classed('media', true);
     dasResponses.select('.media').text(d => d.alternateExplorations.media.length);
 
     // Explore buttons
     const buttonEnter = dasResponsesEnter.append('td').classed('explore', true)
-      .append('div').classed('button', true);
-    buttonEnter.append('a');
+      .append('div').classed('button', true).classed('imgAndLabel', true);
+    buttonEnter.append('a')
+      .append('img').attr('src', 'img/exploration.svg');
     buttonEnter.append('span').classed('label', true).text('Explore alternative');
     dasResponses.select('.explore .button').on('click', d => {
       const params = new URLSearchParams(Object.assign({}, d.nextAlternates[0], {

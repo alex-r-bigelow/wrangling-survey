@@ -1,12 +1,23 @@
 @import '../../style/colors.less';
 
 .DashboardView {
-  .conferenceOnly {
+  ul {
+    list-style-type: none;
+    padding: 0;
+    .inlineImage {
+      margin-right: 0.5em;
+    }
+  }
+  .plushieInfo {
     .split {
       display: flex;
-      img {
+      flex-wrap: wrap;
+      .plushie {
         height: 10.5em;
         margin-right: 1em;
+      }
+      & > div {
+        flex: 1 0 15em;
       }
     }
     .idDisplay {
@@ -16,15 +27,16 @@
     }
   }
   .datasetTable {
+    margin: 0 0 1em auto;
     border-collapse: collapse;
     border-spacing: 0;
     th {
       font-weight: initial;
-      height: 7em;
+      height: 11em;
       white-space: nowrap;
       vertical-align: bottom;
       & > div {
-        transform: translate(26px, -8.5px) rotate(315deg);
+        transform: translate(27px, -8.5px) rotate(315deg);
         width: 2.5em;
         & > div {
           width: -webkit-fit-content;
@@ -33,13 +45,38 @@
           border-bottom: 1px solid @separatorColor;
         }
       }
+      &.labelHeader > div {
+        transform: translate(126px, -8.5px) rotate(315deg);
+      }
+      &.statusHeader > div {
+        transform: translate(58px, -8.5px) rotate(315deg);
+      }
     }
     td {
-      &.bordered {
-        border-right: 1.5px solid @separatorColor;
+      border-right: 1px solid @separatorColor;
+      &.datasetLabel {
+        white-space: nowrap;
+      }
+      &.status {
+        width: 64px;
+        line-height: 0.85em;
+      }
+      &.explore {
+        border-right: none;
       }
       text-align: center;
       padding: 0.25em;
     }
+  }
+}
+.scrollHint {
+  display: none;
+  position: absolute;
+  left: 1em;
+  color: @separatorColor;
+}
+@media(max-width:37em) {
+  .scrollHint {
+    display: block;
   }
 }
