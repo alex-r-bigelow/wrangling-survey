@@ -1,6 +1,8 @@
 /* globals sha256, d3 */
 import { Model } from '../node_modules/uki/dist/uki.esm.js';
 
+const SURVEY_VERSION = '0.1.1';
+
 // window.SANDBOX_MODE = true;
 
 const THINKING_ORDER = ['Never', 'Rarely', 'Sometimes', 'Very often', 'Always'];
@@ -30,6 +32,24 @@ class Database extends Model {
       { type: 'json', url: 'models/databaseConfig.json' }
     ]);
 
+    this.browserId = window.localStorage.getItem('browserId');
+    if (this.browserId === null) {
+      this.browserId = sha256((new Date()).toISOString() + Math.random());
+      window.localStorage.setItem('browserId', this.browserId);
+    }
+
+    // Survey versioning, in case we need to purge / tweak pilot participants'
+    // localStorage in the future
+    this.surveyVersion = window.localStorage.getItem('surveyVersion');
+    if (!this.surveyVersion || this.surveyVersion !== SURVEY_VERSION) {
+      // Nuke localStorage to avoid corruption across versions, preserving only
+      // browserId
+      window.localStorage.clear();
+      window.localStorage.setItem('browserId', this.browserId);
+      this.surveyVersion = SURVEY_VERSION;
+    }
+    window.localStorage.setItem('surveyVersion', this.surveyVersion);
+
     const params = new URLSearchParams(window.location.search);
     this.context = params.get('context');
     if (!this.context) {
@@ -39,17 +59,6 @@ class Database extends Model {
       }
     }
     window.localStorage.setItem('context', this.context);
-
-    this.browserId = window.localStorage.getItem('browserId');
-    if (this.browserId === null) {
-      this.browserId = sha256((new Date()).toISOString() + Math.random());
-      window.localStorage.setItem('browserId', this.browserId);
-    }
-
-    // Survey versioning, in case we need to purge / tweak pilot participants'
-    // localStorage in the future
-    this.surveyVersion = window.localStorage.getItem('surveyVersion') || '0.1.1';
-    window.localStorage.setItem('surveyVersion', this.surveyVersion);
 
     this.unfinishedResponses = window.localStorage.getItem('unfinishedResponses');
     this.unfinishedResponses = this.unfinishedResponses ? JSON.parse(this.unfinishedResponses) : { startTimestamp: new Date().toISOString() };
