@@ -7,7 +7,8 @@ import SpatialView from '../views/SpatialView/SpatialView.js';
 import GroupedView from '../views/GroupedView/GroupedView.js';
 import TextualView from '../views/TextualView/TextualView.js';
 import MediaView from '../views/MediaView/MediaView.js';
-import AlternateDebriefView from '../views/AlternateDebriefView/AlternateDebriefView.js';
+import ReflectionsView from '../views/ReflectionsView/ReflectionsView.js';
+import DebriefView from '../views/DebriefView/DebriefView.js';
 
 class ETS extends SurveyController {
   constructor () {
@@ -19,7 +20,8 @@ class ETS extends SurveyController {
       GroupedView,
       TextualView,
       MediaView,
-      AlternateDebriefView
+      ReflectionsView,
+      DebriefView
     ]);
 
     this.params = Object.fromEntries(new URLSearchParams(window.location.search));

@@ -14,7 +14,6 @@ class DataTypeView extends SurveyView {
     this.setupLikertFields();
     this.collectKeyElements();
   }
-  draw () {}
   isEnabled (formValues) {
     return true;
   }

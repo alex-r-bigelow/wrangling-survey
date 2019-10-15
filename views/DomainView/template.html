@@ -13,12 +13,16 @@
   <h3>Please choose a short label for this dataset</h3>
   <p>We will use this label in later parts of the survey, and in the public data that we release, to distinguish this dataset from any other responses that you submit.</p>
   <div class="field">
-    <input type="text" data-key="datasetLabel" data-protest-default="No dataset label provided" id="datasetLabel" list="existingLabels"/><br/>
+    <input type="text" data-key="datasetLabel" data-protest-default="&lt;no label provided&gt;" id="datasetLabel" list="existingLabels"/><br/>
     <datalist id="existingLabels"></datalist>
   </div>
 </div>
 
 <div class="buttonContainer">
+  <div class="restore imgAndLabel button">
+    <a><img src="img/restore.svg"/></a>
+    <span class="label">Restore this section</span>
+  </div>
   <div class="protest imgAndLabel button">
     <a><img src="img/protest.svg"/></a>
     <span class="label">Skip this section</span>

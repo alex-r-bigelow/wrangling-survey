@@ -16,6 +16,7 @@ class GdprView extends SurveyView {
     this.collectKeyElements();
   }
   draw () {
+    super.draw();
     const consented = this.d3el.selectAll('#gdprReleaseOk, #gdprFutureOk')
       .nodes().reduce((agg, node) => agg && node.checked, true);
     this.d3el.select('.agree')

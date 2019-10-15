@@ -15,6 +15,7 @@ class AlternateIntroView extends SurveyView {
       { type: 'text', url: 'views/AlternateIntroView/mediaCreativeProdding.html' }
     ]);
     this.humanLabel = 'Exploring Alternatives';
+    this.stall = true;
   }
   setup () {
     if (window.controller.params.priorAlternateCount > 0) {

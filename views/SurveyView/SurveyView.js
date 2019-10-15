@@ -68,7 +68,7 @@ class SurveyView extends IntrospectableMixin(View) {
       .on('click.survey', standardHandler);
     this.d3el.selectAll('.likert [type="radio"]')
       .on('click.survey', standardHandler);
-    this.d3el.selectAll('textarea[data-key], [type="text"][data-key]')
+    this.d3el.selectAll('textarea[data-key], [type="text"][data-key], [type="email"][data-key]')
       .on('keyup.survey', getDebouncedChangeHandler(1000, true));
     this.on('surveyValuesChanged', standardHandler);
   }
@@ -83,15 +83,14 @@ class SurveyView extends IntrospectableMixin(View) {
       this.d3el.select('.protest.button').on('click', () => {
         this.protesting = true;
         this.wrongWay = false;
-        const wrongWayReason = this.d3el.select('.wrongWayReason').node().value;
-        if (wrongWayReason) {
+        const wrongWayReason = this.d3el.select('.wrongWayReason').node();
+        if (wrongWayReason && wrongWayReason.value) {
           this.d3el.select('.protestReason')
-            .property('value', wrongWayReason);
+            .property('value', wrongWayReason.value);
           this.d3el.select('.wrongWayReason')
             .property('value', '');
-          this.trigger('surveyValuesChanged');
         }
-        this.drawProtest();
+        this.trigger('surveyValuesChanged');
       });
     }
     if (this.d3el.select('.wrongWay.button').node()) {
@@ -106,7 +105,7 @@ class SurveyView extends IntrospectableMixin(View) {
         this.d3el.select('.wrongWay.button').on('click', () => {
           this.protesting = false;
           this.wrongWay = true;
-          this.drawProtest();
+          this.trigger('surveyValuesChanged');
         });
       } else {
         this.d3el.select('.wrongWay.field').remove();
@@ -118,11 +117,9 @@ class SurveyView extends IntrospectableMixin(View) {
       this.d3el.selectAll('.protestReason, .wrongWayReason')
         .property('value', '');
       this.trigger('surveyValuesChanged');
-      this.drawProtest();
     });
-    this.drawProtest();
   }
-  drawProtest () {
+  draw () {
     this.d3el.select('.hideIfProtesting').style('display', this.protesting || this.wrongWay ? 'none' : null);
     this.d3el.select('.protest.button').style('display', this.protesting ? 'none' : null);
     this.d3el.select('.restore.button').style('display', this.protesting || this.wrongWay ? null : 'none');
@@ -213,10 +210,10 @@ class SurveyView extends IntrospectableMixin(View) {
   populateForm (formValues) {
     if (formValues[this.type + 'Protest']) {
       this.protesting = true;
-      this.drawProtest();
+      this.draw();
     } else if (formValues[this.type + 'WrongWay']) {
       this.wrongWay = true;
-      this.drawProtest();
+      this.draw();
     }
     this.d3el.selectAll('[data-key]').each(function () {
       const key = this.dataset.key;
@@ -265,7 +262,7 @@ class SurveyView extends IntrospectableMixin(View) {
   requireFields (formValues, requiredFields) {
     const invalidIds = {};
     for (const field of requiredFields) {
-      if (formValues[field] === undefined) {
+      if (formValues[field] === undefined || formValues[field] === '') {
         invalidIds[field] = true;
       }
     }

@@ -1,10 +1,10 @@
 import SurveyView from '../SurveyView/SurveyView.js';
 
-class AlternateDebriefView extends SurveyView {
+class ReflectionsView extends SurveyView {
   constructor (div) {
     super(div, [
-      { type: 'less', url: 'views/AlternateDebriefView/style.less' },
-      { type: 'text', url: 'views/AlternateDebriefView/template.html' }
+      { type: 'less', url: 'views/ReflectionsView/style.less' },
+      { type: 'text', url: 'views/ReflectionsView/template.html' }
     ]);
     this.humanLabel = 'Debrief';
   }
@@ -44,4 +44,4 @@ class AlternateDebriefView extends SurveyView {
     };
   }
 }
-export default AlternateDebriefView;
+export default ReflectionsView;

@@ -1,3 +1,4 @@
+/* globals d3 */
 import SurveyController from './SurveyController.js';
 
 import ConsentView from '../views/ConsentView/ConsentView.js';
@@ -15,8 +16,6 @@ class LandingPageController extends SurveyController {
       AboutView,
       DashboardView
     ]);
-    this.currentSurveyViewIndex = 0;
-    this.on('load', () => { this.advanceSurvey(this.surveyViews.length - 1); });
   }
   get unfinishedResponse () {
     if (super.unfinishedResponse) {
@@ -32,32 +31,23 @@ class LandingPageController extends SurveyController {
     }
     return JSON.parse(responseStrings[responseStrings.length - 1]);
   }
-  async advanceSurvey (viewIndex = this.currentSurveyViewIndex + 1) {
-    const formData = this.extractResponses();
-    // First check if all the views up to viewIndex are either valid or disabled
-    let forcedIndex = 0;
-    while (this.surveyViews[forcedIndex] && forcedIndex < viewIndex) {
-      if (this.surveyViews[forcedIndex].isEnabled(formData.formValues) &&
-          !formData.viewStates[forcedIndex].valid) {
-        viewIndex = forcedIndex;
-        this.forceInvalidFieldWarnings = true;
-        break;
-      }
-      forcedIndex++;
-    }
-    if (forcedIndex === viewIndex) {
-      // We've made it this far okay; continue as long as views are disabled
-      this.forceInvalidFieldWarnings = false;
-      while (this.surveyViews[viewIndex] && !this.surveyViews[viewIndex].isEnabled(formData.formValues)) {
-        viewIndex++;
-      }
-    }
-    if (this.surveyViews[viewIndex]) {
-      this.currentSurveyViewIndex = viewIndex;
-      this.surveyViews[viewIndex].trigger('open');
-      this.renderAllViews(formData);
-    }
-    return viewIndex;
+  renderSelectButton (formData) {
+    // We override the main version of this function because submit button is
+    // really just limited to the Contact Settings pane, and we piggyback on
+    // "validity" to auto-advance to views beyond it; we only really care about
+    // "validity" in terms of the existence of an email address
+    d3.select('.submit.button')
+      .classed('disabled', !formData.viewStates[2].valid)
+      .on('click', async () => {
+        if (formData.viewStates[2].valid) {
+          this.database.setResponse(this.tableName, formData.formValues);
+          await this.database.submitResponse(this.tableName);
+          window.location.href = 'index.html';
+        } else {
+          this.forceInvalidFieldWarnings = true;
+          this.renderAllViews();
+        }
+      });
   }
 }
 

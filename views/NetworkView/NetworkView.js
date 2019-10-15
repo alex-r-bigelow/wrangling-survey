@@ -118,6 +118,7 @@ class NetworkView extends SurveyView {
     this.collectKeyElements();
   }
   draw () {
+    super.draw();
     this.drawNodeFields();
     this.drawEdgeFields();
     this.populateSelectMenus(this.d3el.select('.new.edge.field .source'), 'source');

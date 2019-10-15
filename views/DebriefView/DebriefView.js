@@ -13,7 +13,6 @@ class DebriefView extends SurveyView {
     super.setupLikertFields();
     super.collectKeyElements();
   }
-  draw () {}
   isEnabled () {
     return true;
   }

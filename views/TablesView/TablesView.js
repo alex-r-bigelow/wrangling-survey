@@ -25,6 +25,7 @@ class TablesView extends SurveyView {
     this.collectKeyElements();
   }
   draw () {
+    super.draw();
     this.d3el.select('.secondTable')
       .style('display', this.nTables === '1' ? 'none' : null);
     this.d3el.select(`.nested`)

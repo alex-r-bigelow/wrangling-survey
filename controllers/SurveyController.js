@@ -21,7 +21,10 @@ class SurveyController extends Model {
     this.ownedResponseIndex = null;
 
     this.surveyViews = [];
+
+    // Auto-advance on page load to wherever the user left off
     this.currentSurveyViewIndex = 0;
+    this.on('load', () => { this.advanceSurvey(this.surveyViews.length - 1); });
 
     window.onresize = () => { this.renderAllViews(); };
     (async () => {
@@ -110,12 +113,26 @@ class SurveyController extends Model {
   }
   async advanceSurvey (viewIndex = this.currentSurveyViewIndex + 1) {
     const formData = this.extractResponses();
-    while (this.surveyViews[viewIndex] && !this.surveyViews[viewIndex].isEnabled(formData.formValues)) {
-      viewIndex++;
+    // First check if all the views up to viewIndex are either valid or disabled
+    let forcedIndex = 0;
+    while (this.surveyViews[forcedIndex] && forcedIndex < viewIndex) {
+      if (this.surveyViews[forcedIndex].isEnabled(formData.formValues) &&
+          (!formData.viewStates[forcedIndex].valid || this.surveyViews[forcedIndex].stall)) {
+        viewIndex = forcedIndex;
+        this.forceInvalidFieldWarnings = true;
+        break;
+      }
+      forcedIndex++;
+    }
+    if (forcedIndex === viewIndex) {
+      // We've made it this far okay; continue as long as views are disabled
+      this.forceInvalidFieldWarnings = false;
+      while (this.surveyViews[viewIndex] && !this.surveyViews[viewIndex].isEnabled(formData.formValues)) {
+        viewIndex++;
+      }
     }
     if (this.surveyViews[viewIndex]) {
       this.currentSurveyViewIndex = viewIndex;
-      this.forceInvalidFieldWarnings = false;
       this.surveyViews[viewIndex].trigger('open');
       this.renderAllViews(formData);
     }
@@ -137,6 +154,7 @@ class SurveyController extends Model {
         detailsElement.select('.next.button')
           .classed('disabled', !formData.viewStates[i].valid)
           .on('click', () => {
+            self.surveyViews[i].stall = false;
             if (!formData.viewStates[i].valid) {
               self.forceInvalidFieldWarnings = true;
               self.renderAllViews();
@@ -144,19 +162,8 @@ class SurveyController extends Model {
               self.advanceSurvey();
             }
           });
-        detailsElement.select('.submit.button')
-          .classed('disabled', !formData.valid)
-          .on('click', async () => {
-            if (formData.valid) {
-              self.database.setResponse(self.tableName, formData.formValues);
-              await self.database.submitResponse(self.tableName);
-              window.location.href = 'index.html';
-            } else if (!formData.viewStates[i].valid) {
-              self.forceInvalidFieldWarnings = true;
-              self.renderAllViews();
-            }
-          });
       });
+    this.renderSelectButton(formData);
     d3.selectAll('.invalid').classed('invalid', false);
     if (this.forceInvalidFieldWarnings || this.ownedResponseIndex !== null) {
       // Only flag invalid fields as invalid if the user has attempted to
@@ -169,6 +176,20 @@ class SurveyController extends Model {
         .attr('src', `img/changesInvalid.svg`);
     }
     await Promise.all(this.surveyViews.map(view => view.render()));
+  }
+  renderSelectButton (formData) {
+    d3.select('.submit.button')
+      .classed('disabled', !formData.valid)
+      .on('click', async () => {
+        if (formData.valid) {
+          this.database.setResponse(this.tableName, formData.formValues);
+          await this.database.submitResponse(this.tableName);
+          window.location.href = 'index.html';
+        } else {
+          this.forceInvalidFieldWarnings = true;
+          this.renderAllViews();
+        }
+      });
   }
   get unfinishedResponse () {
     return this.database.unfinishedResponses[this.tableName] || null;

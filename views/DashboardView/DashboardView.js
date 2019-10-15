@@ -20,6 +20,7 @@ class DashboardView extends SurveyView {
     });
   }
   draw () {
+    super.draw();
     const summary = window.controller.database.getUserResponseSummary();
     this.d3el.select('.datasetTable')
       .style('display', summary.datasetList.length > 0 ? null : 'none');
@@ -46,7 +47,7 @@ class DashboardView extends SurveyView {
 
     // Timestamp
     dasResponsesEnter.append('td').classed('date', true);
-    dasResponses.select('.date').text(d => new Date(d.timestamp).toLocaleDateString());
+    dasResponses.select('.date').text(d => new Date(d.submitTimestamp).toLocaleDateString());
 
     // Status
     dasResponsesEnter.append('td').classed('status', true).classed('bordered', true);
