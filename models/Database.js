@@ -179,33 +179,29 @@ class Database extends Model {
     delete this.unfinishedResponses[tableName];
     window.localStorage.setItem('unfinishedResponses', JSON.stringify(this.unfinishedResponses));
 
-    // Make a fake, temporary form to submit to Google
-    return new Promise((resolve, reject) => {
-      const hiddenFrame = d3.select('body').append('iframe')
-        .attr('sandbox', 'allow-same-origin allow-scripts allow-forms')
-        .style('display', 'none')
-        .on('load', async () => {
-          const frameDoc = hiddenFrame.node().contentDocument;
-          const form = d3.select(frameDoc.documentElement).select('body')
-            .append('form')
-            .attr('action', this.resources[0][tableName].action);
-          form.append('input')
-            .attr('type', 'text')
-            .attr('name', this.resources[0][tableName].field)
-            .property('value', stringValues);
-          const submitButton = form.append('input')
-            .attr('type', 'submit')
-            .node();
-          if (!window.SANDBOX_MODE) {
-            submitButton.click();
-          } else {
-            console.warn(`Not submitting response to ${tableName}, because SANDBOX_MODE is enabled:`, responseValues);
-            hiddenFrame.remove();
-            await this.updateData();
-          }
-          resolve();
-        });
-    });
+    if (window.SANDBOX_MODE) {
+      console.warn(`Not submitting response to ${tableName}, because SANDBOX_MODE is enabled:`, responseValues);
+      return this.updateData();
+    }
+
+    // Submit the JSON via the Google form
+    let url = `${this.resources[0][tableName].action}?${this.resources[0][tableName].field}=${encodeURIComponent(stringValues)}`;
+    try {
+      // Unfortunately, the response object returned from fetch (submitting to
+      // google) doesn't contain much that's useful about whether or not it was
+      // successful. Instead, we just redirect regardless to the main page, and
+      // we can debug IRL if we don't see entries
+      await window.fetch(url, {
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      window.location.href = 'index.html';
+    } catch (error) {
+      console.error('Error submitting response:', error);
+      return Promise.reject(error);
+    }
   }
   async getPublicResponses (tableName) {
     await this.dataPromise;
