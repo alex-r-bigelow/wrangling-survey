@@ -507,8 +507,10 @@ class NetworkView extends SurveyView {
       (window.controller.params && window.controller.params.targetType === 'network');
   }
   validateForm (formValues) {
-    formValues.exampleNetwork = this.parseFormNetwork(formValues.exampleNetwork);
-    this.populateNetwork(formValues.exampleNetwork);
+    if (formValues.exampleNetwork) {
+      formValues.exampleNetwork = this.parseFormNetwork(formValues.exampleNetwork);
+      this.populateNetwork(formValues.exampleNetwork);
+    }
 
     const invalidIds = super.requireFields(formValues, [
       'nodeClassCount',
