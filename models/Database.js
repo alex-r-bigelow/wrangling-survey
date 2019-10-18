@@ -172,41 +172,40 @@ class Database extends Model {
     responseValues.submitTimestamp = new Date().toISOString();
     const stringValues = JSON.stringify(responseValues);
 
-    // Make a fake, temporary form to submit to Google
-    const hiddenFrame = d3.select('body').append('iframe')
-      .attr('sandbox', 'allow-same-origin allow-scripts allow-forms')
-      .style('display', 'none');
-    const frameDoc = hiddenFrame.node().contentDocument;
-    let pollingInterval = window.setInterval(() => {
-      if (frameDoc.location === null) {
-        window.clearTimeout(pollingInterval);
-        hiddenFrame.remove();
-      }
-    }, 200);
-    const form = d3.select(frameDoc).select('body')
-      .append('form')
-      .attr('action', this.resources[0][tableName].action);
-    form.append('input')
-      .attr('type', 'text')
-      .attr('name', this.resources[0][tableName].field)
-      .property('value', stringValues);
-    const submitButton = form.append('input')
-      .attr('type', 'submit')
-      .node();
-    if (!window.SANDBOX_MODE) {
-      submitButton.click();
-    } else {
-      console.warn(`Not submitting response to ${tableName}, because SANDBOX_MODE is enabled:`, responseValues);
-    }
-    form.remove();
-
     // Store the response as pending
     this.pendingResponseStrings[tableName] = this.pendingResponseStrings[tableName] || [];
     this.pendingResponseStrings[tableName].push(stringValues);
     window.localStorage.setItem('pendingResponseStrings', JSON.stringify(this.pendingResponseStrings));
     delete this.unfinishedResponses[tableName];
     window.localStorage.setItem('unfinishedResponses', JSON.stringify(this.unfinishedResponses));
-    return this.updateData();
+
+    // Make a fake, temporary form to submit to Google
+    return new Promise((resolve, reject) => {
+      const hiddenFrame = d3.select('body').append('iframe')
+        .attr('sandbox', 'allow-same-origin allow-scripts allow-forms')
+        .style('display', 'none')
+        .on('load', async () => {
+          const frameDoc = hiddenFrame.node().contentDocument;
+          const form = d3.select(frameDoc.documentElement).select('body')
+            .append('form')
+            .attr('action', this.resources[0][tableName].action);
+          form.append('input')
+            .attr('type', 'text')
+            .attr('name', this.resources[0][tableName].field)
+            .property('value', stringValues);
+          const submitButton = form.append('input')
+            .attr('type', 'submit')
+            .node();
+          if (!window.SANDBOX_MODE) {
+            submitButton.click();
+          } else {
+            console.warn(`Not submitting response to ${tableName}, because SANDBOX_MODE is enabled:`, responseValues);
+            hiddenFrame.remove();
+            await this.updateData();
+          }
+          resolve();
+        });
+    });
   }
   async getPublicResponses (tableName) {
     await this.dataPromise;
