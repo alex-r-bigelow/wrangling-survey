@@ -69,12 +69,11 @@ details {
       background: @selectedButtonActiveGradient;
     }
     .statusIndicator {
-      /*
-      The checkmark is already black, and applying the CSS filter causes weird
-      tearing issues in Safari
+      /*The checkmark is already black, and applying the CSS filter causes weird
+      tearing issues in Safari, but not having an inverted check in all browsers
+      is slightly worse, so we'll leave the filter here*/
       -webkit-filter: @invertedTextColorImageFilter;
       filter: @invertedTextColorImageFilter;
-      */
     }
   }
   & > div {

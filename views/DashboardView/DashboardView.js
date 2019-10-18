@@ -87,14 +87,25 @@ class DashboardView extends SurveyView {
       }));
       window.location.href = `ETS?${params.toString()}`;
     });
+    dasResponses.select('.explore.button')
+      .attr('id', (d, i) => i === 0 ? 'firstExploreButton' : null);
   }
   isEnabled () {
     return true;
   }
   validateForm (formValues) {
+    const summary = window.controller.database.getUserResponseSummary();
+    const invalidIds = {};
+    // These conditions are redundant, but should make it easy to change requirements
+    if (!summary.responses['DR.DAS'] || summary.responses['DR.DAS'].length < 1) {
+      invalidIds['describeNewButton'] = true;
+    }
+    if (!summary.responses['DR.ETS'] || summary.responses['DR.ETS'].length < 1) {
+      invalidIds['firstExploreButton'] = true;
+    }
     return {
-      valid: true,
-      invalidIds: {}
+      valid: Object.keys(invalidIds).length === 0,
+      invalidIds
     };
   }
 }
