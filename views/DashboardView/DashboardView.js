@@ -66,6 +66,10 @@ class DashboardView extends SurveyView {
     dasResponsesEnter.append('td').classed('spatial', true);
     dasResponses.select('.spatial').text(d => d.alternateExplorations.spatial.length);
 
+    // Grouped
+    dasResponsesEnter.append('td').classed('grouped', true);
+    dasResponses.select('.grouped').text(d => d.alternateExplorations.grouped.length);
+
     // Textual
     dasResponsesEnter.append('td').classed('textual', true);
     dasResponses.select('.textual').text(d => d.alternateExplorations.textual.length);

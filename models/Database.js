@@ -1,4 +1,4 @@
-/* globals sha256, d3 */
+/* globals sha256 */
 import { Model } from '../node_modules/uki/dist/uki.esm.js';
 
 const SURVEY_VERSION = '0.1.1';
