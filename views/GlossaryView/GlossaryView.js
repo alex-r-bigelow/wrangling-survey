@@ -73,10 +73,10 @@ class GlossaryView extends SurveyView {
         d3.event.stopPropagation();
         self.show(this.dataset.term);
       }).on('touchend', function () {
-        d3.event.preventDefault();
-        d3.event.stopPropagation();
         if (doubleTapTimeout !== null) {
           // Double tapped
+          d3.event.preventDefault();
+          d3.event.stopPropagation();
           window.clearTimeout(doubleTapTimeout);
           doubleTapTimeout = null;
           self.show(this.dataset.term);
