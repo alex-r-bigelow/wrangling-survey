@@ -18,7 +18,11 @@
     flex-grow: 0;
     width: 3em;
     .wrapper {
+      -webkit-transform-origin: top left;
+      -moz-transform-origin: top left;
       transform-origin: top left;
+      -webkit-transform: rotate(90deg) translate(0, -100%);
+      -moz-transform: rotate(90deg) translate(0, -100%);
       transform: rotate(90deg) translate(0, -100%);
 
       .button {
@@ -40,6 +44,9 @@
     }
     input {
       display: inline-block;
+    }
+    .figure {
+      width: 100%;
     }
     .privacyLogo {
       right: 0;

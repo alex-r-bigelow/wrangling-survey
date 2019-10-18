@@ -48,7 +48,12 @@
       top: @buttonSize / 2 - @buttonImageSize / 2;
       width: @buttonImageSize;
       height: @buttonImageSize;
+      /*
+      This button is black anyway, and applying the CSS filter causes weird
+      tearing issues in Safari
+      -webkit-filter: @textColorImageFilter;
       filter: @textColorImageFilter;
+      */
     }
   }
   .label {
@@ -109,6 +114,7 @@
       border-color: @shadowColor;
       background: @selectedButtonGradient;
       img {
+        -webkit-filter: @backgroundImageFilter;
         filter: @backgroundImageFilter;
       }
     }
@@ -131,6 +137,7 @@
       border-color: @disabledColor;
       background: @backgroundColor;
       img {
+        -webkit-filter: @disabledImageFilter;
         filter: @disabledImageFilter;
       }
     }
