@@ -63,18 +63,31 @@ class GlossaryView extends SurveyView {
     // Attach event listeners to inspectable fields, and keep the original term
     // for replacement
     const self = this;
+    let doubleTapTimeout = null;
     d3.selectAll('.inspectable')
       .attr('data-term', function () { return pluralize.singular((this.dataset.coreTerm || this.innerText).toLocaleLowerCase()); })
       .attr('data-pluralize', function () { return this.dataset.coreTerm || !pluralize.isPlural(this.innerText) ? null : 'true'; })
       .attr('data-capitalize', function () { return (this.dataset.coreTerm || this.innerText).match(/^[A-Z]/) ? 'true' : null; })
-      .on('click', function () {
+      .on('dblclick', function () {
         d3.event.preventDefault();
         d3.event.stopPropagation();
         self.show(this.dataset.term);
       }).on('touchend', function () {
         d3.event.preventDefault();
         d3.event.stopPropagation();
-        self.show(this.dataset.term);
+        if (doubleTapTimeout !== null) {
+          // Double tapped
+          window.clearTimeout(doubleTapTimeout);
+          doubleTapTimeout = null;
+          self.show(this.dataset.term);
+        } else {
+          // First tap...
+          doubleTapTimeout = window.setTimeout(() => {
+            // Didn't tap within 300ms
+            window.clearTimeout(doubleTapTimeout);
+            doubleTapTimeout = null;
+          }, 300);
+        }
       });
     this._connectedTerms = true;
   }
