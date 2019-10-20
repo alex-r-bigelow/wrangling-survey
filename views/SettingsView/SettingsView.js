@@ -7,6 +7,8 @@ class SettingsView extends SurveyView {
       { type: 'text', url: 'views/SettingsView/template.html' }
     ]);
     this.humanLabel = 'Contact Settings';
+    const pendingRepsonseStrings = window.localStorage.getItem('pendingResponseStrings');
+    this.stall = pendingRepsonseStrings === null || !JSON.parse(pendingRepsonseStrings)['DR.UID'];
   }
   setup () {
     this.d3el.html(this.resources[1]);

@@ -12,6 +12,9 @@ class GlossaryView extends SurveyView {
     this.terms = {};
     this._connectedTerms = false;
   }
+  isDisabled () {
+    return !window.localStorage.getItem('enableGlossary');
+  }
   setup () {
     const self = this;
     this.d3el.html(this.resources[0]);
@@ -35,10 +38,10 @@ class GlossaryView extends SurveyView {
         element.append('hr');
       });
     const toggle = () => {
-      if (!this.d3el.classed('unfocused')) {
-        this.d3el.classed('unfocused', true);
-        d3.select('.survey.pageSlice').classed('unfocused', false);
-        // d3.event.preventDefault();
+      if (this.isDisabled() || this.d3el.classed('unfocused')) {
+        this.hide();
+      } else {
+        this.show();
         d3.event.stopPropagation();
       }
       this.render();
@@ -66,6 +69,8 @@ class GlossaryView extends SurveyView {
     const focused = !this.d3el.classed('unfocused');
     this.d3el.select('.collapse.button img')
       .attr('src', focused ? 'img/collapse.svg' : 'img/expand.svg');
+    this.d3el.selectAll('.button')
+      .classed('disabled', this.isDisabled());
   }
   collectTerminology () {
     // Attach event listeners to inspectable fields, and keep the original term
@@ -126,7 +131,8 @@ class GlossaryView extends SurveyView {
   }
   show (term) {
     term = term.toLocaleLowerCase();
-    window.controller.focusPane(this.d3el.node());
+    this.d3el.classed('unfocused', false);
+    d3.select('.survey.pageSlice').classed('unfocused', true);
     if (!this.terms[term]) {
       window.console.warn('No definition for term: ' + term);
     } else {
@@ -139,6 +145,9 @@ class GlossaryView extends SurveyView {
         });
     }
     this.render();
+  }
+  hide () {
+    this.d3el.classed('unfocused', true);
   }
   isEnabled () {
     return true;

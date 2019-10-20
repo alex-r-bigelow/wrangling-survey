@@ -76,20 +76,13 @@ class SurveyController extends Model {
       viewInstance.setupSurveyListeners();
     }));
   }
-  focusPane (target) {
-    d3.selectAll('.pageSlice').classed('unfocused', function () {
-      return this !== target;
-    });
-  }
   finishSetup () {
-    const self = this;
-
-    // For small screens, collapse large horizontal panes that aren't being used
-    d3.selectAll('.pageSlice')
-      .classed('unfocused', (d, i) => i !== this.initialPaneIndex)
+    d3.select('survey.pageSlice')
       .on('click', function () {
-        if (d3.select(this).classed('unfocused')) {
-          self.focusPane(this);
+        const surveyPane = d3.select(this);
+        if (surveyPane.classed('unfocused')) {
+          surveyPane.classed('unfocused', false);
+          this.glossary.hide();
           // If the user clicked an already-open section header, don't close it
           const isOpenSectionHeader = [
             d3.event.target,
@@ -101,7 +94,7 @@ class SurveyController extends Model {
           }
         }
       });
-    this.glossary.render();
+    this.glossary.hide();
 
     // TODO: this is an ugly patch for public / private fields, because pseudo-elements can't exist inside form fields. Move this:
     d3.selectAll('input, textarea').each(function () {
@@ -149,8 +142,9 @@ class SurveyController extends Model {
         let baseClass = formData.viewStates[i].state;
         let j = this.currentSurveyViewIndex;
         while (j < i) {
-          if (formData.viewStates[j].enabled &&
-              !formData.viewStates[j].valid) {
+          if (self.surveyViews[j].stall ||
+              (formData.viewStates[j].enabled &&
+              !formData.viewStates[j].valid)) {
             return baseClass + ' disabled';
           }
           j++;
@@ -177,6 +171,7 @@ class SurveyController extends Model {
             }
           });
       });
+    this.glossary.render();
     this.renderSelectButton(formData);
     d3.selectAll('.invalid').classed('invalid', false);
     if (this.forceInvalidFieldWarnings || this.ownedResponseIndex !== null) {

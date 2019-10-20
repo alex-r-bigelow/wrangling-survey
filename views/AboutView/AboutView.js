@@ -7,6 +7,9 @@ class AboutView extends SurveyView {
       { type: 'text', url: 'views/AboutView/template.html' }
     ]);
     this.humanLabel = 'About this survey';
+    this.on('open', () => {
+      window.localStorage.setItem('enableGlossary', true);
+    });
   }
   setup () {
     this.d3el.html(this.resources[1]);
