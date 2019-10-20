@@ -1,6 +1,18 @@
 /* globals d3 */
 import SurveyView from '../SurveyView/SurveyView.js';
 
+const DEFAULT_NETWORK = {
+  nodes: [
+    { label: 'Please change' },
+    { label: 'this example' },
+    { label: 'network' }
+  ],
+  edges: [
+    { source: 0, target: 1, directed: true },
+    { source: 1, target: 2, directed: true }
+  ]
+};
+
 class NetworkView extends SurveyView {
   constructor (div) {
     super(div, [
@@ -33,8 +45,13 @@ class NetworkView extends SurveyView {
     return this._exampleNetwork.nodes.length >= 2 && this._exampleNetwork.edges.length >= 2;
   }
   populateForm (formValues) {
+    const didntHaveNetwork = formValues.exampleNetwork === undefined;
     super.populateForm(formValues);
-    if (formValues['exampleNetwork']) {
+    if (didntHaveNetwork) {
+      this.populateNetwork(DEFAULT_NETWORK);
+      // The DOM will have been nuked by super.populateForm; force an immediate draw
+      this.draw();
+    } else if (formValues['exampleNetwork']) {
       this.populateNetwork(formValues['exampleNetwork']);
       // The DOM will have been nuked by super.populateForm; force an immediate draw
       this.draw();
@@ -81,17 +98,7 @@ class NetworkView extends SurveyView {
     if (!this._exampleNetwork) {
       // Start out with a graph, so that people aren't confronted with
       // an empty canvas
-      this.populateNetwork({
-        nodes: [
-          { label: 'Please change' },
-          { label: 'this example' },
-          { label: 'network' }
-        ],
-        edges: [
-          { source: 0, target: 1, directed: true },
-          { source: 1, target: 2, directed: true }
-        ]
-      });
+      this.populateNetwork(DEFAULT_NETWORK);
     }
 
     this.d3el.select('.create.node.button').on('click', () => {
@@ -214,7 +221,7 @@ class NetworkView extends SurveyView {
     buttonEnter.append('span')
       .classed('label', true)
       .text('Delete');
-    buttonEnter.on('click', (d, i) => {
+    nodes.select('.button').on('click', (d, i) => {
       this.deleteNode(i);
       this.render();
     });
@@ -240,18 +247,12 @@ class NetworkView extends SurveyView {
       .classed('source', true)
       .attr('data-key', 'exampleNetwork')
       .attr('data-role', (d, i) => `edge${i}source`)
-      .attr('id', (d, i) => `edge${i}source`)
-      .on('click', () => {
-        d3.event.preventDefault();
-      });
+      .attr('id', (d, i) => `edge${i}source`);
     edgesEnter.append('select')
       .classed('target', true)
       .attr('data-key', 'exampleNetwork')
       .attr('data-role', (d, i) => `edge${i}target`)
-      .attr('id', (d, i) => `edge${i}target`)
-      .on('click', () => {
-        d3.event.preventDefault();
-      });
+      .attr('id', (d, i) => `edge${i}target`);
     const checkboxChunk = edgesEnter.append('div');
     checkboxChunk.append('input')
       .attr('type', 'checkbox')

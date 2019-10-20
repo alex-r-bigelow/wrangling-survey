@@ -232,11 +232,10 @@ class SurveyView extends IntrospectableMixin(View) {
         let value = formValues[key] && formValues[this.dataset.role];
         if (this.type === 'checkbox') {
           this.checked = !!value;
+        } else if (this.tagName === 'SELECT') {
+          this.value = value === undefined ? null : value;
         } else {
-          if (value === undefined) {
-            value = '';
-          }
-          this.value = value;
+          this.value = value === undefined ? '' : value;
         }
       } else if (this.dataset.checkedValue) {
         // { data-key: data-checkedValue }
