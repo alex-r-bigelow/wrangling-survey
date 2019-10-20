@@ -145,7 +145,18 @@ class SurveyController extends Model {
     const self = this;
     d3.select('.survey .wrapper')
       .selectAll('details')
-      .attr('class', (d, i) => formData.viewStates[i].state)
+      .attr('class', (d, i) => {
+        let baseClass = formData.viewStates[i].state;
+        let j = this.currentSurveyViewIndex;
+        while (j < i) {
+          if (formData.viewStates[j].enabled &&
+              !formData.viewStates[j].valid) {
+            return baseClass + ' disabled';
+          }
+          j++;
+        }
+        return baseClass;
+      })
       .property('open', (d, i) => i === this.currentSurveyViewIndex)
       .style('display', (d, i) => formData.viewStates[i].enabled ? null : 'none')
       .each(function (d, i) {

@@ -80,6 +80,14 @@ details {
     position: relative;
     margin-top: 1em;
   }
+  &.disabled summary,
+  &.disabled summary:hover,
+  &.disabled summary:active {
+    cursor: default;
+    color: @disabledColor;
+    background: @backgroundColor;
+    border-color: @disabledColor;
+  }
 }
 
 .pageSlice {
