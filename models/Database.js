@@ -66,10 +66,7 @@ class Database extends Model {
     this.pendingResponseStrings = window.localStorage.getItem('pendingResponseStrings');
     this.pendingResponseStrings = this.pendingResponseStrings ? JSON.parse(this.pendingResponseStrings) : {};
 
-    this.combineTerminology([
-      Object.values(this.unfinishedResponses),
-      this.getPendingResponses()
-    ]);
+    this.combineTerminology();
 
     this.loadingData = true;
 
@@ -82,7 +79,14 @@ class Database extends Model {
       return agg.concat(responseStringList.map(responseString => JSON.parse(responseString)));
     }, []);
   }
-  combineTerminology (responseLists) {
+  combineTerminology () {
+    const responseLists = [
+      Object.values(this.unfinishedResponses),
+      this.getPendingResponses()
+    ];
+    if (this.ownedResponses) {
+      responseLists.push(...Object.values(this.ownedResponses));
+    }
     // Combine all of the terminology, sorted by timestamp
     this.terminology = {};
     const sortedTerminology = responseLists
@@ -150,11 +154,7 @@ class Database extends Model {
             });
         });
       await Promise.all(dataPromises);
-      this.combineTerminology([
-        Object.values(this.unfinishedResponses),
-        this.getPendingResponses(),
-        Object.values(this.ownedResponses)
-      ]);
+      this.combineTerminology();
       this.loadingData = false;
       this.trigger('update');
       resolve();

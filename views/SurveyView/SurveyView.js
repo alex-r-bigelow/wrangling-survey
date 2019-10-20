@@ -156,8 +156,6 @@ class SurveyView extends IntrospectableMixin(View) {
           viewState.invalidIds[this.type + 'WrongWay'] = true;
         }
       } else {
-        delete formValues[this.type + 'WrongWay'];
-        delete formValues[this.type + 'Protest'];
         // Collect the current state of the fields
         for (const element of this.keyElements) {
           const key = element.dataset.key;
@@ -183,7 +181,7 @@ class SurveyView extends IntrospectableMixin(View) {
             if (element.checked) {
               formValues[key] = element.dataset.checkedValue;
             }
-          } else {
+          } else if (element.value !== '') {
             // { data-key: element value }
             formValues[key] = element.value;
           }

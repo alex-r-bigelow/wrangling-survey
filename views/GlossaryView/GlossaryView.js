@@ -32,6 +32,7 @@ class GlossaryView extends SurveyView {
           .attr('data-role', this.dataset.term)
           .classed('public', true)
           .attr('placeholder', 'Suggest an alternate definition');
+        element.append('hr');
       });
     const toggle = () => {
       if (!this.d3el.classed('unfocused')) {
