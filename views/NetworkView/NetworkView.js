@@ -240,12 +240,18 @@ class NetworkView extends SurveyView {
       .classed('source', true)
       .attr('data-key', 'exampleNetwork')
       .attr('data-role', (d, i) => `edge${i}source`)
-      .attr('id', (d, i) => `edge${i}source`);
+      .attr('id', (d, i) => `edge${i}source`)
+      .on('click', () => {
+        d3.event.preventDefault();
+      });
     edgesEnter.append('select')
       .classed('target', true)
       .attr('data-key', 'exampleNetwork')
       .attr('data-role', (d, i) => `edge${i}target`)
-      .attr('id', (d, i) => `edge${i}target`);
+      .attr('id', (d, i) => `edge${i}target`)
+      .on('click', () => {
+        d3.event.preventDefault();
+      });
     const checkboxChunk = edgesEnter.append('div');
     checkboxChunk.append('input')
       .attr('type', 'checkbox')

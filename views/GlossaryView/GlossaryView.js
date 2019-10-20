@@ -6,7 +6,7 @@ class GlossaryView extends SurveyView {
     super(d3.select('.GlossaryView'), [
       { type: 'text', url: 'views/GlossaryView/template.html' },
       { type: 'text', url: 'docs/glossary.html' },
-      { type: 'json', url: 'views/GlossaryView/pluralDictionary.json' },
+      { type: 'json', url: 'docs/pluralDictionary.json' },
       { type: 'less', url: 'views/GlossaryView/style.less' }
     ]);
     this.terms = {};
@@ -53,26 +53,32 @@ class GlossaryView extends SurveyView {
       pluralize.addIrregularRule(singular, plural);
     }
     this.collectKeyElements();
+    this.connectTerminology();
   }
   draw () {
     const focused = !this.d3el.classed('unfocused');
     this.d3el.select('.collapse.button img')
       .attr('src', focused ? 'img/collapse.svg' : 'img/expand.svg');
   }
-  connectTerminology () {
+  collectTerminology () {
     // Attach event listeners to inspectable fields, and keep the original term
     // for replacement
-    const self = this;
-    let doubleTapTimeout = null;
     d3.selectAll('.inspectable')
       .attr('data-term', function () { return pluralize.singular((this.dataset.coreTerm || this.innerText).toLocaleLowerCase()); })
       .attr('data-pluralize', function () { return this.dataset.coreTerm || !pluralize.isPlural(this.innerText) ? null : 'true'; })
-      .attr('data-capitalize', function () { return (this.dataset.coreTerm || this.innerText).match(/^[A-Z]/) ? 'true' : null; })
-      .on('dblclick', function () {
+      .attr('data-capitalize', function () { return (this.dataset.coreTerm || this.innerText).match(/^[A-Z]/) ? 'true' : null; });
+    this.connectTerminology();
+    this._connectedTerms = true;
+  }
+  connectTerminology () {
+    const self = this;
+    let doubleTapTimeout = null;
+    d3.selectAll('.inspectable')
+      .on('dblclick.inspect', function () {
         d3.event.preventDefault();
         d3.event.stopPropagation();
         self.show(this.dataset.term);
-      }).on('touchend', function () {
+      }).on('touchend.inspect', function () {
         if (doubleTapTimeout !== null) {
           // Double tapped
           d3.event.preventDefault();
@@ -89,11 +95,10 @@ class GlossaryView extends SurveyView {
           }, 300);
         }
       });
-    this._connectedTerms = true;
   }
   updateTerminology (terminology = {}) {
     if (!this._connectedTerms) {
-      this.connectTerminology();
+      this.collectTerminology();
     }
     this.d3el.selectAll('[data-term]').each(function () {
       const term = terminology[this.dataset.term] || this.dataset.term;

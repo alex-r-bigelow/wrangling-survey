@@ -29,7 +29,7 @@ class SurveyController extends Model {
     window.onresize = () => { this.renderAllViews(); };
     (async () => {
       await this.setupViews(viewClasses);
-      this.glossary.connectTerminology();
+      this.glossary.collectTerminology();
       // Is the user currently working on a response to this survey? If so,
       // pre-populate with values they already chose
       if (this.unfinishedResponse) {

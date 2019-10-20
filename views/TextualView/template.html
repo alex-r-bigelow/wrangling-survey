@@ -14,15 +14,23 @@
     <p>Approximately how many <span class="inspectable">documents</span> are in this dataset?</p>
     <div class="likert" data-key="numDocuments" id="numDocuments" data-likert="0,1,2,Tens,Hundreds,Thousands,&ge; Millions"></div>
   </div>
-  <div class="field">
+  <!--div class="field">
     <p>What kind of <span class="inspectable">grammar</span> would be needed to describe the syntax of the dataset?</p>
     <div class="likert" data-key="grammarType" id="grammarType" data-likert="Regular,Context-free,Context-sensitive,Recursively enumerable,Other,I don't know" data-inspectable="Regular,Context-free,Context-sensitive,Recursively enumerable"></div>
-  </div>
+  </div-->
 
   <h3>Would you expect any of the following to exist in the dataset?</h3>
   <div class="field">
+    <input type="checkbox" data-key="textualDetails" data-checked-value="FormalLanguage" id="textualDetailsFormalLanguage" />
+    <label for="textualDetailsFormalLanguage">Text that conforms to a <span class="inspectable">formal language</span></label>
+  </div>
+  <div class="field">
+    <input type="checkbox" data-key="textualDetails" data-checked-value="NaturalLanguage" id="textualDetailsNaturalLanguage" />
+    <label for="textualDetailsNaturalLanguage">Text that conforms to a <span class="inspectable">natural language</span></label>
+  </div>
+  <div class="field">
     <input type="checkbox" data-key="textualDetails" data-checked-value="Typography" id="textualDetailsTypography" />
-    <label class="inspectable" for="textualDetailsTypography">Typography</label>
+    <label for="textualDetailsTypography">Meaningful <span class="inspectable">typography</span></label>
   </div>
   <div class="field">
     <input type="checkbox" data-key="textualDetails" data-checked-value="Delimiters" id="textualDetailsDelimiters" />
@@ -30,7 +38,7 @@
   </div>
   <div class="field">
     <input type="checkbox" data-key="textualDetails" data-checked-value="SpecialCharacters" id="textualDetailsSpecialCharacters" />
-    <label for="textualDetailsSpecialCharacters">Other <span class="inspectable">special characters</span></label>
+    <label for="textualDetailsSpecialCharacters">Other special characters</label>
   </div>
 
   <h3>Are there any other characteristics that you would use to describe the <span class="inspectable">textual</span> aspect of the dataset?</h3>

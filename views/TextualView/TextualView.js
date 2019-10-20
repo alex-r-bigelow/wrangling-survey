@@ -21,8 +21,7 @@ class TextualView extends SurveyView {
   }
   validateForm (formValues) {
     const invalidIds = super.requireFields(formValues, [
-      'numDocuments',
-      'grammarType'
+      'numDocuments'
     ]);
     // TODO
     return {
