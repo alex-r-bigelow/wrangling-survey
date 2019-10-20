@@ -27,7 +27,7 @@ class ETS extends SurveyController {
     this.params = Object.fromEntries(new URLSearchParams(window.location.search));
 
     const hasNeededParams = JSON.stringify(Object.keys(this.params).sort()) ===
-      '["datasetLabel","nativeRawData","nativeThinking","otherPriors","priorAlternateCount","targetType","timestamp"]';
+      '["datasetLabel","datasetSubmitTimestamp","nativeRawData","nativeThinking","otherPriors","priorAlternateCount","targetType"]';
 
     // Redirect people to the main page if they haven't consented yet, or if
     // the URL got mangled somehow

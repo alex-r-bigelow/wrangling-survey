@@ -88,7 +88,7 @@ class DashboardView extends SurveyView {
     dasResponses.select('.explore .button').on('click', d => {
       const params = new URLSearchParams(Object.assign({}, d.nextAlternates[0], {
         datasetLabel: d.datasetLabel,
-        timestamp: d.timestamp
+        datasetSubmitTimestamp: d.submitTimestamp
       }));
       window.location.href = `ETS?${params.toString()}`;
     });

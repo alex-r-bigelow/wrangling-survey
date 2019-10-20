@@ -61,7 +61,7 @@ class Database extends Model {
     window.localStorage.setItem('context', this.context);
 
     this.unfinishedResponses = window.localStorage.getItem('unfinishedResponses');
-    this.unfinishedResponses = this.unfinishedResponses ? JSON.parse(this.unfinishedResponses) : { startTimestamp: new Date().toISOString() };
+    this.unfinishedResponses = this.unfinishedResponses ? JSON.parse(this.unfinishedResponses) : {};
 
     this.pendingResponseStrings = window.localStorage.getItem('pendingResponseStrings');
     this.pendingResponseStrings = this.pendingResponseStrings ? JSON.parse(this.pendingResponseStrings) : {};
@@ -162,6 +162,9 @@ class Database extends Model {
     return this.dataPromise;
   }
   setResponse (tableName, responseValues) {
+    if (!responseValues.startTimestamp) {
+      responseValues.startTimestamp = new Date().toISOString();
+    }
     this.unfinishedResponses[tableName] = responseValues;
     Object.assign(this.terminology, responseValues.terminology || {});
     Object.assign(this.alternateDefinitions, responseValues.alternateDefinitions || {});
@@ -257,7 +260,7 @@ class Database extends Model {
           targetType,
           priorAlternateCount: dataset.alternateExplorations[targetType].length,
           nativeThinking: dataset[targetType + 'Thinking'],
-          nativeRawData: dataset[targetType + 'RawData']
+          nativeRawData: dataset[targetType + 'RawData'] || 'N/A'
         });
       }
       // Sort the list of nextAternates...
