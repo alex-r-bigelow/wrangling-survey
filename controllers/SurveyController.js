@@ -133,8 +133,10 @@ class SurveyController extends Model {
       }
     }
     if (this.surveyViews[viewIndex]) {
+      if (this.currentSurveyViewIndex !== viewIndex) {
+        this.surveyViews[viewIndex].trigger('open');
+      }
       this.currentSurveyViewIndex = viewIndex;
-      this.surveyViews[viewIndex].trigger('open');
       this.renderAllViews(formData);
     }
     return viewIndex;
