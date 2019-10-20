@@ -139,6 +139,7 @@ class SurveyView extends IntrospectableMixin(View) {
             formValues[element.dataset.key] = element.dataset.protestDefault;
           }
         }
+        delete formValues[this.type + 'WrongWay'];
         viewState.valid = !!formValues[this.type + 'Protest'];
         viewState.invalidIds = {};
         if (!viewState.valid) {
@@ -148,12 +149,15 @@ class SurveyView extends IntrospectableMixin(View) {
         // If we're going the wrong way, only include the user's note, and override the Thinking value to Never
         formValues[this.type + 'WrongWay'] = this.d3el.select('.wrongWayReason').node().value;
         formValues[this.dataTypeLabel + 'Thinking'] = 'Never';
+        delete formValues[this.type + 'Protest'];
         viewState.valid = !!formValues[this.type + 'WrongWay'];
         viewState.invalidIds = {};
         if (!viewState.valid) {
           viewState.invalidIds[this.type + 'WrongWay'] = true;
         }
       } else {
+        delete formValues[this.type + 'WrongWay'];
+        delete formValues[this.type + 'Protest'];
         // Collect the current state of the fields
         for (const element of this.keyElements) {
           const key = element.dataset.key;

@@ -27,6 +27,11 @@ class GlossaryView extends SurveyView {
           .attr('placeholder', 'Suggest an alternate word');
         element.insert('h3', ':first-child')
           .text(this.dataset.term);
+        element.append('textarea')
+          .attr('data-key', 'alternateDefinitions')
+          .attr('data-role', this.dataset.term)
+          .classed('public', true)
+          .attr('placeholder', 'Suggest an alternate definition');
       });
     const toggle = () => {
       if (!this.d3el.classed('unfocused')) {
@@ -54,6 +59,7 @@ class GlossaryView extends SurveyView {
     }
     this.collectKeyElements();
     this.connectTerminology();
+    this.setupSurveyListeners();
   }
   draw () {
     const focused = !this.d3el.classed('unfocused');
@@ -139,8 +145,13 @@ class GlossaryView extends SurveyView {
   validateForm (formValues) {
     if (formValues.terminology) {
       for (const [term, value] of Object.entries(formValues.terminology)) {
-        if (!value) {
+        if (value === '') {
           delete formValues.terminology[term];
+        }
+      }
+      for (const [term, value] of Object.entries(formValues.alternateDefinitions)) {
+        if (value === '') {
+          delete formValues.alternateDefinitions[term];
         }
       }
     }

@@ -30,9 +30,10 @@ class DashboardView extends SurveyView {
     this.d3el.select('.datasetTable')
       .style('display', summary.datasetList.length > 0 ? null : 'none');
 
-    const nTerms = Object.keys(summary.terminology).length;
+    const nTerms = Object.keys(summary.terminology).length +
+      Object.keys(summary.alternateDefinitions).length;
     this.d3el.select('.terminologyCount')
-      .text(`${nTerms} alternate term${nTerms === 1 ? '' : 's'} suggested`);
+      .text(`${nTerms} alternate term${nTerms === 1 ? '' : 's'} and definition${nTerms === 1 ? '' : 's'} suggested`);
     const nDatasets = summary.datasetList.length;
     this.d3el.select('.datasetsCount')
       .text(`${nDatasets} dataset${nDatasets === 1 ? '' : 's'} described`);

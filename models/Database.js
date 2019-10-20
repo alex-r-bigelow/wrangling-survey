@@ -1,7 +1,7 @@
 /* globals sha256 */
 import { Model } from '../node_modules/uki/dist/uki.esm.js';
 
-const SURVEY_VERSION = '0.1.1';
+const SURVEY_VERSION = '1.0.0';
 
 // window.SANDBOX_MODE = true;
 
@@ -92,6 +92,15 @@ class Database extends Model {
       .sort((a, b) => new Date(a.submitTimestamp) - new Date(b.submitTimestamp))
       .map(response => response.terminology || {});
     Object.assign(this.terminology, ...sortedTerminology);
+    // Combine all of the alternateDefinitions, sorted by timestamp
+    this.alternateDefinitions = {};
+    const sortedDefs = responseLists
+      .reduce((agg, responseList) => {
+        return agg.concat(responseList);
+      }, [])
+      .sort((a, b) => new Date(a.submitTimestamp) - new Date(b.submitTimestamp))
+      .map(response => response.alternateDefinitions || {});
+    Object.assign(this.alternateDefinitions, ...sortedDefs);
   }
   async updateData () {
     if (this.loadingData && this.dataPromise) {
@@ -155,6 +164,7 @@ class Database extends Model {
   setResponse (tableName, responseValues) {
     this.unfinishedResponses[tableName] = responseValues;
     Object.assign(this.terminology, responseValues.terminology || {});
+    Object.assign(this.alternateDefinitions, responseValues.alternateDefinitions || {});
     window.localStorage.setItem('unfinishedResponses', JSON.stringify(this.unfinishedResponses));
   }
   async submitResponse (tableName, anonymous = false) {
@@ -215,7 +225,8 @@ class Database extends Model {
     const result = {
       responses: {},
       datasetList: [],
-      terminology: {}
+      terminology: {},
+      alternateDefinitions: {}
     };
     // First copy all of this users' responses, and flag pending ones as such
     for (const [ownedKey, ownedList] of Object.entries(this.ownedResponses)) {
@@ -231,6 +242,7 @@ class Database extends Model {
     }
     // Add the combined terminology from this and previous responses
     Object.assign(result.terminology, this.terminology);
+    Object.assign(result.alternateDefinitions, this.alternateDefinitions);
     // Collect the datasets, sort relevant explorations into them, and determine
     // the ideal next alternate to explore
     result.datasetList = (result.responses['DR.DAS'] || []).map(dataset => {
