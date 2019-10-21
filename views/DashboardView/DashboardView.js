@@ -41,6 +41,16 @@ class DashboardView extends SurveyView {
     this.d3el.select('.alternateCount')
       .text(`${nExplorations} alternate perspective${nExplorations === 1 ? '' : 's'} explored`);
 
+    let thankYou;
+    if (nDatasets + nExplorations === 0) {
+      thankYou = 'Please click "Describe a new dataset" to get started';
+    } else if (nDatasets + nExplorations === 1) {
+      thankYou = 'Almost there! Please click the "Explore alternative" button';
+    } else {
+      thankYou = 'Thank you for participating! Go pick up a plushie!';
+    }
+    this.d3el.select('.thankYou').text(thankYou);
+
     let dasResponses = this.d3el.select('.datasetTable tbody')
       .selectAll('tr').data(summary.datasetList);
     dasResponses.exit().remove();
