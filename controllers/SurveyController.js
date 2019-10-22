@@ -22,6 +22,14 @@ class SurveyController extends Model {
 
     this.surveyViews = [];
 
+    // detect IE8 and above, and edge
+    if (document.documentMode || /Edge/.test(navigator.userAgent)) {
+      window.alert(`Thank you for being willing to take our survey! Unfortunately,
+IE and Edge can't render the survey correctly; plase take the
+using Firefox or Chrome. If you don't have these browsers
+installed, please ask Alex about borrowing a device.`);
+    }
+
     // Auto-advance on page load to wherever the user left off
     this.currentSurveyViewIndex = 0;
     this.on('load', () => { this.advanceSurvey(this.surveyViews.length - 1); });
