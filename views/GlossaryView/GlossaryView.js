@@ -130,19 +130,21 @@ class GlossaryView extends SurveyView {
     });
   }
   show (term) {
-    term = term.toLocaleLowerCase();
     this.d3el.classed('unfocused', false);
     d3.select('.survey.pageSlice').classed('unfocused', true);
-    if (!this.terms[term]) {
-      window.console.warn('No definition for term: ' + term);
-    } else {
-      this.terms[term].scrollIntoView();
-      d3.select(this.terms[term])
-        .transition().duration(1500)
-        .styleTween('box-shadow', () => {
-          let color = d3.interpolate('#002147', '#f7f7f7');
-          return t => `0 0 0 6px #f7f7f7, 0 0 0 9px ${color(t)}`;
-        });
+    if (term) {
+      term = term.toLocaleLowerCase();
+      if (!this.terms[term]) {
+        window.console.warn('No definition for term: ' + term);
+      } else {
+        this.terms[term].scrollIntoView();
+        d3.select(this.terms[term])
+          .transition().duration(1500)
+          .styleTween('box-shadow', () => {
+            let color = d3.interpolate('#002147', '#f7f7f7');
+            return t => `0 0 0 6px #f7f7f7, 0 0 0 9px ${color(t)}`;
+          });
+      }
     }
     this.render();
   }
