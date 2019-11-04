@@ -38,7 +38,7 @@ class GlossaryView extends SurveyView {
         element.append('hr');
       });
     const toggle = () => {
-      if (this.isDisabled() || this.d3el.classed('unfocused')) {
+      if (this.isDisabled() || !this.d3el.classed('unfocused')) {
         this.hide();
       } else {
         this.show();
@@ -150,6 +150,7 @@ class GlossaryView extends SurveyView {
   }
   hide () {
     this.d3el.classed('unfocused', true);
+    d3.select('.survey.pageSlice').classed('unfocused', false);
   }
   isEnabled () {
     return true;
