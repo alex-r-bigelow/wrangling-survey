@@ -13,7 +13,7 @@ class DashboardView extends SurveyView {
 
     this.d3el.select('.idDisplay').text(window.controller.database.browserId);
     const plushieDirections = window.controller.database.contextIsConference
-      ? 'to someone at the University of Arizona table'
+      ? 'to someone at the Arizona Research Computing booth'
       : window.controller.database.contextIsArizona
         ? 'at Gould-Simpson Room 826 during business hours' : null;
     this.d3el.select('.plushieInfo')
@@ -57,6 +57,22 @@ class DashboardView extends SurveyView {
     const dasResponsesEnter = dasResponses.enter().append('tr');
     dasResponses = dasResponses.merge(dasResponsesEnter);
 
+    // Explore buttons
+    const buttonEnter = dasResponsesEnter.append('td').classed('explore', true)
+      .append('div').classed('button', true).classed('imgAndLabel', true);
+    buttonEnter.append('a')
+      .append('img').attr('src', 'img/exploration.svg');
+    buttonEnter.append('span').classed('label', true).text('Explore alternative');
+    dasResponses.select('.explore .button').on('click', d => {
+      const params = new URLSearchParams(Object.assign({}, d.nextAlternates[0], {
+        datasetLabel: d.datasetLabel,
+        datasetSubmitTimestamp: d.submitTimestamp
+      }));
+      window.location.href = `ETS?${params.toString()}`;
+    });
+    dasResponses.select('.explore.button')
+      .attr('id', (d, i) => i === 0 ? 'firstExploreButton' : null);
+
     // Dataset label
     dasResponsesEnter.append('td').classed('datasetLabel', true);
     dasResponses.select('.datasetLabel').text(d => d.datasetLabel);
@@ -88,22 +104,6 @@ class DashboardView extends SurveyView {
     // Media
     dasResponsesEnter.append('td').classed('media', true);
     dasResponses.select('.media').text(d => d.alternateExplorations.media.length);
-
-    // Explore buttons
-    const buttonEnter = dasResponsesEnter.append('td').classed('explore', true)
-      .append('div').classed('button', true).classed('imgAndLabel', true);
-    buttonEnter.append('a')
-      .append('img').attr('src', 'img/exploration.svg');
-    buttonEnter.append('span').classed('label', true).text('Explore alternative');
-    dasResponses.select('.explore .button').on('click', d => {
-      const params = new URLSearchParams(Object.assign({}, d.nextAlternates[0], {
-        datasetLabel: d.datasetLabel,
-        datasetSubmitTimestamp: d.submitTimestamp
-      }));
-      window.location.href = `ETS?${params.toString()}`;
-    });
-    dasResponses.select('.explore.button')
-      .attr('id', (d, i) => i === 0 ? 'firstExploreButton' : null);
   }
   isEnabled () {
     return true;

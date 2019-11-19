@@ -27,7 +27,7 @@
     }
   }
   .datasetTable {
-    margin: 0 0 1em auto;
+    margin: 0 0 1em 0;
     border-collapse: collapse;
     border-spacing: 0;
     th {
@@ -36,30 +36,26 @@
       white-space: nowrap;
       vertical-align: bottom;
       & > div {
-        -webkit-transform: translate(27px, -8.5px) rotate(315deg);
-        -moz-transform: translate(27px, -8.5px) rotate(315deg);
-        transform: translate(27px, -8.5px) rotate(315deg);
+        position: relative;
+        -webkit-transform: translate(-17px, -32px) rotate(45deg);
+        -moz-transform: translate(-17px, -32px) rotate(45deg);
+        transform: translate(-17px, -32px) rotate(45deg);
         width: 2.5em;
         & > div {
+          position: absolute;
+          right: 0;
           width: -webkit-fit-content;
           width: -moz-fit-content;
           width: fit-content;
           border-bottom: 1px solid @separatorColor;
         }
       }
-      &.labelHeader > div {
-        -webkit-transform: translate(126px, -8.5px) rotate(315deg);
-        -moz-transform: translate(126px, -8.5px) rotate(315deg);
-        transform: translate(126px, -8.5px) rotate(315deg);
-      }
-      &.statusHeader > div {
-        -webkit-transform: translate(58px, -8.5px) rotate(315deg);
-        -moz-transform: translate(58px, -8.5px) rotate(315deg);
-        transform: translate(58px, -8.5px) rotate(315deg);
-      }
     }
     td {
       border-right: 1px solid @separatorColor;
+      &.explore {
+        padding: 0.25em 0.5em 0.25em 0;
+      }
       &.datasetLabel {
         white-space: nowrap;
       }
@@ -68,22 +64,11 @@
         min-width: 64px;
         line-height: 0.85em;
       }
-      &.explore {
+      &.media {
         border-right: none;
       }
       text-align: center;
       padding: 0.25em;
     }
-  }
-}
-.scrollHint {
-  display: none;
-  position: absolute;
-  left: 1em;
-  color: @separatorColor;
-}
-@media(max-width:37em) {
-  .scrollHint {
-    display: block;
   }
 }
