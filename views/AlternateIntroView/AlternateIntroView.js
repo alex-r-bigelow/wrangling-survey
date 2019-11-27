@@ -47,7 +47,7 @@ class AlternateIntroView extends SurveyView {
     this.d3el.selectAll('.showIfPriorSpatial').style('display',
       window.controller.params.otherPriors.indexOf('spatial') === -1 ? 'none' : null);
   }
-  isEnabled () {
+  isVisible () {
     return true;
   }
   validateForm (formValues) {

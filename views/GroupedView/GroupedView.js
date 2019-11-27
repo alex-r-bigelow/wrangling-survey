@@ -15,7 +15,7 @@ class GroupedView extends SurveyView {
     this.setupLikertFields();
     this.collectKeyElements();
   }
-  isEnabled (formValues) {
+  isVisible (formValues) {
     return (formValues.groupedThinking && formValues.groupedThinking !== 'Never') ||
       (window.controller.params && window.controller.params.targetType === 'grouped');
   }

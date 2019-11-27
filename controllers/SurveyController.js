@@ -18,14 +18,13 @@ class SurveyController extends Model {
     this.initialPaneIndex = 0;
 
     this.tableName = tableName;
-    this.ownedResponseIndex = null;
 
     this.surveyViews = [];
 
     // detect IE8 and above, and edge
     if (document.documentMode || /Edge/.test(navigator.userAgent)) {
       window.alert(`Thank you for being willing to take our survey! Unfortunately,
-IE and Edge can't render the survey correctly; plase take the
+IE and Edge can't render the survey correctly; please take the survey
 using Firefox or Chrome. If you don't have these browsers
 installed, please ask Alex about borrowing a device.`);
     }
@@ -85,23 +84,6 @@ installed, please ask Alex about borrowing a device.`);
     }));
   }
   finishSetup () {
-    d3.select('survey.pageSlice')
-      .on('click', function () {
-        const surveyPane = d3.select(this);
-        if (surveyPane.classed('unfocused')) {
-          surveyPane.classed('unfocused', false);
-          this.glossary.hide();
-          // If the user clicked an already-open section header, don't close it
-          const isOpenSectionHeader = [
-            d3.event.target,
-            d3.event.target.parentNode,
-            d3.event.target.parentNode.parentNode
-          ].some(node => node.open);
-          if (isOpenSectionHeader) {
-            d3.event.preventDefault();
-          }
-        }
-      });
     this.glossary.hide();
 
     // TODO: this is an ugly patch for public / private fields, because pseudo-elements can't exist inside form fields. Move this:
@@ -118,7 +100,7 @@ installed, please ask Alex about borrowing a device.`);
     // First check if all the views up to viewIndex are either valid or disabled
     let forcedIndex = 0;
     while (this.surveyViews[forcedIndex] && forcedIndex < viewIndex) {
-      if (this.surveyViews[forcedIndex].isEnabled(formData.formValues) &&
+      if (this.surveyViews[forcedIndex].isVisible(formData.formValues) &&
           (!formData.viewStates[forcedIndex].valid || this.surveyViews[forcedIndex].stall)) {
         viewIndex = forcedIndex;
         this.forceInvalidFieldWarnings = true;
@@ -129,7 +111,7 @@ installed, please ask Alex about borrowing a device.`);
     if (forcedIndex === viewIndex) {
       // We've made it this far okay; continue as long as views are disabled
       this.forceInvalidFieldWarnings = false;
-      while (this.surveyViews[viewIndex] && !this.surveyViews[viewIndex].isEnabled(formData.formValues)) {
+      while (this.surveyViews[viewIndex] && !this.surveyViews[viewIndex].isVisible(formData.formValues)) {
         viewIndex++;
       }
     }
@@ -151,7 +133,7 @@ installed, please ask Alex about borrowing a device.`);
         let j = this.currentSurveyViewIndex;
         while (j < i) {
           if (self.surveyViews[j].stall ||
-              (formData.viewStates[j].enabled &&
+              (formData.viewStates[j].visible &&
               !formData.viewStates[j].valid)) {
             return baseClass + ' disabled';
           }
@@ -160,7 +142,7 @@ installed, please ask Alex about borrowing a device.`);
         return baseClass;
       })
       .property('open', (d, i) => i === this.currentSurveyViewIndex)
-      .style('display', (d, i) => formData.viewStates[i].enabled ? null : 'none')
+      .style('display', (d, i) => formData.viewStates[i].visible ? null : 'none')
       .each(function (d, i) {
         const detailsElement = d3.select(this);
         const state = formData.viewStates[i].state;
@@ -180,12 +162,11 @@ installed, please ask Alex about borrowing a device.`);
           });
       });
     this.glossary.render();
-    this.renderSelectButton(formData);
+    this.renderSubmitButton(formData);
     d3.selectAll('.invalid').classed('invalid', false);
-    if (this.forceInvalidFieldWarnings || this.ownedResponseIndex !== null) {
+    if (this.forceInvalidFieldWarnings) {
       // Only flag invalid fields as invalid if the user has attempted to
-      // advance with the next button, or if they're editing something they
-      // already submitted
+      // advance with the next button
       for (const invalidId of Object.keys(formData.invalidIds)) {
         d3.select(`#${invalidId}`).classed('invalid', true);
       }
@@ -194,7 +175,7 @@ installed, please ask Alex about borrowing a device.`);
     }
     await Promise.all(this.surveyViews.map(view => view.render()));
   }
-  renderSelectButton (formData) {
+  renderSubmitButton (formData) {
     d3.select('.submit.button')
       .classed('disabled', !formData.valid)
       .on('click', async () => {
@@ -211,13 +192,6 @@ installed, please ask Alex about borrowing a device.`);
   get unfinishedResponse () {
     return this.database.unfinishedResponses[this.tableName] || null;
   }
-  async getOwnedResponse () {
-    if (this.ownedResponseIndex === null) {
-      return null;
-    }
-    const temp = await this.database.getOwnedResponse(this.tableName);
-    return temp ? temp[this.ownedResponseIndex] : null;
-  }
   extractResponses (defaultFormValues = {}) {
     const formData = {
       formValues: Object.assign({}, defaultFormValues),
@@ -232,12 +206,6 @@ installed, please ask Alex about borrowing a device.`);
     formData.valid = Object.values(formData.viewStates).every(viewState => viewState.valid);
     formData.invalidIds = Object.assign({}, ...Object.values(formData.viewStates).map(viewState => viewState.invalidIds || {}));
 
-    // Compare to previous data (i.e. if the user is editing)
-    const ownedResponse = this.getOwnedResponse();
-    if (ownedResponse) {
-      formData.priorFormValues = ownedResponse;
-      // TODO: compute a diff?
-    }
     return formData;
   }
 }

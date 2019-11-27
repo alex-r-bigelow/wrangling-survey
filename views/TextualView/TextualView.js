@@ -15,7 +15,7 @@ class TextualView extends SurveyView {
     this.setupLikertFields();
     this.collectKeyElements();
   }
-  isEnabled (formValues) {
+  isVisible (formValues) {
     return (formValues.textualThinking && formValues.textualThinking !== 'Never') ||
       (window.controller.params && window.controller.params.targetType === 'textual');
   }

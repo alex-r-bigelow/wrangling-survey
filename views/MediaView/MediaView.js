@@ -15,7 +15,7 @@ class MediaView extends SurveyView {
     this.setupLikertFields();
     this.collectKeyElements();
   }
-  isEnabled (formValues) {
+  isVisible (formValues) {
     return (formValues.mediaThinking && formValues.mediaThinking !== 'Never') ||
       (window.controller.params && window.controller.params.targetType === 'media');
   }

@@ -152,7 +152,7 @@ class GlossaryView extends SurveyView {
     this.d3el.classed('unfocused', true);
     d3.select('.survey.pageSlice').classed('unfocused', false);
   }
-  isEnabled () {
+  isVisible () {
     return true;
   }
   validateForm (formValues) {

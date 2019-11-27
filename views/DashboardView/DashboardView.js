@@ -105,7 +105,7 @@ class DashboardView extends SurveyView {
     dasResponsesEnter.append('td').classed('media', true);
     dasResponses.select('.media').text(d => d.alternateExplorations.media.length);
   }
-  isEnabled () {
+  isVisible () {
     return true;
   }
   validateForm (formValues) {

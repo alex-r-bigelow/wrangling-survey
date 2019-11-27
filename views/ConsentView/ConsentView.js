@@ -24,7 +24,7 @@ class ConsentView extends SurveyView {
     this.d3el.select('.consented')
       .style('display', consented ? null : 'none');
   }
-  isEnabled () {
+  isVisible () {
     return true;
   }
   validateForm (formValues) {

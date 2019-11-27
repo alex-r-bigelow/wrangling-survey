@@ -31,7 +31,7 @@ class TablesView extends SurveyView {
     this.d3el.select(`.nested`)
       .style('display', this.nestedStructures ? null : 'none');
   }
-  isEnabled (formValues) {
+  isVisible (formValues) {
     return (formValues.tabularThinking && formValues.tabularThinking !== 'Never') ||
       (window.controller.params && window.controller.params.targetType === 'tabular');
   }

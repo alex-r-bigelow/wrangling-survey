@@ -15,7 +15,7 @@ class SpatialView extends SurveyView {
     this.setupLikertFields();
     this.collectKeyElements();
   }
-  isEnabled (formValues) {
+  isVisible (formValues) {
     return (formValues.spatialThinking && formValues.spatialThinking !== 'Never') ||
       (window.controller.params && window.controller.params.targetType === 'spatial');
   }

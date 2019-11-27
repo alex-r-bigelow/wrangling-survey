@@ -127,8 +127,8 @@ class SurveyView extends IntrospectableMixin(View) {
     this.d3el.select('.showIfWrongWay').style('display', this.wrongWay ? null : 'none');
   }
   computeStateFromFormValues (formValues) {
-    const enabled = this.isEnabled(formValues);
-    if (enabled) {
+    const visible = this.isVisible(formValues);
+    if (visible) {
       let viewState = {};
 
       if (this.protesting) {
@@ -191,19 +191,15 @@ class SurveyView extends IntrospectableMixin(View) {
       }
 
       // Store that the view should be visible
-      viewState.enabled = true;
+      viewState.visible = true;
 
-      // Store the state of the view, relative to whether or not the user is submitting a new response
-      if (viewState.valid) {
-        viewState.state = window.controller.ownedResponseIndex === null ? 'complete' : 'changesValid';
-      } else {
-        viewState.state = window.controller.ownedResponseIndex === null ? 'incomplete' : 'changesInvalid';
-      }
+      // Store the state of the view
+      viewState.state = viewState.valid ? 'complete' : 'incomplete';
       return viewState;
     } else {
       return {
         valid: true,
-        enabled: false,
+        visible: false,
         state: 'hidden',
         invalidIds: {}
       };
@@ -250,8 +246,8 @@ class SurveyView extends IntrospectableMixin(View) {
       }
     });
   }
-  isEnabled (formValues) {
-    console.warn(`isEnabled not implemented for ${this.type}`);
+  isVisible (formValues) {
+    console.warn(`isVisible not implemented for ${this.type}`);
   }
   validateForm (formValues) {
     console.warn(`validateForm not implemented for ${this.type}`);
