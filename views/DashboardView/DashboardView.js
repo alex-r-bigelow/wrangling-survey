@@ -70,7 +70,7 @@ class DashboardView extends SurveyView {
       }));
       window.location.href = `ETS?${params.toString()}`;
     });
-    dasResponses.select('.explore.button')
+    dasResponses.select('.explore .button')
       .attr('id', (d, i) => i === 0 ? 'firstExploreButton' : null);
 
     // Dataset label

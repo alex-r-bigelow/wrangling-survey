@@ -254,7 +254,9 @@ class Database extends Model {
       for (const targetType of ['tabular', 'network', 'spatial', 'grouped', 'textual', 'media']) {
         dataset.alternateExplorations[targetType] = (result.responses['DR.ETS'] || [])
           .filter(exploration => {
-            return exploration.targetType === targetType;
+            return exploration.targetType === targetType &&
+              exploration.datasetLabel === dataset.datasetLabel &&
+              exploration.datasetSubmitTimestamp === dataset.submitTimestamp;
           });
         dataset.nextAlternates.push({
           targetType,

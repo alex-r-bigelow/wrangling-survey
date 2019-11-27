@@ -26,7 +26,11 @@ class FilterView extends VisView {
   }
   draw () {
     const focused = !this.d3el.classed('unfocused');
-    this.d3el.select('.collapse.button img')
+    const button = this.d3el.select('.collapse.button')
+      .classed('imgAndLabel', focused);
+    button.select('.label')
+      .style('display', focused ? null : 'none');
+    button.select('img')
       .attr('src', focused ? 'img/collapse.svg' : 'img/expand.svg');
   }
   show () {
