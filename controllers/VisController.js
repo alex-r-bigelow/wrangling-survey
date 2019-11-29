@@ -3,6 +3,8 @@ import { Model } from '../node_modules/uki/dist/uki.esm.js';
 import Database from '../models/Database.js';
 import FilterView from '../views/FilterView/FilterView.js';
 
+import OverView from '../views/OverView/OverView.js';
+
 import recolorImageFilter from '../utils/recolorImageFilter.js';
 
 class VisController extends Model {
@@ -10,10 +12,11 @@ class VisController extends Model {
     super();
     this.database = new Database();
     this.database.on('update', () => {
-      this.computeDerivedData();
+      this.transitionList = this.database.getTransitionList();
       this.renderAllViews();
     });
 
+    this.filterList = [];
     this.filterView = new FilterView();
 
     this.visViews = [];
@@ -40,7 +43,7 @@ Firefox or Chrome.`);
   async setupViews () {
     const self = this;
     this.visViews = [
-      // TODO: view classes
+      OverView
     ].map(View => new View());
     const sections = d3.select('.vis .wrapper')
       .selectAll('details')
@@ -97,8 +100,30 @@ Firefox or Chrome.`);
   get unfinishedResponse () {
     return this.database.unfinishedResponses[this.tableName] || null;
   }
-  computeDerivedData () {
-    // TODO
+  getFilteredTransitionList () {
+    if (this.transitionList === undefined) {
+      return null;
+    }
+    if (this._filteredTransitionList) {
+      return this._filteredTransitionList;
+    }
+    this._filteredTransitionList = [];
+    for (const transition of this.transitionList) {
+      for (const filterObj of this.filterList) {
+        if (filterObj.test(transition)) {
+          this._filteredTransitionList.push(transition);
+        }
+      }
+    }
+    return this._filteredTransitionList;
+  }
+  addFilter (filterObj) {
+    delete this._filteredTransitionList;
+    this.filterList.push(filterObj);
+  }
+  removeFilter (index) {
+    delete this._filteredTransitionList;
+    this.filterList.splice(index, 1);
   }
 }
 

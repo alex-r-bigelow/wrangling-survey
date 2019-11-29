@@ -41,6 +41,7 @@ class FilterView extends VisView {
   hide () {
     this.d3el.classed('unfocused', true);
     d3.select('.vis.pageSlice').classed('unfocused', false);
+    this.render();
   }
   isVisible () {
     return true;

@@ -155,6 +155,7 @@ class GlossaryView extends SurveyView {
   hide () {
     this.d3el.classed('unfocused', true);
     d3.select('.survey.pageSlice').classed('unfocused', false);
+    this.render();
   }
   isVisible () {
     return true;

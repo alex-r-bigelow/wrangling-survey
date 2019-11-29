@@ -305,6 +305,42 @@ class Database extends Model {
     });
     return result;
   }
+  getTransitionList () {
+    // Build a list of every pairwise transition
+    const transitionList = [];
+    // [ {dasResponse, etsResponse}, ... ]
+
+    const browserIdLookup = {};
+    const dasResponses = (this.publicData['DR.DAS'] || []).concat(
+      (this.pendingResponseStrings['DR.DAS'] || []).map(dasString => {
+        return Object.assign({ pending: true }, JSON.parse(dasString));
+      }));
+    for (const dasResponse of dasResponses) {
+      const browserId = dasResponse.browserId;
+      browserIdLookup[browserId] = browserIdLookup[browserId] || {};
+      const datasetId = dasResponse.datasetLabel + dasResponse.submitTimestamp;
+      browserIdLookup[browserId][datasetId] = dasResponse;
+    }
+    const etsResponses = (this.publicData['DR.ETS'] || []).concat(
+      (this.pendingResponseStrings['DR.ETS'] || []).map(etsString => {
+        return Object.assign({ pending: true }, JSON.parse(etsString));
+      }));
+    for (const etsResponse of etsResponses) {
+      const browserId = etsResponse.browserId;
+      const datasetId = etsResponse.datasetLabel + etsResponse.datasetSubmitTimestamp;
+      if (!browserIdLookup[browserId]) {
+        console.warn(`Missing DAS response for browserId ${browserId}`);
+      } else if (!browserIdLookup[browserId][datasetId]) {
+        console.warn(`Missing DAS response corresponding to ${etsResponse.datasetLabel} submitted at ${etsResponse.datasetSubmitTimestamp}`);
+      } else {
+        transitionList.push({
+          dasResponse: browserIdLookup[browserId][datasetId],
+          etsResponse
+        });
+      }
+    }
+    return transitionList;
+  }
   get contextIsConference () {
     return ['VIS', 'Supercomputing'].indexOf(this.context) !== -1;
   }
