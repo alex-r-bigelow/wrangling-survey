@@ -122,9 +122,12 @@ Firefox or Chrome.`);
     this.filterList.splice(index, 1);
     this.renderAllViews();
   }
+  filterLabelIndex (humanLabel) {
+    return this.filterList.findIndex(filterObj => filterObj.humanLabel === humanLabel);
+  }
   toggleFilter (filterObj) {
     delete this._filteredTransitionList;
-    const existingIndex = this.filterList.findIndex(exFilterObj => exFilterObj.humanLabel === filterObj.humanLabel);
+    const existingIndex = this.filterLabelIndex(filterObj.humanLabel);
     if (existingIndex === -1) {
       this.filterList.push(filterObj);
     } else {

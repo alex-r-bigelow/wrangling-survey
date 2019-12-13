@@ -63,13 +63,14 @@ class VisView extends IntrospectableMixin(View) {
     this.d3el.selectAll('[data-likert]').each(function () {
       const allCounts = {};
       const filteredCounts = {};
+      const key = this.dataset.key;
       for (const transition of fullList) {
-        const value = transition[self.responseType][this.dataset.key];
+        const value = transition[self.responseType][key];
         allCounts[value] = allCounts[value] || 0;
         allCounts[value] += 1;
       }
       for (const transition of filteredList) {
-        const value = transition[self.responseType][this.dataset.key];
+        const value = transition[self.responseType][key];
         filteredCounts[value] = filteredCounts[value] || 0;
         filteredCounts[value] += 1;
       }
@@ -79,9 +80,12 @@ class VisView extends IntrospectableMixin(View) {
         const allPercent = maxCount === undefined ? 0 : 100 * allCount / maxCount;
         const filteredCount = filteredCounts[d] || 0;
         const filteredPercent = maxCount === undefined ? 0 : 100 * filteredCount / maxCount;
+        const filterHumanLabel = `${self.responseType}[${key}] != ${d}`;
         const likertChunk = d3.select(this);
         likertChunk.select('label')
           .text(`(${filteredCount}/${allCount}) ${d}`);
+        likertChunk.select('input')
+          .property('checked', window.controller.filterLabelIndex(filterHumanLabel) === -1);
         likertChunk.select('.bar .all')
           .style('width', `${allPercent}%`);
         likertChunk.select('.bar .filtered')
