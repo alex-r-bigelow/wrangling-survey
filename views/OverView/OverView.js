@@ -17,12 +17,8 @@ class OverView extends VisView {
     const filteredTransitionList = window.controller.getFilteredTransitionList();
 
     if (filteredTransitionList !== null) {
-      this.drawAllResponses(filteredTransitionList);
       this.drawYourResponses(filteredTransitionList);
     }
-  }
-  drawAllResponses (transitionList) {
-    // TODO
   }
   drawYourResponses (transitionList) {
     const datasets = {};
@@ -39,11 +35,22 @@ class OverView extends VisView {
     }
     const datasetList = Object.values(datasets);
 
-    const hasResponses = datasetList.length > 0;
-    this.d3el.select('.yourResponseTable')
-      .style('display', hasResponses ? null : 'none');
-    this.d3el.select('.noResponses')
-      .style('display', hasResponses ? 'none' : null);
+    if (datasetList.length > 0) {
+      this.d3el.select('.yourResponseTable')
+        .style('display', null);
+      this.d3el.selectAll('.noResponses, .allFiltered')
+        .style('display', 'none');
+    } else {
+      (async () => {
+        this.d3el.select('.yourResponseTable')
+          .style('display', 'none');
+        const unfilteredOwnedCount = (await window.controller.database.getOwnedResponses('DR.DAS')).length;
+        this.d3el.select('.noResponses')
+          .style('display', unfilteredOwnedCount > 0 ? 'none' : null);
+        this.d3el.select('.allFiltered')
+          .style('display', unfilteredOwnedCount > 0 ? null : 'none');
+      })();
+    }
 
     let dasResponses = this.d3el.select('.yourResponseTable tbody')
       .selectAll('tr').data(datasetList, d => d.label);

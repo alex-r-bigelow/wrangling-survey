@@ -5,6 +5,8 @@ import FilterView from '../views/FilterView/FilterView.js';
 
 import OverView from '../views/OverView/OverView.js';
 
+import DataTypeResponseView from '../views/DataTypeView/DataTypeResponseView.js';
+
 import recolorImageFilter from '../utils/recolorImageFilter.js';
 
 class VisController extends Model {
@@ -43,7 +45,8 @@ Firefox or Chrome.`);
   async setupViews () {
     const self = this;
     this.visViews = [
-      OverView
+      OverView,
+      DataTypeResponseView
     ].map(View => new View());
     const sections = d3.select('.vis .wrapper')
       .selectAll('details')
@@ -97,9 +100,6 @@ Firefox or Chrome.`);
     await this.filterView.render();
     await Promise.all(this.visViews.map(view => view.render()));
   }
-  get unfinishedResponse () {
-    return this.database.unfinishedResponses[this.tableName] || null;
-  }
   getFilteredTransitionList () {
     if (this.transitionList === undefined) {
       return null;
@@ -107,23 +107,30 @@ Firefox or Chrome.`);
     if (this._filteredTransitionList) {
       return this._filteredTransitionList;
     }
-    this._filteredTransitionList = [];
-    for (const transition of this.transitionList) {
-      for (const filterObj of this.filterList) {
-        if (filterObj.test(transition)) {
-          this._filteredTransitionList.push(transition);
-        }
-      }
-    }
+    this._filteredTransitionList = this.transitionList.filter(transition => {
+      return this.filterList.every(filterObj => filterObj.test(transition));
+    });
     return this._filteredTransitionList;
   }
   addFilter (filterObj) {
     delete this._filteredTransitionList;
     this.filterList.push(filterObj);
+    this.renderAllViews();
   }
   removeFilter (index) {
     delete this._filteredTransitionList;
     this.filterList.splice(index, 1);
+    this.renderAllViews();
+  }
+  toggleFilter (filterObj) {
+    delete this._filteredTransitionList;
+    const existingIndex = this.filterList.findIndex(exFilterObj => exFilterObj.humanLabel === filterObj.humanLabel);
+    if (existingIndex === -1) {
+      this.filterList.push(filterObj);
+    } else {
+      this.filterList.splice(existingIndex, 1);
+    }
+    this.renderAllViews();
   }
 }
 

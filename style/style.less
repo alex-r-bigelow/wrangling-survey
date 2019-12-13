@@ -193,6 +193,33 @@ details {
     box-shadow: 0 0 0 5px @errorColor;
   }
 }
+.vis .likert {
+  display: block;
+  .likertChunk {
+    text-align: left;
+    .bar {
+      position: relative;
+      display: inline-block;
+      width: 20em;
+      margin-right: 0.75em;
+      .all, .filtered {
+        position: absolute;
+        height: 1em;
+        right: 0;
+        top: -0.875em;
+      }
+      .all {
+        background-color: @separatorColor;
+      }
+      .filtered {
+        background-color: @shadowColor;
+      }
+    }
+    label {
+      display: initial;
+    }
+  }
+}
 @media(max-width:@mobileCutoff) {
   .likert {
     display: block;
