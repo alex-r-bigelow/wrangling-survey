@@ -20,10 +20,11 @@ class VisView extends IntrospectableMixin(View) {
   get className () {
     return this.type;
   }
-  collectKeyElements () {
-    this.keyElements = this.d3el.selectAll('[data-key]').nodes();
+  setup () {
+    this.setupLikertBarCharts();
+    this.replaceTextFields();
   }
-  setupLikertFields () {
+  setupLikertBarCharts () {
     const self = this;
     this.d3el.selectAll('[data-likert]').each(function () {
       const scale = this.dataset.likert.split(',');
@@ -58,22 +59,43 @@ class VisView extends IntrospectableMixin(View) {
         .text(d => d);
     });
   }
-  drawLikertFields (fullList, filteredList) {
+  replaceTextFields () {
+    this.d3el.selectAll('textarea, input[type="text"]').each(function () {
+      const key = this.dataset.key;
+      // Replace the textarea / input element with a div
+      d3.select(this).classed('tempInsertionFlag');
+      d3.select(this.parentNode).insert('div', '.tempInsertionFlag')
+        .classed('textResponseContainer', true)
+        .attr('data-key', key);
+      d3.select(this).remove();
+    });
+  }
+  draw () {
+    const fullList = window.controller.transitionList;
+    const filteredList = window.controller.getFilteredTransitionList();
+    this.drawLikertBarCharts(fullList, filteredList);
+    this.drawTextFields(fullList, filteredList);
+  }
+  countUniqueValues (fullList, filteredList, key) {
+    const allCounts = {};
+    const filteredCounts = {};
+    for (const transition of fullList) {
+      const value = transition[this.responseType][key];
+      allCounts[value] = allCounts[value] || 0;
+      allCounts[value] += 1;
+    }
+    for (const transition of filteredList) {
+      const value = transition[this.responseType][key];
+      filteredCounts[value] = filteredCounts[value] || 0;
+      filteredCounts[value] += 1;
+    }
+    return { allCounts, filteredCounts };
+  }
+  drawLikertBarCharts (fullList, filteredList) {
     const self = this;
     this.d3el.selectAll('[data-likert]').each(function () {
-      const allCounts = {};
-      const filteredCounts = {};
       const key = this.dataset.key;
-      for (const transition of fullList) {
-        const value = transition[self.responseType][key];
-        allCounts[value] = allCounts[value] || 0;
-        allCounts[value] += 1;
-      }
-      for (const transition of filteredList) {
-        const value = transition[self.responseType][key];
-        filteredCounts[value] = filteredCounts[value] || 0;
-        filteredCounts[value] += 1;
-      }
+      const { allCounts, filteredCounts } = self.countUniqueValues(fullList, filteredList, key);
       const maxCount = d3.max(Object.values(allCounts));
       d3.select(this).selectAll('.likertChunk').each(function (d) {
         const allCount = allCounts[d] || 0;
@@ -93,12 +115,43 @@ class VisView extends IntrospectableMixin(View) {
       });
     });
   }
-  setupProtest () {
-    // TODO
-  }
-  draw () {
-    const filteredList = window.controller.getFilteredTransitionList();
-    this.drawLikertFields(window.controller.transitionList, filteredList);
+  drawTextFields (fullList, filteredList) {
+    const self = this;
+    this.d3el.selectAll('.textResponseContainer').each(function () {
+      const { allCounts, filteredCounts } = self.countUniqueValues(fullList, filteredList, this.dataset.key);
+      const responseList = Object.keys(filteredCounts).sort((a, b) => filteredCounts[b] - filteredCounts[a]);
+
+      const container = d3.select(this);
+      const filterIndex = window.controller.findFilter(filterObj => {
+        return filterObj.humanLabel.startsWith(`${self.responseType}[${this.dataset.key}] = `);
+      });
+      container.classed('filterTarget', filterIndex !== -1);
+
+      let responses = container.selectAll('.response')
+        .data(responseList, d => d);
+      responses.exit().remove();
+      const responsesEnter = responses.enter().append('div')
+        .classed('response', true)
+        .on('click', d => {
+          const actualValue = d === 'undefined' ? undefined
+            : d === 'null' ? null : d;
+          const displayValue = d === '' ? '(blank)' : d;
+          window.controller.toggleFilter(new Filter({
+            humanLabel: `${self.responseType}[${this.dataset.key}] = ${displayValue}`,
+            test: transition => transition[self.responseType][this.dataset.key] === actualValue
+          }));
+        });
+      responses = responses.merge(responsesEnter);
+
+      responsesEnter.append('div')
+        .classed('badge', true);
+      responses.select('.badge')
+        .text(d => `${filteredCounts[d]} / ${allCounts[d]}`);
+
+      responsesEnter.append('div')
+        .classed('text', true)
+        .text(d => d === '' ? '(blank)' : d);
+    });
   }
   isVisible () {
     console.warn(`isVisible not implemented for ${this.type}`);

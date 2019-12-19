@@ -149,6 +149,36 @@ details {
   }
 }
 
+.vis .textResponseContainer {
+  max-height: 10em;
+  overflow-y: auto;
+  .response {
+    cursor: pointer;
+    border-top: 1px solid @separatorColor;
+    padding: 0.5em 0;
+    &:last-child {
+      border-bottom: 1px solid @separatorColor;
+    }
+
+    .badge, .text {
+      display: inline;
+    }
+    .badge {
+      position: relative;
+      top: -0.25em;
+      font-size: 0.5em;
+      padding: 0.25em 1em;
+      border-radius: 1em;
+      margin-right: 0.5em;
+      background-color: @textColor;
+      color: @invertedTextColor;
+    }
+  }
+  &.filterTarget {
+    box-shadow: 0 0 0 6px #f7f7f7, 0 0 0 9px @focusColor;
+  }
+}
+
 .field {
   position: relative;
   margin: 1em;

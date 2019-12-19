@@ -5,6 +5,7 @@ import FilterView from '../views/FilterView/FilterView.js';
 
 import OverView from '../views/OverView/OverView.js';
 
+import DomainResponseView from '../views/DomainView/DomainResponseView.js';
 import DataTypeResponseView from '../views/DataTypeView/DataTypeResponseView.js';
 
 import recolorImageFilter from '../utils/recolorImageFilter.js';
@@ -46,6 +47,7 @@ Firefox or Chrome.`);
     const self = this;
     this.visViews = [
       OverView,
+      DomainResponseView,
       DataTypeResponseView
     ].map(View => new View());
     const sections = d3.select('.vis .wrapper')
@@ -123,7 +125,10 @@ Firefox or Chrome.`);
     this.renderAllViews();
   }
   filterLabelIndex (humanLabel) {
-    return this.filterList.findIndex(filterObj => filterObj.humanLabel === humanLabel);
+    return this.findFilter(filterObj => filterObj.humanLabel === humanLabel);
+  }
+  findFilter (func) {
+    return this.filterList.findIndex(func);
   }
   toggleFilter (filterObj) {
     delete this._filteredTransitionList;

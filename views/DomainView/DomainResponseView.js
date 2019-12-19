@@ -1,12 +1,12 @@
 import VisView from '../VisView/VisView.js';
 
-class DataTypeResponseView extends VisView {
+class DomainResponseView extends VisView {
   constructor (div) {
     super(div, [
-      { type: 'less', url: 'views/DataTypeView/style.less' },
-      { type: 'text', url: 'views/DataTypeView/template.html' }
+      { type: 'less', url: 'views/DomainView/style.less' },
+      { type: 'text', url: 'views/DomainView/template.html' }
     ]);
-    this.humanLabel = 'Initial Data Abstraction';
+    this.humanLabel = 'Domain Characterization';
     this.responseType = 'dasResponse';
   }
   setup () {
@@ -17,4 +17,4 @@ class DataTypeResponseView extends VisView {
     return true;
   }
 }
-export default DataTypeResponseView;
+export default DomainResponseView;

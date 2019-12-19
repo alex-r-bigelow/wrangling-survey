@@ -318,8 +318,8 @@ class Database extends Model {
     for (const dasResponse of dasResponses) {
       const browserId = dasResponse.browserId;
       browserIdLookup[browserId] = browserIdLookup[browserId] || {};
-      const datasetId = dasResponse.datasetLabel + dasResponse.submitTimestamp;
-      browserIdLookup[browserId][datasetId] = dasResponse;
+      const dasId = dasResponse.datasetLabel + dasResponse.submitTimestamp;
+      browserIdLookup[browserId][dasId] = dasResponse;
     }
     const etsResponses = (this.publicData['DR.ETS'] || []).concat(
       (this.pendingResponseStrings['DR.ETS'] || []).map(etsString => {
@@ -327,15 +327,16 @@ class Database extends Model {
       }));
     for (const etsResponse of etsResponses) {
       const browserId = etsResponse.browserId;
-      const datasetId = etsResponse.datasetLabel + etsResponse.datasetSubmitTimestamp;
+      const dasId = etsResponse.datasetLabel + etsResponse.datasetSubmitTimestamp;
       if (!browserIdLookup[browserId]) {
         console.warn(`Missing DAS response for browserId ${browserId}`);
-      } else if (!browserIdLookup[browserId][datasetId]) {
+      } else if (!browserIdLookup[browserId][dasId]) {
         console.warn(`Missing DAS response corresponding to ${etsResponse.datasetLabel} submitted at ${etsResponse.datasetSubmitTimestamp}`);
       } else {
         transitionList.push({
-          dasResponse: browserIdLookup[browserId][datasetId],
-          etsResponse
+          dasResponse: browserIdLookup[browserId][dasId],
+          etsResponse,
+          transitionId: dasId + etsResponse.submitTimestamp
         });
       }
     }
