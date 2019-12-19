@@ -23,6 +23,7 @@ class VisView extends IntrospectableMixin(View) {
   setup () {
     this.setupLikertBarCharts();
     this.replaceTextFields();
+    this.setupFlagCheckboxes();
   }
   setupLikertBarCharts () {
     const self = this;
@@ -49,10 +50,17 @@ class VisView extends IntrospectableMixin(View) {
         .attr('value', d => d)
         .property('checked', true)
         .on('change', d => {
-          window.controller.toggleFilter(new Filter({
-            humanLabel: `${self.responseType}[${this.dataset.key}] != ${d}`,
-            test: transition => transition[self.responseType][this.dataset.key] !== d
-          }));
+          const filterStates = [
+            new Filter({
+              humanLabel: `${self.responseType}[${this.dataset.key}] != ${d}`,
+              test: transition => transition[self.responseType][this.dataset.key] !== d
+            }),
+            new Filter({
+              humanLabel: `${self.responseType}[${this.dataset.key}] = ${d}`,
+              test: transition => transition[self.responseType][this.dataset.key] === d
+            })
+          ];
+          window.controller.rotateFilterState(filterStates);
         });
       likertChunksEnter.append('label')
         .attr('for', d => this.dataset.key + d.replace(/\s/g, ''))
@@ -70,11 +78,34 @@ class VisView extends IntrospectableMixin(View) {
       d3.select(this).remove();
     });
   }
+  setupFlagCheckboxes () {
+    const self = this;
+    this.d3el.selectAll('[type="checkbox"][data-flag]').each(function () {
+      const filterStates = [
+        new Filter({
+          humanLabel: `${this.dataset.flag} not in ${self.responseType}[${this.dataset.key}]`,
+          test: transition => {
+            return (transition[self.responseType][this.dataset.key] || []).indexOf(this.dataset.flag) === -1;
+          }
+        }),
+        new Filter({
+          humanLabel: `${this.dataset.flag} in ${self.responseType}[${this.dataset.key}]`,
+          test: transition => {
+            return (transition[self.responseType][this.dataset.key] || []).indexOf(this.dataset.flag) !== -1;
+          }
+        })
+      ];
+      d3.select(this).on('change', () => {
+        window.controller.rotateFilterState(filterStates);
+      });
+    });
+  }
   draw () {
     const fullList = window.controller.transitionList;
     const filteredList = window.controller.getFilteredTransitionList();
     this.drawLikertBarCharts(fullList, filteredList);
     this.drawTextFields(fullList, filteredList);
+    this.drawFlagCheckboxes(fullList, filteredList);
   }
   countUniqueValues (fullList, filteredList, key) {
     const allCounts = {};
@@ -102,12 +133,15 @@ class VisView extends IntrospectableMixin(View) {
         const allPercent = maxCount === undefined ? 0 : 100 * allCount / maxCount;
         const filteredCount = filteredCounts[d] || 0;
         const filteredPercent = maxCount === undefined ? 0 : 100 * filteredCount / maxCount;
-        const filterHumanLabel = `${self.responseType}[${key}] != ${d}`;
+        const filterBaseLabel = `${self.responseType}[${key}]`;
+        const excludeFilterExists = window.controller.filterLabelIndex(`${filterBaseLabel} != ${d}`) !== -1;
+        const includeFilterExists = window.controller.filterLabelIndex(`${filterBaseLabel} = ${d}`) !== -1;
         const likertChunk = d3.select(this);
         likertChunk.select('label')
           .text(`(${filteredCount}/${allCount}) ${d}`);
         likertChunk.select('input')
-          .property('checked', window.controller.filterLabelIndex(filterHumanLabel) === -1);
+          .property('checked', !excludeFilterExists)
+          .property('indeterminate', !excludeFilterExists && !includeFilterExists);
         likertChunk.select('.bar .all')
           .style('width', `${allPercent}%`);
         likertChunk.select('.bar .filtered')
@@ -151,6 +185,27 @@ class VisView extends IntrospectableMixin(View) {
       responsesEnter.append('div')
         .classed('text', true)
         .text(d => d === '' ? '(blank)' : d);
+    });
+  }
+  drawFlagCheckboxes (fullList, filteredList) {
+    const self = this;
+    this.d3el.selectAll('[type="checkbox"][data-flag]').each(function () {
+      const countFlags = (count, transition) => {
+        const flags = transition[self.responseType][this.dataset.key] || [];
+        const increment = flags.indexOf(this.dataset.flag) === -1 ? 0 : 1;
+        return count + increment;
+      };
+      const totalCount = fullList.reduce(countFlags, 0);
+      const filteredCount = filteredList.reduce(countFlags, 0);
+      self.d3el.select(`[for="${this.getAttribute('id')}"]`)
+        .text(`(${filteredCount}/${totalCount}) ${this.dataset.flag}`);
+
+      const filterBaseLabel = `${self.responseType}[${this.dataset.key}]`;
+      const excludeFilterExists = window.controller.filterLabelIndex(`${this.dataset.flag} not in ${filterBaseLabel}`) !== -1;
+      const includeFilterExists = window.controller.filterLabelIndex(`${this.dataset.flag} in ${filterBaseLabel}`) !== -1;
+      d3.select(this)
+        .property('checked', !excludeFilterExists)
+        .property('indeterminate', !excludeFilterExists && !includeFilterExists);
     });
   }
   isVisible () {

@@ -6,6 +6,7 @@ import FilterView from '../views/FilterView/FilterView.js';
 import OverView from '../views/OverView/OverView.js';
 
 import DomainResponseView from '../views/DomainView/DomainResponseView.js';
+import BasicCharacteristicsResponseView from '../views/BasicCharacteristicsView/BasicCharacteristicsResponseView.js';
 import DataTypeResponseView from '../views/DataTypeView/DataTypeResponseView.js';
 
 import recolorImageFilter from '../utils/recolorImageFilter.js';
@@ -48,6 +49,7 @@ Firefox or Chrome.`);
     this.visViews = [
       OverView,
       DomainResponseView,
+      BasicCharacteristicsResponseView,
       DataTypeResponseView
     ].map(View => new View());
     const sections = d3.select('.vis .wrapper')
@@ -137,6 +139,19 @@ Firefox or Chrome.`);
       this.filterList.push(filterObj);
     } else {
       this.filterList.splice(existingIndex, 1);
+    }
+    this.renderAllViews();
+  }
+  rotateFilterState (filterStates) {
+    delete this._filteredTransitionList;
+    const existingFilterIndices = filterStates.map(filterObj => this.filterLabelIndex(filterObj.humanLabel));
+    const i = existingFilterIndices.findIndex(j => j !== -1);
+    if (i === -1) {
+      this.filterList.push(filterStates[0]);
+    } else if (i === filterStates.length - 1) {
+      this.filterList.splice(existingFilterIndices[i], 1);
+    } else {
+      this.filterList[existingFilterIndices[i]] = filterStates[i + 1];
     }
     this.renderAllViews();
   }
