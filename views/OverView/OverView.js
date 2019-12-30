@@ -44,7 +44,7 @@ class OverView extends VisView {
       (async () => {
         this.d3el.select('.yourResponseTable')
           .style('display', 'none');
-        const unfilteredOwnedCount = (await window.controller.database.getOwnedResponses('DR.DAS')).length;
+        const unfilteredOwnedCount = ((await window.controller.database.getOwnedResponses('DR.DAS')) || []).length;
         this.d3el.select('.noResponses')
           .style('display', unfilteredOwnedCount > 0 ? 'none' : null);
         this.d3el.select('.allFiltered')

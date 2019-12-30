@@ -1,6 +1,7 @@
 /* globals d3, less */
 import { Model } from '../node_modules/uki/dist/uki.esm.js';
 import Database from '../models/Database.js';
+
 import FilterView from '../views/FilterView/FilterView.js';
 
 import OverView from '../views/OverView/OverView.js';
@@ -8,6 +9,7 @@ import OverView from '../views/OverView/OverView.js';
 import DomainResponseView from '../views/DomainView/DomainResponseView.js';
 import BasicCharacteristicsResponseView from '../views/BasicCharacteristicsView/BasicCharacteristicsResponseView.js';
 import DataTypeResponseView from '../views/DataTypeView/DataTypeResponseView.js';
+import { TablesResponseDasView, TablesResponseEtsView } from '../views/TablesView/TablesResponseViews.js';
 
 import recolorImageFilter from '../utils/recolorImageFilter.js';
 
@@ -50,7 +52,10 @@ Firefox or Chrome.`);
       OverView,
       DomainResponseView,
       BasicCharacteristicsResponseView,
-      DataTypeResponseView
+      DataTypeResponseView,
+      TablesResponseDasView,
+      // TODO: add other das views here
+      TablesResponseEtsView
     ].map(View => new View());
     const sections = d3.select('.vis .wrapper')
       .selectAll('details')

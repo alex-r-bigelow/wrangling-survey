@@ -13,7 +13,7 @@ class BasicCharacteristicsResponseView extends VisView {
     this.d3el.html(this.resources[1]);
     super.setup();
   }
-  isVisible (formValues) {
+  isVisible () {
     return true;
   }
 }
