@@ -10,6 +10,7 @@ import DomainResponseView from '../views/DomainView/DomainResponseView.js';
 import BasicCharacteristicsResponseView from '../views/BasicCharacteristicsView/BasicCharacteristicsResponseView.js';
 import DataTypeResponseView from '../views/DataTypeView/DataTypeResponseView.js';
 import { TablesResponseDasView, TablesResponseEtsView } from '../views/TablesView/TablesResponseViews.js';
+import { NetworkResponseDasView, NetworkResponseEtsView } from '../views/NetworkView/NetworkResponseViews.js';
 
 import recolorImageFilter from '../utils/recolorImageFilter.js';
 
@@ -54,8 +55,10 @@ Firefox or Chrome.`);
       BasicCharacteristicsResponseView,
       DataTypeResponseView,
       TablesResponseDasView,
+      NetworkResponseDasView,
       // TODO: add other das views here
-      TablesResponseEtsView
+      TablesResponseEtsView,
+      NetworkResponseEtsView
     ].map(View => new View());
     const sections = d3.select('.vis .wrapper')
       .selectAll('details')

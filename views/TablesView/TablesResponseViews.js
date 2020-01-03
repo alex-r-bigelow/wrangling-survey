@@ -9,7 +9,7 @@ class TablesResponseDasView extends VisView {
       { type: 'text', url: 'views/TablesView/template.html' },
       { type: 'text', url: 'views/TablesView/responseTableTemplate.html' }
     ]);
-    this.humanLabel = '<span class="inspectable">Tabular</span> Data Details';
+    this.humanLabel = 'Tabular Data Details';
     this.responseType = 'dasResponse';
   }
   setup () {
