@@ -11,6 +11,10 @@ import BasicCharacteristicsResponseView from '../views/BasicCharacteristicsView/
 import DataTypeResponseView from '../views/DataTypeView/DataTypeResponseView.js';
 import { TablesResponseDasView, TablesResponseEtsView } from '../views/TablesView/TablesResponseViews.js';
 import { NetworkResponseDasView, NetworkResponseEtsView } from '../views/NetworkView/NetworkResponseViews.js';
+import { SpatialResponseDasView, SpatialResponseEtsView } from '../views/SpatialView/SpatialResponseViews.js';
+import { GroupedResponseDasView, GroupedResponseEtsView } from '../views/GroupedView/GroupedResponseViews.js';
+import { TextualResponseDasView, TextualResponseEtsView } from '../views/TextualView/TextualResponseViews.js';
+import { MediaResponseDasView, MediaResponseEtsView } from '../views/MediaView/MediaResponseViews.js';
 
 import recolorImageFilter from '../utils/recolorImageFilter.js';
 
@@ -56,9 +60,17 @@ Firefox or Chrome.`);
       DataTypeResponseView,
       TablesResponseDasView,
       NetworkResponseDasView,
+      SpatialResponseDasView,
+      GroupedResponseDasView,
+      TextualResponseDasView,
+      MediaResponseDasView,
       // TODO: add other das views here
       TablesResponseEtsView,
-      NetworkResponseEtsView
+      NetworkResponseEtsView,
+      SpatialResponseEtsView,
+      GroupedResponseEtsView,
+      TextualResponseEtsView,
+      MediaResponseEtsView
     ].map(View => new View());
     const sections = d3.select('.vis .wrapper')
       .selectAll('details')
