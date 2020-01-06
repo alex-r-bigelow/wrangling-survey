@@ -1,7 +1,7 @@
 /* globals sha256 */
 import { Model } from '../node_modules/uki/dist/uki.esm.js';
 
-const SURVEY_VERSION = '1.0.0';
+const SURVEY_VERSION = '1.1.0';
 
 // window.SANDBOX_MODE = true;
 
