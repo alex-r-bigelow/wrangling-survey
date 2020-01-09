@@ -1,4 +1,4 @@
-/* globals sha256 */
+/* globals sha256, d3 */
 import { Model } from '../node_modules/uki/dist/uki.esm.js';
 
 const SURVEY_VERSION = '1.1.0';
@@ -115,12 +115,30 @@ class Database extends Model {
       this.publicData = {};
       this.ownedResponses = {};
 
-      const dataPromises = Object.entries(this.resources[0])
-        // Only load public tables
-        .filter(tableSpec => !!tableSpec[1].publicData)
+      const processRow = (table, rawString) => {
+        const result = JSON.parse(rawString);
+        // Before we add it to the public data, does this response belong to the current user?
+        if (result.browserId === this.browserId) {
+          this.ownedResponses[table] = this.ownedResponses[table] || [];
+          this.ownedResponses[table].push(result);
+        }
+        // Was this a pending response? If so, we can clean it out
+        if (this.pendingResponseStrings[table]) {
+          const pendingResponseIndex = this.pendingResponseStrings[table].indexOf(rawString);
+          if (pendingResponseIndex !== -1) {
+            this.pendingResponseStrings[table].splice(pendingResponseIndex, 1);
+            window.localStorage.setItem('pendingResponseStrings', JSON.stringify(this.pendingResponseStrings));
+          }
+        }
+        return result;
+      };
+
+      const remoteResponses = Object.entries(this.resources[0])
+        // Load remote google sheets
+        .filter(tableSpec => !!tableSpec[1].remoteResponses)
         .map(tableSpec => {
           // Do a GET to pull each public data from its corresponding google sheet
-          return window.fetch(tableSpec[1].publicData, { method: 'GET' })
+          return window.fetch(tableSpec[1].remoteResponses, { method: 'GET' })
             .then(async serverResponse => {
               const fullText = await serverResponse.text();
               const jsonOnly = fullText.match(/{.*}/)[0];
@@ -130,30 +148,24 @@ class Database extends Model {
                 // No responses yet; Google doesn't parse the header row
                 this.publicData[tableSpec[0]] = [];
               } else {
-                this.publicData[tableSpec[0]] = rawTable.rows.map(row => {
-                  const payloadString = row.c[1].v;
-                  const result = JSON.parse(payloadString);
-                  // Before we add it to the public data, does this response belong to the current user?
-                  if (result.browserId === this.browserId) {
-                    this.ownedResponses[tableSpec[0]] = this.ownedResponses[tableSpec[0]] || [];
-                    this.ownedResponses[tableSpec[0]].push(result);
-                  }
-                  // Was this a pending response? If so, we can clean it out
-                  if (this.pendingResponseStrings[tableSpec[0]]) {
-                    const pendingResponseIndex = this.pendingResponseStrings[tableSpec[0]].indexOf(payloadString);
-                    if (pendingResponseIndex !== -1) {
-                      this.pendingResponseStrings[tableSpec[0]].splice(pendingResponseIndex, 1);
-                      window.localStorage.setItem('pendingResponseStrings', JSON.stringify(this.pendingResponseStrings));
-                    }
-                  }
-                  return result;
-                });
+                this.publicData[tableSpec[0]] = rawTable.rows
+                  .map(row => processRow(tableSpec[0], row.c[1].v));
               }
             }).catch(error => {
               console.warn('Error accessing public data', error);
             });
         });
-      await Promise.all(dataPromises);
+      const localResponses = Object.entries(this.resources[0])
+        .filter(tableSpec => !!tableSpec[1].localResponses)
+        .map(tableSpec => {
+          return d3.text(tableSpec[1].localResponses)
+            .then(fullText => {
+              this.publicData[tableSpec[0]] = fullText.split('\n')
+                .filter(row => row !== '')
+                .map(row => processRow(tableSpec[0], row));
+            });
+        });
+      await Promise.all(remoteResponses.concat(localResponses));
       this.combineTerminology();
       this.loadingData = false;
       this.trigger('update');
