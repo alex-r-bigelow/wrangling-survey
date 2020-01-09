@@ -155,15 +155,31 @@ class VisView extends IntrospectableMixin(View) {
       });
     });
   }
+  getTransitionLists () {
+    const filterFunc = transition => this.filterTransition(transition);
+    return {
+      fullList: window.controller.transitionList
+        .filter(filterFunc),
+      filteredList: window.controller.getFilteredTransitionList()
+        .filter(filterFunc)
+    };
+  }
+  filterTransition (transition) {
+    return true;
+  }
   draw () {
-    const fullList = window.controller.transitionList;
-    const filteredList = window.controller.getFilteredTransitionList();
+    const { fullList, filteredList } = this.getTransitionLists();
+    this.updateFilterIndicators(fullList, filteredList);
     this.maxCount = 0;
     this.drawLikertBarCharts(fullList, filteredList);
     this.drawTextFields(fullList, filteredList);
     this.drawFlagCheckboxes(fullList, filteredList);
     this.drawDataCheckedValues(fullList, filteredList);
     this.updateAllBars();
+  }
+  updateFilterIndicators (fullList, filteredList) {
+    d3.select(this.d3el.node().parentNode).select('.filterIndicators')
+      .text(`${filteredList.length} / ${fullList.length}`);
   }
   countUniqueValues (fullList, filteredList, key) {
     const allCounts = {};
@@ -297,8 +313,8 @@ class VisView extends IntrospectableMixin(View) {
       d3.select(this).style('width', `${100 * this.dataset.count / self.maxCount}%`);
     });
   }
-  isVisible () {
-    console.warn(`isVisible not implemented for ${this.type}`);
+  isDisabled () {
+    return this.getTransitionLists().fullList.length === 0;
   }
 }
 export default VisView;

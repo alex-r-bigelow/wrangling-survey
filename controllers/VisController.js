@@ -84,6 +84,8 @@ Firefox or Chrome.`);
     const header = sections.append('summary');
     header.append('div')
       .html(d => d.humanLabel);
+    header.append('div')
+      .classed('filterIndicators', true);
     sections.append('div')
       .attr('class', d => d.className);
     await Promise.all(sections.nodes().map(async node => {
@@ -96,7 +98,7 @@ Firefox or Chrome.`);
   }
   async advanceSection (viewIndex = this.currentViewIndex + 1) {
     // Skip any disabled views
-    while (!this.visViews[viewIndex].isVisible()) {
+    while (this.visViews[viewIndex].isDisabled()) {
       viewIndex++;
     }
     if (this.visViews[viewIndex]) {
@@ -112,7 +114,7 @@ Firefox or Chrome.`);
     const self = this;
     d3.select('.vis .wrapper')
       .selectAll('details')
-      .classed('disabled', d => !d.isVisible())
+      .classed('disabled', d => d.isDisabled())
       .property('open', (d, i) => i === this.currentViewIndex)
       .each(function (d, i) {
         const detailsElement = d3.select(this);

@@ -8,7 +8,7 @@ class NetworkResponseDasView extends VisView {
       { type: 'less', url: 'views/NetworkView/style.less' },
       { type: 'text', url: 'views/NetworkView/template.html' }
     ]);
-    this.humanLabel = 'Network / Hierarchy Data Details';
+    this.humanLabel = 'Initial Network / Hierarchy Data Details';
     this.responseType = 'dasResponse';
 
     this.svgSize = 200;
@@ -265,15 +265,19 @@ class NetworkResponseDasView extends VisView {
       nodes.attr('transform', d => `translate(${d.x},${d.y})`);
     });
   }
-  isVisible () {
-    return true;
+  filterTransition (transition) {
+    return transition.dasResponse.networkThinking !== 'Never';
   }
 }
 
 class NetworkResponseEtsView extends NetworkResponseDasView {
   constructor (div) {
     super(div);
+    this.humanLabel = 'Alternative Network / Hierarchy Data Details';
     this.responseType = 'etsResponse';
+  }
+  filterTransition (transition) {
+    return transition.etsResponse.targetType === 'network';
   }
 }
 export { NetworkResponseDasView, NetworkResponseEtsView };

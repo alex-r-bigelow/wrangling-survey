@@ -13,8 +13,5 @@ class DomainResponseView extends VisView {
     this.d3el.html(this.resources[1]);
     super.setup();
   }
-  isVisible (formValues) {
-    return true;
-  }
 }
 export default DomainResponseView;

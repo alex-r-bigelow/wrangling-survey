@@ -9,7 +9,7 @@ class TablesResponseDasView extends VisView {
       { type: 'text', url: 'views/TablesView/template.html' },
       { type: 'text', url: 'views/TablesView/responseTableTemplate.html' }
     ]);
-    this.humanLabel = 'Tabular Data Details';
+    this.humanLabel = 'Initial Tabular Data Details';
     this.responseType = 'dasResponse';
   }
   setup () {
@@ -71,15 +71,19 @@ class TablesResponseDasView extends VisView {
     }
     container.classed('filterTarget', isFilterTarget);
   }
-  isVisible () {
-    return true;
+  filterTransition (transition) {
+    return transition.dasResponse.tabularThinking !== 'Never';
   }
 }
 
 class TablesResponseEtsView extends TablesResponseDasView {
   constructor (div) {
     super(div);
+    this.humanLabel = 'Alternative Tabular Data Details';
     this.responseType = 'etsResponse';
+  }
+  filterTransition (transition) {
+    return transition.etsResponse.targetType === 'tabular';
   }
 }
 export { TablesResponseDasView, TablesResponseEtsView };
