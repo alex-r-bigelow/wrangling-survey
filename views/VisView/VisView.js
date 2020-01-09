@@ -24,6 +24,7 @@ class VisView extends IntrospectableMixin(View) {
   setup () {
     this.setupLikertBarCharts();
     this.replaceTextFields();
+    this.replaceProtestButtons();
     this.setupFlagCheckboxes();
     this.setupDataCheckedValues();
   }
@@ -79,6 +80,36 @@ class VisView extends IntrospectableMixin(View) {
         .attr('data-key', key);
       d3.select(this).remove();
     });
+  }
+  replaceProtestButtons () {
+    let viewName = this.type.match(/(.*)Response/);
+    viewName = viewName && viewName[1] + 'View';
+
+    const wrongWayButton = this.d3el.select('.wrongWay.button');
+    if (wrongWayButton.size() > 0) {
+      // Remove the button
+      wrongWayButton.remove();
+      // Add a div for descriptions inside the .wrongWay.field
+      const parent = this.d3el.select('.wrongWay.field').node().parentNode;
+      d3.select(parent).insert('div', '.wrongWay.field + *')
+        .classed('textResponseContainer', true)
+        .attr('data-key', viewName + 'WrongWay');
+    }
+
+    const protestButton = this.d3el.select('.protest.button');
+    if (protestButton.size() > 0) {
+      // Remove the button and the restore button
+      protestButton.remove();
+      this.d3el.select('.restore.button').remove();
+      // Add a helper label so we even know what this field is:
+      this.d3el.insert('p', '.buttonContainer')
+        .text('Responses from participants that chose to "Skip this section":');
+      // Add a div before the .buttonContainer, with a little extra space
+      this.d3el.insert('div', '.buttonContainer')
+        .classed('textResponseContainer', true)
+        .attr('data-key', viewName + 'Protest')
+        .style('margin-bottom', '1em');
+    }
   }
   setupFlagCheckboxes () {
     const self = this;
