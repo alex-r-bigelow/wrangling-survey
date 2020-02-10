@@ -345,7 +345,7 @@ class VisView extends IntrospectableMixin(View) {
     });
   }
   isDisabled () {
-    return this.getTransitionLists().fullList.length === 0;
+    return this.getTransitionLists().filteredList.length === 0;
   }
 }
 export default VisView;

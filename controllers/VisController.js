@@ -15,6 +15,7 @@ import { SpatialResponseDasView, SpatialResponseEtsView } from '../views/Spatial
 import { GroupedResponseDasView, GroupedResponseEtsView } from '../views/GroupedView/GroupedResponseViews.js';
 import { TextualResponseDasView, TextualResponseEtsView } from '../views/TextualView/TextualResponseViews.js';
 import { MediaResponseDasView, MediaResponseEtsView } from '../views/MediaView/MediaResponseViews.js';
+import { DebriefResponseDasView, DebriefResponseEtsView } from '../views/DebriefView/DebriefResponseViews.js';
 
 import recolorImageFilter from '../utils/recolorImageFilter.js';
 
@@ -64,13 +65,15 @@ Firefox or Chrome.`);
       GroupedResponseDasView,
       TextualResponseDasView,
       MediaResponseDasView,
+      DebriefResponseDasView,
       // TODO: add other das views here
       TablesResponseEtsView,
       NetworkResponseEtsView,
       SpatialResponseEtsView,
       GroupedResponseEtsView,
       TextualResponseEtsView,
-      MediaResponseEtsView
+      MediaResponseEtsView,
+      DebriefResponseEtsView
     ].map(View => new View());
     const sections = d3.select('.vis .wrapper')
       .selectAll('details')

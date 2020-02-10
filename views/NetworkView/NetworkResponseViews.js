@@ -87,16 +87,18 @@ class NetworkResponseDasView extends VisView {
     const nodeRadius = 10;
 
     const parallelEdges = {};
-    const edgeData = transition[this.responseType].exampleNetwork.edges.map((d, i) => {
-      let key = d.source + '_' + d.target;
-      if (parallelEdges[key]) {
-        parallelEdges[key].push(i);
-      } else {
-        parallelEdges[key] = [i];
-      }
-      const copy = Object.assign({}, d);
-      return copy;
-    });
+    const edgeData = transition[this.responseType].exampleNetwork.edges
+      .filter(d => d.source !== null && d.target !== null)
+      .map((d, i) => {
+        let key = d.source + '_' + d.target;
+        if (parallelEdges[key]) {
+          parallelEdges[key].push(i);
+        } else {
+          parallelEdges[key] = [i];
+        }
+        const copy = Object.assign({}, d);
+        return copy;
+      });
     for (const indices of Object.values(parallelEdges)) {
       if (indices.length === 1) {
         // Always bend solo edges a little (in the event other edges are

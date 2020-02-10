@@ -18,7 +18,7 @@ class ConsentView extends SurveyView {
   }
   draw () {
     super.draw();
-    const consented = window.localStorage.getItem('consented');
+    const consented = window.localStorage.getItem('consented') === 'true';
     this.d3el.select('.agree')
       .classed('disabled', consented);
     this.d3el.select('.consented')
