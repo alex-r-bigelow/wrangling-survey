@@ -320,19 +320,25 @@ class Database extends Model {
   getTransitionList () {
     // Build a list of every pairwise transition
     const transitionList = [];
-    // [ {dasResponse, etsResponse}, ... ]
+    // [ {dasResponse, etsResponse, transitionId}, ... ]
 
-    const browserIdLookup = {};
+    // Collect all the initial abstraction responses
     const dasResponses = (this.publicData['DR.DAS'] || []).concat(
       (this.pendingResponseStrings['DR.DAS'] || []).map(dasString => {
         return Object.assign({ pending: true }, JSON.parse(dasString));
       }));
+    const browserIdLookup = {};
+    const unpairedDas = {};
     for (const dasResponse of dasResponses) {
       const browserId = dasResponse.browserId;
-      browserIdLookup[browserId] = browserIdLookup[browserId] || {};
       const dasId = dasResponse.datasetLabel + dasResponse.submitTimestamp;
+      browserIdLookup[browserId] = browserIdLookup[browserId] || {};
       browserIdLookup[browserId][dasId] = dasResponse;
+      unpairedDas[browserId] = unpairedDas[browserId] || {};
+      unpairedDas[browserId][dasId] = dasResponse;
     }
+    // Pair all alternative abstraction responses with their corresponding
+    // initial abstraction
     const etsResponses = (this.publicData['DR.ETS'] || []).concat(
       (this.pendingResponseStrings['DR.ETS'] || []).map(etsString => {
         return Object.assign({ pending: true }, JSON.parse(etsString));
@@ -349,6 +355,17 @@ class Database extends Model {
           dasResponse: browserIdLookup[browserId][dasId],
           etsResponse,
           transitionId: dasId + etsResponse.submitTimestamp
+        });
+        delete unpairedDas[browserId][dasId];
+      }
+    }
+    // Add any unpaired initial abstractions at the end
+    for (const browserId of Object.keys(unpairedDas)) {
+      for (const dasId of Object.keys(unpairedDas[browserId])) {
+        transitionList.push({
+          dasResponse: browserIdLookup[browserId][dasId],
+          etsResponse: {},
+          transitionId: dasId
         });
       }
     }
