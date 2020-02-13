@@ -25,7 +25,8 @@ class TextualResponseEtsView extends TextualResponseDasView {
     this.responseType = 'etsResponse';
   }
   filterTransition (transition) {
-    return transition.etsResponse.targetType === 'textual';
+    return transition.etsResponse !== null &&
+      transition.etsResponse.targetType === 'textual';
   }
 }
 export { TextualResponseDasView, TextualResponseEtsView };

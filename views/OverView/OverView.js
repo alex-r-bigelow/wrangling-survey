@@ -30,8 +30,10 @@ class OverView extends VisView {
           label: dasResponse.datasetLabel,
           pending: !!dasResponse.pending
         };
-        datasets[datasetId][etsResponse.targetType] = datasets[datasetId][etsResponse.targetType] || 0;
-        datasets[datasetId][etsResponse.targetType] += 1;
+        if (etsResponse !== null) {
+          datasets[datasetId][etsResponse.targetType] = datasets[datasetId][etsResponse.targetType] || 0;
+          datasets[datasetId][etsResponse.targetType] += 1;
+        }
       }
     }
     const datasetList = Object.values(datasets);

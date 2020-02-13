@@ -25,7 +25,8 @@ class SpatialResponseEtsView extends SpatialResponseDasView {
     this.responseType = 'etsResponse';
   }
   filterTransition (transition) {
-    return transition.etsResponse.targetType === 'spatial';
+    return transition.etsResponse !== null &&
+      transition.etsResponse.targetType === 'spatial';
   }
 }
 export { SpatialResponseDasView, SpatialResponseEtsView };

@@ -25,7 +25,8 @@ class GroupedResponseEtsView extends GroupedResponseDasView {
     this.responseType = 'etsResponse';
   }
   filterTransition (transition) {
-    return transition.etsResponse.targetType === 'grouped';
+    return transition.etsResponse !== null &&
+      transition.etsResponse.targetType === 'grouped';
   }
 }
 export { GroupedResponseDasView, GroupedResponseEtsView };

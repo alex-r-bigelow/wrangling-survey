@@ -68,7 +68,8 @@ class VisView extends IntrospectableMixin(View) {
                   // This view isn't associated to a specific response type;
                   // check both types in the transition
                   return transition.dasResponse[this.dataset.key] !== d &&
-                    transition.etsResponse[this.dataset.key] !== d;
+                    (transition.etsResponse !== null &&
+                      transition.etsResponse[this.dataset.key] !== d);
                 } else {
                   return transition[self.responseType][this.dataset.key] !== d;
                 }
@@ -80,8 +81,9 @@ class VisView extends IntrospectableMixin(View) {
                 if (self.responseType === undefined) {
                   // This view isn't associated to a specific response type;
                   // check both types in the transition
-                  return transition.dasResponse[this.dataset.key] === d &&
-                    transition.etsResponse[this.dataset.key] === d;
+                  return transition.dasResponse[this.dataset.key] === d ||
+                    (transition.etsResponse !== null &&
+                      transition.etsResponse[this.dataset.key] === d);
                 } else {
                   return transition[self.responseType][this.dataset.key] === d;
                 }
@@ -244,21 +246,19 @@ class VisView extends IntrospectableMixin(View) {
       for (const transition of fullList) {
         let value = 'undefined';
         let increment = 1;
-        if (this.responseType === undefined) {
-          if (transition.dasResponse.hasOwnProperty(key)) {
-            const dasResponseId = transition.dasResponse.browserId +
-              transition.dasResponse.submitTimestamp;
-            if (alreadyCountedDasResponses[dasResponseId]) {
-              increment = 0;
-            } else {
-              alreadyCountedDasResponses[dasResponseId] = true;
-            }
-            value = transition.dasResponse[key];
-          } else if (transition.etsResponse.hasOwnProperty(key)) {
-            value = transition.dasResponse[key];
+        if (this.responseType === undefined || this.responseType === 'dasResponse') {
+          const dasResponseId = transition.dasResponse.browserId +
+            transition.dasResponse.submitTimestamp;
+          if (alreadyCountedDasResponses[dasResponseId]) {
+            increment = 0;
+          } else {
+            alreadyCountedDasResponses[dasResponseId] = true;
           }
-        } else {
-          value = transition[this.responseType][key];
+          value = transition.dasResponse[key];
+        } else if (this.responseType === undefined ||
+                   this.responseType === 'etsResponse') {
+          value = transition.etsResponse === null
+            ? undefined : transition.etsResponse[key];
         }
         counts[value] = (counts[value] || 0) + increment;
       }

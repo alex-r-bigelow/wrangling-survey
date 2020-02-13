@@ -22,7 +22,10 @@ class TablesResponseDasView extends VisView {
   draw () {
     super.draw();
     const filteredList = window.controller.getFilteredTransitionList()
-      .filter(transition => !!transition[this.responseType].exampleTableData);
+      .filter(transition => {
+        return transition[this.responseType] !== null &&
+          transition[this.responseType].exampleTableData;
+      });
     this.drawTables(filteredList);
   }
   drawTables (filteredList) {
@@ -83,7 +86,8 @@ class TablesResponseEtsView extends TablesResponseDasView {
     this.responseType = 'etsResponse';
   }
   filterTransition (transition) {
-    return transition.etsResponse.targetType === 'tabular';
+    return transition.etsResponse !== null &&
+      transition.etsResponse.targetType === 'tabular';
   }
 }
 export { TablesResponseDasView, TablesResponseEtsView };

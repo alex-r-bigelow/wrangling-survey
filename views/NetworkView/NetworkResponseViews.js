@@ -25,7 +25,10 @@ class NetworkResponseDasView extends VisView {
   draw () {
     super.draw();
     const filteredList = window.controller.getFilteredTransitionList()
-      .filter(transition => !!transition[this.responseType].exampleNetwork);
+      .filter(transition => {
+        return transition[this.responseType] !== null &&
+          transition[this.responseType].exampleNetwork;
+      });
 
     for (const transition of filteredList) {
       if (!this.simulations[transition.transitionId]) {
@@ -279,7 +282,8 @@ class NetworkResponseEtsView extends NetworkResponseDasView {
     this.responseType = 'etsResponse';
   }
   filterTransition (transition) {
-    return transition.etsResponse.targetType === 'network';
+    return transition.etsResponse !== null &&
+      transition.etsResponse.targetType === 'network';
   }
 }
 export { NetworkResponseDasView, NetworkResponseEtsView };

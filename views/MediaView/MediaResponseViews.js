@@ -25,7 +25,8 @@ class MediaResponseEtsView extends MediaResponseDasView {
     this.responseType = 'etsResponse';
   }
   filterTransition (transition) {
-    return transition.etsResponse.targetType === 'media';
+    return transition.etsResponse !== null &&
+      transition.etsResponse.targetType === 'media';
   }
 }
 export { MediaResponseDasView, MediaResponseEtsView };
