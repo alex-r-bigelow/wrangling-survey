@@ -30,5 +30,8 @@ class DebriefResponseEtsView extends DebriefResponseDasView {
     this.d3el.selectAll('.thanks').remove();
     this.d3el.select('.buttonContainer').remove();
   }
+  filterTransition (transition) {
+    return transition.etsResponse !== null;
+  }
 }
 export { DebriefResponseDasView, DebriefResponseEtsView };
