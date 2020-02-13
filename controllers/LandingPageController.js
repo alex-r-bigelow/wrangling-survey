@@ -31,7 +31,7 @@ class LandingPageController extends SurveyController {
     }
     return JSON.parse(responseStrings[responseStrings.length - 1]);
   }
-  renderSelectButton (formData) {
+  renderSubmitButton (formData) {
     // We override the main version of this function because submit button is
     // really just limited to the Contact Settings pane, and we piggyback on
     // "validity" to auto-advance to views beyond it; we only really care about

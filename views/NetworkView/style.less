@@ -1,6 +1,6 @@
 @import '../../style/colors.less';
 
-.NetworkView {
+.NetworkView, .NetworkResponseDasView, .NetworkResponseEtsView {
   .insufficientNodesAndEdges {
     position: absolute;
     text-align: center;
@@ -73,6 +73,25 @@
     .edge.selected path.visible {
       stroke: @focusColor;
       stroke-width: 3;
+    }
+  }
+}
+.NetworkResponseDasView, .NetworkResponseEtsView {
+  .networkBuilder {
+    height: 240px;
+    overflow: auto hidden;
+    white-space: nowrap;
+    .exampleData {
+      cursor: pointer;
+      padding: 0 1em;
+      margin: 20px 0;
+      border-left: 1px solid @separatorColor;
+      &:last-child {
+        border-right: 1px solid @separatorColor;
+      }
+    }
+    &.filterTarget {
+      box-shadow: 0 0 0 6px #f7f7f7, 0 0 0 9px @focusColor;
     }
   }
 }

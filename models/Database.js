@@ -1,7 +1,7 @@
-/* globals sha256 */
+/* globals sha256, d3 */
 import { Model } from '../node_modules/uki/dist/uki.esm.js';
 
-const SURVEY_VERSION = '1.0.0';
+const SURVEY_VERSION = '1.1.0';
 
 // window.SANDBOX_MODE = true;
 
@@ -115,12 +115,30 @@ class Database extends Model {
       this.publicData = {};
       this.ownedResponses = {};
 
-      const dataPromises = Object.entries(this.resources[0])
-        // Only load public tables
-        .filter(tableSpec => !!tableSpec[1].publicData)
+      const processRow = (table, rawString) => {
+        const result = JSON.parse(rawString);
+        // Before we add it to the public data, does this response belong to the current user?
+        if (result.browserId === this.browserId) {
+          this.ownedResponses[table] = this.ownedResponses[table] || [];
+          this.ownedResponses[table].push(result);
+        }
+        // Was this a pending response? If so, we can clean it out
+        if (this.pendingResponseStrings[table]) {
+          const pendingResponseIndex = this.pendingResponseStrings[table].indexOf(rawString);
+          if (pendingResponseIndex !== -1) {
+            this.pendingResponseStrings[table].splice(pendingResponseIndex, 1);
+            window.localStorage.setItem('pendingResponseStrings', JSON.stringify(this.pendingResponseStrings));
+          }
+        }
+        return result;
+      };
+
+      const remoteResponses = Object.entries(this.resources[0])
+        // Load remote google sheets
+        .filter(tableSpec => !!tableSpec[1].remoteResponses)
         .map(tableSpec => {
           // Do a GET to pull each public data from its corresponding google sheet
-          return window.fetch(tableSpec[1].publicData, { method: 'GET' })
+          return window.fetch(tableSpec[1].remoteResponses, { method: 'GET' })
             .then(async serverResponse => {
               const fullText = await serverResponse.text();
               const jsonOnly = fullText.match(/{.*}/)[0];
@@ -130,30 +148,24 @@ class Database extends Model {
                 // No responses yet; Google doesn't parse the header row
                 this.publicData[tableSpec[0]] = [];
               } else {
-                this.publicData[tableSpec[0]] = rawTable.rows.map(row => {
-                  const payloadString = row.c[1].v;
-                  const result = JSON.parse(payloadString);
-                  // Before we add it to the public data, does this response belong to the current user?
-                  if (result.browserId === this.browserId) {
-                    this.ownedResponses[tableSpec[0]] = this.ownedResponses[tableSpec[0]] || [];
-                    this.ownedResponses[tableSpec[0]].push(result);
-                  }
-                  // Was this a pending response? If so, we can clean it out
-                  if (this.pendingResponseStrings[tableSpec[0]]) {
-                    const pendingResponseIndex = this.pendingResponseStrings[tableSpec[0]].indexOf(payloadString);
-                    if (pendingResponseIndex !== -1) {
-                      this.pendingResponseStrings[tableSpec[0]].splice(pendingResponseIndex, 1);
-                      window.localStorage.setItem('pendingResponseStrings', JSON.stringify(this.pendingResponseStrings));
-                    }
-                  }
-                  return result;
-                });
+                this.publicData[tableSpec[0]] = rawTable.rows
+                  .map(row => processRow(tableSpec[0], row.c[1].v));
               }
             }).catch(error => {
               console.warn('Error accessing public data', error);
             });
         });
-      await Promise.all(dataPromises);
+      const localResponses = Object.entries(this.resources[0])
+        .filter(tableSpec => !!tableSpec[1].localResponses)
+        .map(tableSpec => {
+          return d3.text(tableSpec[1].localResponses)
+            .then(fullText => {
+              this.publicData[tableSpec[0]] = fullText.split('\n')
+                .filter(row => row !== '')
+                .map(row => processRow(tableSpec[0], row));
+            });
+        });
+      await Promise.all(remoteResponses.concat(localResponses));
       this.combineTerminology();
       this.loadingData = false;
       this.trigger('update');
@@ -254,7 +266,9 @@ class Database extends Model {
       for (const targetType of ['tabular', 'network', 'spatial', 'grouped', 'textual', 'media']) {
         dataset.alternateExplorations[targetType] = (result.responses['DR.ETS'] || [])
           .filter(exploration => {
-            return exploration.targetType === targetType;
+            return exploration.targetType === targetType &&
+              exploration.datasetLabel === dataset.datasetLabel &&
+              exploration.datasetSubmitTimestamp === dataset.submitTimestamp;
           });
         dataset.nextAlternates.push({
           targetType,
@@ -302,6 +316,60 @@ class Database extends Model {
       return dataset;
     });
     return result;
+  }
+  getTransitionList () {
+    // Build a list of every pairwise transition
+    const transitionList = [];
+    // [ {dasResponse, etsResponse, transitionId}, ... ]
+
+    // Collect all the initial abstraction responses
+    const dasResponses = (this.publicData['DR.DAS'] || []).concat(
+      (this.pendingResponseStrings['DR.DAS'] || []).map(dasString => {
+        return Object.assign({ pending: true }, JSON.parse(dasString));
+      }));
+    const browserIdLookup = {};
+    const unpairedDas = {};
+    for (const dasResponse of dasResponses) {
+      const browserId = dasResponse.browserId;
+      const dasId = dasResponse.datasetLabel + dasResponse.submitTimestamp;
+      browserIdLookup[browserId] = browserIdLookup[browserId] || {};
+      browserIdLookup[browserId][dasId] = dasResponse;
+      unpairedDas[browserId] = unpairedDas[browserId] || {};
+      unpairedDas[browserId][dasId] = dasResponse;
+    }
+    // Pair all alternative abstraction responses with their corresponding
+    // initial abstraction
+    const etsResponses = (this.publicData['DR.ETS'] || []).concat(
+      (this.pendingResponseStrings['DR.ETS'] || []).map(etsString => {
+        return Object.assign({ pending: true }, JSON.parse(etsString));
+      }));
+    for (const etsResponse of etsResponses) {
+      const browserId = etsResponse.browserId;
+      const dasId = etsResponse.datasetLabel + etsResponse.datasetSubmitTimestamp;
+      if (!browserIdLookup[browserId]) {
+        console.warn(`Missing DAS response for browserId ${browserId}`);
+      } else if (!browserIdLookup[browserId][dasId]) {
+        console.warn(`Missing DAS response corresponding to ${etsResponse.datasetLabel} submitted at ${etsResponse.datasetSubmitTimestamp}`);
+      } else {
+        transitionList.push({
+          dasResponse: browserIdLookup[browserId][dasId],
+          etsResponse,
+          transitionId: dasId + etsResponse.submitTimestamp
+        });
+        delete unpairedDas[browserId][dasId];
+      }
+    }
+    // Add any unpaired initial abstractions at the end
+    for (const browserId of Object.keys(unpairedDas)) {
+      for (const dasId of Object.keys(unpairedDas[browserId])) {
+        transitionList.push({
+          dasResponse: browserIdLookup[browserId][dasId],
+          etsResponse: null,
+          transitionId: dasId
+        });
+      }
+    }
+    return transitionList;
   }
   get contextIsConference () {
     return ['VIS', 'Supercomputing'].indexOf(this.context) !== -1;

@@ -79,8 +79,14 @@ input {
       background: @selectedButtonGradient;
       color: @invertedTextColor;
     }
-    &:checked:hover:after {
+    &:checked:hover:after,
+    &:indeterminate:hover:after {
       background: @selectedButtonHoverGradient;
+    }
+    &:indeterminate:after {
+      content: '\2731';
+      background: @selectedButtonGradient;
+      color: @invertedTextColor;
     }
     &.invalid:after {
       box-shadow: 0 0 0 5px @errorColor;

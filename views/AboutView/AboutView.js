@@ -19,7 +19,7 @@ class AboutView extends SurveyView {
     });
     this.collectKeyElements();
   }
-  isEnabled () {
+  isVisible () {
     return true;
   }
   validateForm (formValues) {

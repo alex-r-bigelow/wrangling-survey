@@ -27,7 +27,7 @@ class DashboardView extends SurveyView {
   draw () {
     super.draw();
     const summary = window.controller.database.getUserResponseSummary();
-    this.d3el.select('.datasetTable')
+    this.d3el.select('.yourResponseTable')
       .style('display', summary.datasetList.length > 0 ? null : 'none');
 
     const nTerms = Object.keys(summary.terminology).length +
@@ -51,7 +51,7 @@ class DashboardView extends SurveyView {
     }
     this.d3el.select('.thankYou').text(thankYou);
 
-    let dasResponses = this.d3el.select('.datasetTable tbody')
+    let dasResponses = this.d3el.select('.yourResponseTable tbody')
       .selectAll('tr').data(summary.datasetList);
     dasResponses.exit().remove();
     const dasResponsesEnter = dasResponses.enter().append('tr');
@@ -70,7 +70,7 @@ class DashboardView extends SurveyView {
       }));
       window.location.href = `ETS?${params.toString()}`;
     });
-    dasResponses.select('.explore.button')
+    dasResponses.select('.explore .button')
       .attr('id', (d, i) => i === 0 ? 'firstExploreButton' : null);
 
     // Dataset label
@@ -105,7 +105,7 @@ class DashboardView extends SurveyView {
     dasResponsesEnter.append('td').classed('media', true);
     dasResponses.select('.media').text(d => d.alternateExplorations.media.length);
   }
-  isEnabled () {
+  isVisible () {
     return true;
   }
   validateForm (formValues) {

@@ -1,3 +1,5 @@
+@import '../../style/colors.less';
+
 .TablesView {
   .exampleTableData {
     display: flex;
@@ -26,6 +28,36 @@
       width: 5em;
       margin: 0;
       text-align: center;
+    }
+  }
+}
+.TablesResponseDasView, .TablesResponseEtsView {
+  .exampleTableData {
+    display: flex;
+    overflow-x: auto;
+    .tableResponse {
+      cursor: pointer;
+      padding: 0 1em;
+      border-left: 1px solid @separatorColor;
+      &:last-child {
+        border-right: 1px solid @separatorColor;
+      }
+      table {
+        margin: 0.5em 0;
+        padding: 0;
+        border-collapse: collapse;
+        border-spacing: 0;
+        td {
+          border: 1px solid @separatorColor;
+          white-space: nowrap;
+          &.blank {
+            color: @separatorColor;
+          }
+        }
+      }
+    }
+    &.filterTarget {
+      box-shadow: 0 0 0 6px #f7f7f7, 0 0 0 9px @focusColor;
     }
   }
 }

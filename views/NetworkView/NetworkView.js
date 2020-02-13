@@ -509,7 +509,7 @@ class NetworkView extends SurveyView {
       nodes.attr('transform', d => `translate(${d.x},${d.y})`);
     });
   }
-  isEnabled (formValues) {
+  isVisible (formValues) {
     return (formValues.networkThinking && formValues.networkThinking !== 'Never') ||
       (window.controller.params && window.controller.params.targetType === 'network');
   }

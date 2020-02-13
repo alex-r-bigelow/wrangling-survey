@@ -52,6 +52,11 @@ details {
       top: 0.75em;
       right: 1em;
     }
+    .filterIndicators {
+      position: absolute;
+      right: 1em;
+      top: 0.5em;
+    }
     &:hover {
       background: @interactableHoverGradient;
     }
@@ -147,6 +152,39 @@ details {
       }
     }
   }
+  .vis details summary {
+    padding-right: 5em;
+  }
+}
+
+.vis .textResponseContainer {
+  max-height: 10em;
+  overflow-y: auto;
+  .response {
+    cursor: pointer;
+    border-top: 1px solid @separatorColor;
+    padding: 0.5em 0;
+    &:last-child {
+      border-bottom: 1px solid @separatorColor;
+    }
+
+    .badge, .text {
+      display: inline;
+    }
+    .badge {
+      position: relative;
+      top: -0.25em;
+      font-size: 0.5em;
+      padding: 0.25em 1em;
+      border-radius: 1em;
+      margin-right: 0.5em;
+      background-color: @textColor;
+      color: @invertedTextColor;
+    }
+  }
+  &.filterTarget {
+    box-shadow: 0 0 0 6px #f7f7f7, 0 0 0 9px @focusColor;
+  }
 }
 
 .field {
@@ -191,6 +229,15 @@ details {
   }
   &.invalid {
     box-shadow: 0 0 0 5px @errorColor;
+  }
+}
+.vis .likert {
+  display: block;
+  .likertChunk {
+    text-align: left;
+    label {
+      display: initial;
+    }
   }
 }
 @media(max-width:@mobileCutoff) {
@@ -244,4 +291,30 @@ textarea + .privacyLogo {
 details[open] summary .inspectable,
 .selected.button .inspectable {
   color: @invertedInspectableColor;
+}
+.vis .inspectable {
+  color: unset;
+  font-weight: unset;
+  cursor: unset;
+}
+.flagErrorWarning {
+  color: @errorColor;
+}
+.bar {
+  position: relative;
+  display: inline-block;
+  width: 20em;
+  margin-right: 0.75em;
+  .all, .filtered {
+    position: absolute;
+    height: 1em;
+    right: 0;
+    top: -0.875em;
+  }
+  .all {
+    background-color: @separatorColor;
+  }
+  .filtered {
+    background-color: @shadowColor;
+  }
 }

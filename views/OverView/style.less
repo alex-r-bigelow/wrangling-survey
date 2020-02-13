@@ -1,0 +1,49 @@
+@import '../../style/colors.less';
+
+.OverView {
+  table {
+    margin: 0 0 1em 0;
+    border-collapse: collapse;
+    border-spacing: 0;
+    th {
+      font-weight: initial;
+      height: 11em;
+      white-space: nowrap;
+      vertical-align: bottom;
+      & > div {
+        position: relative;
+        -webkit-transform: translate(-17px, -30px) rotate(45deg);
+        -moz-transform: translate(-17px, -30px) rotate(45deg);
+        transform: translate(-17px, -30px) rotate(45deg);
+        width: 2.5em;
+        & > div {
+          position: absolute;
+          right: 0;
+          width: -webkit-fit-content;
+          width: -moz-fit-content;
+          width: fit-content;
+          border-bottom: 1px solid @separatorColor;
+        }
+      }
+    }
+    td {
+      border-right: 1px solid @separatorColor;
+      &.explore {
+        padding: 0.25em 0.5em 0.25em 0;
+      }
+      &.datasetLabel {
+        white-space: nowrap;
+      }
+      &.status {
+        width: 64px;
+        min-width: 64px;
+        line-height: 0.85em;
+      }
+      &.media {
+        border-right: none;
+      }
+      text-align: center;
+      padding: 0.25em;
+    }
+  }
+}

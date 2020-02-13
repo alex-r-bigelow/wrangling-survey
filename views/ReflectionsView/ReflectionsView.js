@@ -24,7 +24,7 @@ class ReflectionsView extends SurveyView {
     this.setupLikertFields();
     this.collectKeyElements();
   }
-  isEnabled () {
+  isVisible () {
     return true;
   }
   validateForm (formValues) {

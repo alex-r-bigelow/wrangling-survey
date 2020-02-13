@@ -22,7 +22,7 @@ class GdprView extends SurveyView {
     this.d3el.select('.agree')
       .classed('disabled', !consented);
   }
-  isEnabled (formValues) {
+  isVisible (formValues) {
     return formValues.isEuCitizen === 'True';
   }
   validateForm (formValues) {

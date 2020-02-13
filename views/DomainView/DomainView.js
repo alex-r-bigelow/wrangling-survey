@@ -30,7 +30,7 @@ class DomainView extends SurveyView {
     this.setupProtest();
     this.collectKeyElements();
   }
-  isEnabled (formValues) {
+  isVisible (formValues) {
     return true;
   }
   validateForm (formValues) {

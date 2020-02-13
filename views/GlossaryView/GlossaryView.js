@@ -67,7 +67,11 @@ class GlossaryView extends SurveyView {
   }
   draw () {
     const focused = !this.d3el.classed('unfocused');
-    this.d3el.select('.collapse.button img')
+    const button = this.d3el.select('.collapse.button')
+      .classed('imgAndLabel', focused);
+    button.select('.label')
+      .style('display', focused ? null : 'none');
+    button.select('img')
       .attr('src', focused ? 'img/collapse.svg' : 'img/expand.svg');
     this.d3el.selectAll('.button')
       .classed('disabled', this.isDisabled());
@@ -151,8 +155,9 @@ class GlossaryView extends SurveyView {
   hide () {
     this.d3el.classed('unfocused', true);
     d3.select('.survey.pageSlice').classed('unfocused', false);
+    this.render();
   }
-  isEnabled () {
+  isVisible () {
     return true;
   }
   validateForm (formValues) {

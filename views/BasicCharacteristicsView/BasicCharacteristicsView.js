@@ -17,7 +17,7 @@ class BasicCharacteristicsView extends SurveyView {
     this.setupLikertFields();
     this.collectKeyElements();
   }
-  isEnabled (formValues) {
+  isVisible (formValues) {
     return true;
   }
   validateForm (formValues) {
