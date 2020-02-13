@@ -22,7 +22,9 @@ class VisView extends IntrospectableMixin(View) {
     return this.type;
   }
   get humanResponseType () {
-    if (this.responseType === 'dasResponse') {
+    if (this.responseType === undefined) {
+      return 'Either Abstraction';
+    } else if (this.responseType === 'dasResponse') {
       return 'Initial Abstraction';
     } else if (this.responseType === 'etsResponse') {
       return 'Alternative Abstraction';
@@ -243,10 +245,11 @@ class VisView extends IntrospectableMixin(View) {
     const countValues = transitionList => {
       const counts = {};
       const alreadyCountedDasResponses = {};
-      for (const transition of fullList) {
+      for (const transition of transitionList) {
         let value = 'undefined';
         let increment = 1;
-        if (this.responseType === undefined || this.responseType === 'dasResponse') {
+        if (this.responseType === undefined ||
+            this.responseType === 'dasResponse') {
           const dasResponseId = transition.dasResponse.browserId +
             transition.dasResponse.submitTimestamp;
           if (alreadyCountedDasResponses[dasResponseId]) {
@@ -300,7 +303,7 @@ class VisView extends IntrospectableMixin(View) {
 
       const container = d3.select(this);
       const filterIndex = window.controller.findFilter(filterObj => {
-        return filterObj.humanLabel.startsWith(`${self.responseType}[${this.dataset.key}] = `);
+        return filterObj.humanLabel.startsWith(`${self.humanResponseType}[${this.dataset.key}] = `);
       });
       container.classed('filterTarget', filterIndex !== -1);
 
@@ -314,7 +317,7 @@ class VisView extends IntrospectableMixin(View) {
             : d === 'null' ? null : d;
           const displayValue = d === '' ? '(blank)' : d;
           window.controller.toggleFilter(new Filter({
-            humanLabel: `${self.responseType}[${this.dataset.key}] = ${displayValue}`,
+            humanLabel: `${self.humanResponseType}[${this.dataset.key}] = ${displayValue}`,
             test: transition => transition[self.responseType][this.dataset.key] === actualValue
           }));
         });

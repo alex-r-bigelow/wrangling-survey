@@ -364,7 +364,7 @@ class Database extends Model {
       for (const dasId of Object.keys(unpairedDas[browserId])) {
         transitionList.push({
           dasResponse: browserIdLookup[browserId][dasId],
-          etsResponse: {},
+          etsResponse: null,
           transitionId: dasId
         });
       }
