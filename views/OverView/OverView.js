@@ -10,6 +10,7 @@ class OverView extends VisView {
   }
   setup () {
     this.d3el.html(this.resources[1]);
+    super.setup();
   }
   draw () {
     super.draw();

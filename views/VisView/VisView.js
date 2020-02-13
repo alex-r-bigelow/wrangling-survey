@@ -21,6 +21,13 @@ class VisView extends IntrospectableMixin(View) {
   get className () {
     return this.type;
   }
+  get humanResponseType () {
+    if (this.responseType === 'dasResponse') {
+      return 'Initial Abstraction';
+    } else if (this.responseType === 'etsResponse') {
+      return 'Alternative Abstraction';
+    }
+  }
   setup () {
     this.setupLikertBarCharts();
     this.replaceTextFields();
@@ -55,12 +62,30 @@ class VisView extends IntrospectableMixin(View) {
         .on('change', d => {
           const filterStates = [
             new Filter({
-              humanLabel: `${self.responseType}[${this.dataset.key}] != ${d}`,
-              test: transition => transition[self.responseType][this.dataset.key] !== d
+              humanLabel: `${self.humanResponseType}[${this.dataset.key}] != ${d}`,
+              test: transition => {
+                if (self.responseType === undefined) {
+                  // This view isn't associated to a specific response type;
+                  // check both types in the transition
+                  return transition.dasResponse[this.dataset.key] !== d &&
+                    transition.etsResponse[this.dataset.key] !== d;
+                } else {
+                  return transition[self.responseType][this.dataset.key] !== d;
+                }
+              }
             }),
             new Filter({
-              humanLabel: `${self.responseType}[${this.dataset.key}] = ${d}`,
-              test: transition => transition[self.responseType][this.dataset.key] === d
+              humanLabel: `${self.humanResponseType}[${this.dataset.key}] = ${d}`,
+              test: transition => {
+                if (self.responseType === undefined) {
+                  // This view isn't associated to a specific response type;
+                  // check both types in the transition
+                  return transition.dasResponse[this.dataset.key] === d &&
+                    transition.etsResponse[this.dataset.key] === d;
+                } else {
+                  return transition[self.responseType][this.dataset.key] === d;
+                }
+              }
             })
           ];
           window.controller.rotateFilterState(filterStates);
@@ -127,7 +152,7 @@ class VisView extends IntrospectableMixin(View) {
 
       const filterStates = [
         new Filter({
-          humanLabel: `${this.dataset.flag} not in ${self.responseType}[${this.dataset.key}]`,
+          humanLabel: `${this.dataset.flag} not in ${self.humanResponseType}[${this.dataset.key}]`,
           test: transition => {
             const responses = transition[self.responseType][this.dataset.key] || [];
             if (!(responses instanceof Array)) {
@@ -138,7 +163,7 @@ class VisView extends IntrospectableMixin(View) {
           }
         }),
         new Filter({
-          humanLabel: `${this.dataset.flag} in ${self.responseType}[${this.dataset.key}]`,
+          humanLabel: `${this.dataset.flag} in ${self.humanResponseType}[${this.dataset.key}]`,
           test: transition => {
             const responses = transition[self.responseType][this.dataset.key] || [];
             if (!(responses instanceof Array)) {
@@ -213,19 +238,27 @@ class VisView extends IntrospectableMixin(View) {
       .text(`${filteredList.length} / ${fullList.length}`);
   }
   countUniqueValues (fullList, filteredList, key) {
-    const allCounts = {};
-    const filteredCounts = {};
-    for (const transition of fullList) {
-      const value = transition[this.responseType][key];
-      allCounts[value] = allCounts[value] || 0;
-      allCounts[value] += 1;
-    }
-    for (const transition of filteredList) {
-      const value = transition[this.responseType][key];
-      filteredCounts[value] = filteredCounts[value] || 0;
-      filteredCounts[value] += 1;
-    }
-    return { allCounts, filteredCounts };
+    const countValues = transitionList => {
+      const counts = {};
+      for (const transition of fullList) {
+        let value = 'undefined';
+        if (this.responseType === undefined) {
+          if (transition.dasResponse.hasOwnProperty(key)) {
+            value = transition.dasResponse[key];
+          } else if (transition.etsResponse.hasOwnProperty(key)) {
+            value = transition.dasResponse[key];
+          }
+        } else {
+          value = transition[this.responseType][key];
+        }
+        counts[value] = (counts[value] || 0) + 1;
+      }
+      return counts;
+    };
+    return {
+      allCounts: countValues(fullList),
+      filteredCounts: countValues(filteredList)
+    };
   }
   drawLikertBarCharts (fullList, filteredList) {
     const self = this;
@@ -236,7 +269,7 @@ class VisView extends IntrospectableMixin(View) {
       d3.select(this).selectAll('.likertChunk').each(function (d) {
         const allCount = allCounts[d] || 0;
         const filteredCount = filteredCounts[d] || 0;
-        const filterBaseLabel = `${self.responseType}[${key}]`;
+        const filterBaseLabel = `${self.humanResponseType}[${key}]`;
         const excludeFilterExists = window.controller.filterLabelIndex(`${filterBaseLabel} != ${d}`) !== -1;
         const includeFilterExists = window.controller.filterLabelIndex(`${filterBaseLabel} = ${d}`) !== -1;
         const likertChunk = d3.select(this);
