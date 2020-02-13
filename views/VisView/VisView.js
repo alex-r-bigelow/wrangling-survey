@@ -238,8 +238,29 @@ class VisView extends IntrospectableMixin(View) {
     this.updateAllBars();
   }
   updateFilterIndicators (fullList, filteredList) {
+    const countResponses = transitionList => {
+      let count = 0;
+      const alreadyCountedDasResponses = {};
+      for (const transition of transitionList) {
+        if (this.responseType === undefined ||
+            this.responseType === 'dasResponse') {
+          const dasResponseId = transition.dasResponse.browserId +
+            transition.dasResponse.submitTimestamp;
+          if (!alreadyCountedDasResponses[dasResponseId]) {
+            alreadyCountedDasResponses[dasResponseId] = true;
+            count += 1;
+          }
+        } else if (this.responseType === undefined ||
+                   this.responseType === 'etsResponse') {
+          if (transition.etsResponse !== null) {
+            count += 1;
+          }
+        }
+      }
+      return count;
+    };
     d3.select(this.d3el.node().parentNode).select('.filterIndicators')
-      .text(`${filteredList.length} / ${fullList.length}`);
+      .text(`${countResponses(filteredList)} / ${countResponses(fullList)}`);
   }
   countUniqueValues (fullList, filteredList, key) {
     const countValues = transitionList => {

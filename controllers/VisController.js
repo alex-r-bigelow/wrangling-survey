@@ -88,7 +88,8 @@ Firefox or Chrome.`);
     header.append('div')
       .html(d => d.humanLabel);
     header.append('div')
-      .classed('filterIndicators', true);
+      .classed('filterIndicators', true)
+      .attr('title', 'This is the number of participants that saw this section');
     sections.append('div')
       .attr('class', d => d.className);
     await Promise.all(sections.nodes().map(async node => {
