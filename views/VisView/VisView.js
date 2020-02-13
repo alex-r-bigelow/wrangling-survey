@@ -240,10 +240,19 @@ class VisView extends IntrospectableMixin(View) {
   countUniqueValues (fullList, filteredList, key) {
     const countValues = transitionList => {
       const counts = {};
+      const alreadyCountedDasResponses = {};
       for (const transition of fullList) {
         let value = 'undefined';
+        let increment = 1;
         if (this.responseType === undefined) {
           if (transition.dasResponse.hasOwnProperty(key)) {
+            const dasResponseId = transition.dasResponse.browserId +
+              transition.dasResponse.submitTimestamp;
+            if (alreadyCountedDasResponses[dasResponseId]) {
+              increment = 0;
+            } else {
+              alreadyCountedDasResponses[dasResponseId] = true;
+            }
             value = transition.dasResponse[key];
           } else if (transition.etsResponse.hasOwnProperty(key)) {
             value = transition.dasResponse[key];
@@ -251,7 +260,7 @@ class VisView extends IntrospectableMixin(View) {
         } else {
           value = transition[this.responseType][key];
         }
-        counts[value] = (counts[value] || 0) + 1;
+        counts[value] = (counts[value] || 0) + increment;
       }
       return counts;
     };
