@@ -70,10 +70,11 @@ class VisView extends IntrospectableMixin(View) {
                   // This view isn't associated to a specific response type;
                   // check both types in the transition
                   return transition.dasResponse[this.dataset.key] !== d &&
-                    (transition.etsResponse !== null &&
+                    (transition.etsResponse === null ||
                       transition.etsResponse[this.dataset.key] !== d);
                 } else {
-                  return transition[self.responseType][this.dataset.key] !== d;
+                  return transition[self.responseType] === null ||
+                    transition[self.responseType][this.dataset.key] !== d;
                 }
               }
             }),
@@ -87,7 +88,8 @@ class VisView extends IntrospectableMixin(View) {
                     (transition.etsResponse !== null &&
                       transition.etsResponse[this.dataset.key] === d);
                 } else {
-                  return transition[self.responseType][this.dataset.key] === d;
+                  return transition[self.responseType] !== null &&
+                    transition[self.responseType][this.dataset.key] === d;
                 }
               }
             })
