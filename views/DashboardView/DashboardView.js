@@ -13,12 +13,12 @@ class DashboardView extends SurveyView {
 
     this.d3el.select('.idDisplay').text(window.controller.database.browserId);
     const plushieDirections = window.controller.database.contextIsConference
-      ? 'to someone at the Arizona Research Computing booth'
+      ? 'While supplies last, show this screen to someone at the Arizona Research Computing booth'
       : window.controller.database.contextIsArizona
-        ? 'at Gould-Simpson Room 826 during business hours' : null;
+        ? 'Please contact <a mailto="alexrbigelow@email.arizona.edu">Alex Bigelow</a> to TODO' : null;
     this.d3el.select('.plushieInfo')
       .style('display', plushieDirections ? null : 'none')
-      .select('.directions').text(plushieDirections);
+      .select('.directions').html(plushieDirections);
 
     this.d3el.select('.DAS.button').on('click', () => {
       window.location.href = 'DAS.html';
