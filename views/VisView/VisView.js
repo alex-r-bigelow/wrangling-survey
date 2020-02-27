@@ -192,7 +192,7 @@ class VisView extends IntrospectableMixin(View) {
       self.barId += 1;
       this.dataset.originalLabel = self.d3el.select(`[for="${this.getAttribute('id')}"]`).text();
       const bar = d3.select(this.parentNode)
-        .insert('div', `[data-flag="${this.dataset.flag}"]`)
+        .insert('div', `[data-key="${this.dataset.key}"]`)
         .attr('id', this.dataset.barId)
         .classed('bar', true);
       bar.append('div').classed('all', true);
@@ -200,15 +200,23 @@ class VisView extends IntrospectableMixin(View) {
 
       const filterStates = [
         new Filter({
-          humanLabel: `Did not check ${this.dataset.checkedValue} for ${this.dataset.key}`,
+          humanLabel: `Did not check ${this.dataset.checkedValue} for ${self.humanResponseType}[${this.dataset.key}]`,
           test: transition => {
-            return transition[self.responseType][this.dataset.key] === this.dataset.flag;
+            return this.responseType === undefined
+              ? transition.dasResponse[this.dataset.key] !== this.dataset.checkedValue &&
+                (transition.etsResponse === null ||
+                 transition.etsResponse[this.dataset.key] !== this.dataset.checkedValue)
+              : transition[self.responseType][this.dataset.key] !== this.dataset.checkedValue;
           }
         }),
         new Filter({
-          humanLabel: `Checked ${this.dataset.checkedValue} for ${this.dataset.key}`,
+          humanLabel: `Checked ${this.dataset.checkedValue} for ${self.humanResponseType}[${this.dataset.key}]`,
           test: transition => {
-            return transition[self.responseType][this.dataset.key] === this.dataset.flag;
+            return this.responseType === undefined
+              ? transition.dasResponse[this.dataset.key] === this.dataset.checkedValue ||
+                (transition.etsResponse !== null &&
+                 transition.etsResponse[this.dataset.key] === this.dataset.checkedValue)
+              : transition[self.responseType][this.dataset.key] === this.dataset.checkedValue;
           }
         })
       ];
@@ -389,9 +397,13 @@ class VisView extends IntrospectableMixin(View) {
     const self = this;
     this.d3el.selectAll('[type="checkbox"][data-checked-value]').each(function () {
       const countChecks = (count, transition) => {
-        const match = transition[self.responseType] !== null &&
-          transition[self.responseType][this.dataset.key] === this.dataset.checkedValue;
-        const increment = match ? 0 : 1;
+        const match = self.responseType === undefined
+          ? transition.dasResponse[this.dataset.key] === this.dataset.checkedValue ||
+            (transition.etsResponse !== null &&
+              transition.etsResponse[this.dataset.key] === this.dataset.checkedValue)
+          : transition[self.responseType] !== null &&
+            transition[self.responseType][this.dataset.key] === this.dataset.checkedValue;
+        const increment = match ? 1 : 0;
         return count + increment;
       };
       const allCount = fullList.reduce(countChecks, 0);
@@ -404,8 +416,8 @@ class VisView extends IntrospectableMixin(View) {
       bar.select('.filtered').node().dataset.count = filteredCount;
 
       const filterBaseLabel = `${self.humanResponseType}[${this.dataset.key}]`;
-      const excludeFilterExists = window.controller.filterLabelIndex(`${filterBaseLabel} != ${this.dataset.checkedValue}`) !== -1;
-      const includeFilterExists = window.controller.filterLabelIndex(`${filterBaseLabel} == ${this.dataset.checkedValue}`) !== -1;
+      const excludeFilterExists = window.controller.filterLabelIndex(`Did not check ${this.dataset.checkedValue} for ${filterBaseLabel}`) !== -1;
+      const includeFilterExists = window.controller.filterLabelIndex(`Checked ${this.dataset.checkedValue} for ${filterBaseLabel}`) !== -1;
       d3.select(this)
         .property('checked', !excludeFilterExists)
         .property('indeterminate', !excludeFilterExists && !includeFilterExists);

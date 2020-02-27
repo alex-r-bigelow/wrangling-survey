@@ -19,6 +19,7 @@
 </ul>
 
 <hr/>
+
 <h3>Your responses</h3>
 <table class="yourResponseTable">
   <thead>
@@ -35,12 +36,26 @@
 </table>
 <div class="noResponses" style="display:none">You have not submitted any responses to this survey (from this browser)</div>
 <div class="allFiltered" style="display:none">All of your responses are hidden by the current Active Filters</div>
+
 <hr/>
+
 <h3>Survey Version</h3>
 <p>Preliminary pilots of the survey (v0.1.0 and v0.1.1) were conducted at the University of Arizona. In addition to the
   University of Arizona campus community, v1.0.0 was deployed at the 2019 IEEE VIS and Supercomputing conferences.</p>
 <div class="field">
   <div class="likert" data-key="surveyVersion" data-likert="0.1.0,0.1.1,1.0.0"></div>
 </div>
+
+<hr/>
+
+<h3>Spam Responses</h3>
+<p>We have identified responses where participants appear to have gone through
+the survey as fast as possible, and may not be contributing meaningful data. You
+can filter these responses here:</p>
+<div class="field">
+  <input type="checkbox" data-key="isJunk" data-checked-value="True" id="isJunk" />
+  <label for="isJunk">Spam responses</label>
+</div>
+
 <div class="timestamps"></div>
 <div class="durations"></div>
