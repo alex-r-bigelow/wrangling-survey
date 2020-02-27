@@ -19,12 +19,12 @@
   },
   "homepage": "https://github.com/alex-r-bigelow/wrangling-survey#readme",
   "dependencies": {
-    "d3": "^5.12.0",
+    "d3": "^5.15.0",
     "js-sha256": "^0.9.0",
-    "jsdom": "^15.1.1",
-    "less": "^3.10.3",
+    "jsdom": "^16.2.0",
+    "less": "^3.11.1",
     "pluralize": "^8.0.0",
-    "serve": "^11.2.0",
+    "serve": "^11.3.0",
     "uki": "^0.4.5"
   }
 }
