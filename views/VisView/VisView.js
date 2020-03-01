@@ -31,11 +31,32 @@ class VisView extends IntrospectableMixin(View) {
     }
   }
   setup () {
+    this.setupViewFilter();
     this.setupLikertBarCharts();
     this.replaceTextFields();
     this.replaceProtestButtons();
     this.setupFlagCheckboxes();
     this.setupDataCheckedValues();
+  }
+  setupViewFilter () {
+    const viewFilter = d3.select(this.d3el.node().parentNode).select('.viewFilter');
+
+    viewFilter.append('input')
+      .attr('type', 'checkbox')
+      .on('change', () => {
+        const filterStates = [
+          new Filter({
+            humanLabel: `Participants did not see ${this.humanLabel}`,
+            test: transition => !this.filterTransition(transition)
+          }),
+          new Filter({
+            humanLabel: `Participants saw ${this.humanLabel}`,
+            test: transition => this.filterTransition(transition)
+          })
+        ];
+        window.controller.rotateFilterState(filterStates);
+      });
+    viewFilter.append('label');
   }
   setupLikertBarCharts () {
     const self = this;
@@ -239,15 +260,15 @@ class VisView extends IntrospectableMixin(View) {
   }
   draw () {
     const { fullList, filteredList } = this.getTransitionLists();
-    this.updateFilterIndicators(fullList, filteredList);
     this.maxCount = 0;
+    this.drawViewFilter(fullList, filteredList);
     this.drawLikertBarCharts(fullList, filteredList);
     this.drawTextFields(fullList, filteredList);
     this.drawFlagCheckboxes(fullList, filteredList);
     this.drawDataCheckedValues(fullList, filteredList);
     this.updateAllBars();
   }
-  updateFilterIndicators (fullList, filteredList) {
+  drawViewFilter (fullList, filteredList) {
     const countResponses = transitionList => {
       let count = 0;
       const alreadyCountedDasResponses = {};
@@ -269,8 +290,16 @@ class VisView extends IntrospectableMixin(View) {
       }
       return count;
     };
-    d3.select(this.d3el.node().parentNode).select('.filterIndicators')
-      .text(`${countResponses(filteredList)} / ${countResponses(fullList)}`);
+    const filteredCount = countResponses(filteredList);
+    const fullCount = countResponses(fullList);
+    const viewFilter = d3.select(this.d3el.node().parentNode).select('.viewFilter');
+    viewFilter.select('label')
+      .text(`${filteredCount} / ${fullCount}`);
+    const excludeFilterExists = window.controller.filterLabelIndex(`Participants did not see ${this.humanLabel}`) !== -1;
+    const includeFilterExists = window.controller.filterLabelIndex(`Participants saw ${this.humanLabel}`) !== -1;
+    viewFilter.select('input')
+      .property('checked', !excludeFilterExists)
+      .property('indeterminate', !excludeFilterExists && !includeFilterExists);
   }
   countUniqueValues (fullList, filteredList, key) {
     const countValues = transitionList => {

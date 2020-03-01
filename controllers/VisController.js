@@ -88,7 +88,7 @@ Firefox or Chrome.`);
     header.append('div')
       .html(d => d.humanLabel);
     header.append('div')
-      .classed('filterIndicators', true)
+      .classed('viewFilter', true)
       .attr('title', 'This is the number of participants that saw this section');
     sections.append('div')
       .attr('class', d => d.className);

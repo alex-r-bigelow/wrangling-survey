@@ -52,10 +52,16 @@ details {
       top: 0.75em;
       right: 1em;
     }
-    .filterIndicators {
+    .viewFilter {
       position: absolute;
       right: 1em;
       top: 0.5em;
+      input[type="checkbox"] {
+        margin-right: 1em;
+      }
+      label {
+        pointer-events: none;
+      }
     }
     &:hover {
       background: @interactableHoverGradient;
@@ -67,6 +73,12 @@ details {
   &[open] summary {
     background: @selectedButtonGradient;
     color: @invertedTextColor;
+    .viewFilter input[type="checkbox"] {
+      &:after {
+        color: @invertedTextColor;
+        border: 1px solid @invertedTextColor;
+      }
+    }
     &:hover {
       background: @selectedButtonHoverGradient;
     }
