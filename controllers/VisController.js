@@ -1,4 +1,4 @@
-/* globals d3, less */
+/* globals d3, less, JsonUrl */
 import { Model } from '../node_modules/uki/dist/uki.esm.js';
 import Database from '../models/Database.js';
 
@@ -28,6 +28,7 @@ class VisController extends Model {
       this.renderAllViews();
     });
 
+    this.jsonCodec = JsonUrl('lzw');
     this.filterList = [];
     this.filterView = new FilterView();
 
@@ -152,7 +153,7 @@ Firefox or Chrome.`);
     this.filterList.splice(index, 1);
     this.renderAllViews();
   }
-  filterLabelIndex (humanLabel) {
+  lookupFilter (humanLabel) {
     return this.findFilter(filterObj => filterObj.humanLabel === humanLabel);
   }
   findFilter (func) {
@@ -160,7 +161,7 @@ Firefox or Chrome.`);
   }
   toggleFilter (filterObj) {
     delete this._filteredTransitionList;
-    const existingIndex = this.filterLabelIndex(filterObj.humanLabel);
+    const existingIndex = this.lookupFilter(filterObj.humanLabel);
     if (existingIndex === -1) {
       this.filterList.push(filterObj);
     } else {
@@ -170,7 +171,7 @@ Firefox or Chrome.`);
   }
   rotateFilterState (filterStates) {
     delete this._filteredTransitionList;
-    const existingFilterIndices = filterStates.map(filterObj => this.filterLabelIndex(filterObj.humanLabel));
+    const existingFilterIndices = filterStates.map(filterObj => this.lookupFilter(filterObj.humanLabel));
     const i = existingFilterIndices.findIndex(j => j !== -1);
     if (i === -1) {
       this.filterList.push(filterStates[0]);
@@ -180,6 +181,15 @@ Firefox or Chrome.`);
       this.filterList[existingFilterIndices[i]] = filterStates[i + 1];
     }
     this.renderAllViews();
+  }
+  getHumanResponseType (responseType) {
+    if (responseType === undefined) {
+      return 'Either Abstraction';
+    } else if (responseType === 'dasResponse') {
+      return 'Initial Abstraction';
+    } else if (responseType === 'etsResponse') {
+      return 'Alternative Abstraction';
+    }
   }
 }
 
