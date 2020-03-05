@@ -1,6 +1,6 @@
 /* globals d3 */
 import VisView from '../VisView/VisView.js';
-import Filter from '../../models/Filter.js';
+import SingletonFilter from '../../filters/SingletonFilter.js';
 
 class NetworkResponseDasView extends VisView {
   constructor (div) {
@@ -53,30 +53,15 @@ class NetworkResponseDasView extends VisView {
     svgs.each(function (d) { self.drawNodeLinkDiagram(d, d3.select(this)); });
 
     svgsEnter.on('click', d => {
-      if (this.responseType === 'dasResponse') {
-        window.controller.toggleFilter(new Filter({
-          humanLabel: `Only show interpretations of (network) ${d.dasResponse.datasetLabel}`,
-          test: transition => transition.dasResponse.browserId === d.dasResponse.browserId &&
-            transition.dasResponse.submitTimestamp === d.dasResponse.submitTimestamp
-        }));
-      } else {
-        window.controller.toggleFilter(new Filter({
-          humanLabel: `Only show network interpretation of ${d.dasResponse.datasetLabel}`,
-          test: transition => transition.transitionId === d.transitionId
-        }));
-      }
+      window.controller.toggleFilter(new SingletonFilter({
+        transitionId: d.transitionId,
+        responseType: this.responseType,
+        key: 'exampleNetwork'
+      }));
     });
 
-    let isFilterTarget;
-    if (this.responseType === 'dasResponse') {
-      isFilterTarget = window.controller.findFilter(filterObj => {
-        return filterObj.humanLabel.startsWith(`Only show interpretations of (network) `);
-      }) !== -1;
-    } else {
-      isFilterTarget = window.controller.findFilter(filterObj => {
-        return filterObj.humanLabel.startsWith(`Only show network interpretation of `);
-      }) !== -1;
-    }
+    const humanResponseType = window.controller.getHumanResponseType(this.responseType);
+    const isFilterTarget = window.controller.lookupFilter(`Specific response, filtered from ${humanResponseType}[exampleNetwork]`) !== -1;
     container.classed('filterTarget', isFilterTarget);
 
     if (this._notFirstRender) {

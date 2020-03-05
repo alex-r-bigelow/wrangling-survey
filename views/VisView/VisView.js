@@ -1,7 +1,11 @@
 /* globals d3 */
 import { View } from '../../node_modules/uki/dist/uki.esm.js';
 import IntrospectableMixin from '../../utils/IntrospectableMixin.js';
-import Filter from '../../models/Filter.js';
+import ViewFilter from '../../filters/ViewFilter.js';
+import LikertFilter from '../../filters/LikertFilter.js';
+import FlagFilter from '../../filters/FlagFilter.js';
+import CheckedFilter from '../../filters/CheckedFilter.js';
+import TextFilter from '../../filters/TextFilter.js';
 
 class VisView extends IntrospectableMixin(View) {
   constructor (div, resourceList = []) {
@@ -21,21 +25,33 @@ class VisView extends IntrospectableMixin(View) {
   get className () {
     return this.type;
   }
-  get humanResponseType () {
-    if (this.responseType === undefined) {
-      return 'Either Abstraction';
-    } else if (this.responseType === 'dasResponse') {
-      return 'Initial Abstraction';
-    } else if (this.responseType === 'etsResponse') {
-      return 'Alternative Abstraction';
-    }
-  }
   setup () {
+    this.setupViewFilter();
     this.setupLikertBarCharts();
     this.replaceTextFields();
     this.replaceProtestButtons();
     this.setupFlagCheckboxes();
     this.setupDataCheckedValues();
+  }
+  setupViewFilter () {
+    const viewFilter = d3.select(this.d3el.node().parentNode).select('.viewFilter');
+
+    viewFilter.append('input')
+      .attr('type', 'checkbox')
+      .on('change', () => {
+        const filterStates = [
+          new ViewFilter({
+            exclude: true,
+            humanViewLabel: this.humanLabel
+          }),
+          new ViewFilter({
+            exclude: false,
+            humanViewLabel: this.humanLabel
+          })
+        ];
+        window.controller.rotateFilterState(filterStates);
+      });
+    viewFilter.append('label');
   }
   setupLikertBarCharts () {
     const self = this;
@@ -63,35 +79,17 @@ class VisView extends IntrospectableMixin(View) {
         .property('checked', true)
         .on('change', d => {
           const filterStates = [
-            new Filter({
-              humanLabel: `${self.humanResponseType}[${this.dataset.key}] != ${d}`,
-              test: transition => {
-                if (self.responseType === undefined) {
-                  // This view isn't associated to a specific response type;
-                  // check both types in the transition
-                  return transition.dasResponse[this.dataset.key] !== d &&
-                    (transition.etsResponse === null ||
-                      transition.etsResponse[this.dataset.key] !== d);
-                } else {
-                  return transition[self.responseType] === null ||
-                    transition[self.responseType][this.dataset.key] !== d;
-                }
-              }
+            new LikertFilter({
+              exclude: true,
+              responseType: self.responseType,
+              key: this.dataset.key,
+              value: d
             }),
-            new Filter({
-              humanLabel: `${self.humanResponseType}[${this.dataset.key}] = ${d}`,
-              test: transition => {
-                if (self.responseType === undefined) {
-                  // This view isn't associated to a specific response type;
-                  // check both types in the transition
-                  return transition.dasResponse[this.dataset.key] === d ||
-                    (transition.etsResponse !== null &&
-                      transition.etsResponse[this.dataset.key] === d);
-                } else {
-                  return transition[self.responseType] !== null &&
-                    transition[self.responseType][this.dataset.key] === d;
-                }
-              }
+            new LikertFilter({
+              exclude: false,
+              responseType: self.responseType,
+              key: this.dataset.key,
+              value: d
             })
           ];
           window.controller.rotateFilterState(filterStates);
@@ -157,27 +155,17 @@ class VisView extends IntrospectableMixin(View) {
       bar.append('div').classed('filtered', true);
 
       const filterStates = [
-        new Filter({
-          humanLabel: `${this.dataset.flag} not in ${self.humanResponseType}[${this.dataset.key}]`,
-          test: transition => {
-            const responses = transition[self.responseType][this.dataset.key] || [];
-            if (!(responses instanceof Array)) {
-              // There was a bug in the first version of the survey that stored / overrode strings
-              return responses !== this.dataset.flag;
-            }
-            return responses.indexOf(this.dataset.flag) === -1;
-          }
+        new FlagFilter({
+          exclude: true,
+          responseType: self.responseType,
+          key: this.dataset.key,
+          flag: this.dataset.flag
         }),
-        new Filter({
-          humanLabel: `${this.dataset.flag} in ${self.humanResponseType}[${this.dataset.key}]`,
-          test: transition => {
-            const responses = transition[self.responseType][this.dataset.key] || [];
-            if (!(responses instanceof Array)) {
-              // There was a bug in the first version of the survey that stored / overrode strings
-              return responses === this.dataset.flag;
-            }
-            return responses.indexOf(this.dataset.flag) !== -1;
-          }
+        new FlagFilter({
+          exclude: false,
+          responseType: self.responseType,
+          key: this.dataset.key,
+          flag: this.dataset.flag
         })
       ];
       d3.select(this).on('change', () => {
@@ -192,24 +180,24 @@ class VisView extends IntrospectableMixin(View) {
       self.barId += 1;
       this.dataset.originalLabel = self.d3el.select(`[for="${this.getAttribute('id')}"]`).text();
       const bar = d3.select(this.parentNode)
-        .insert('div', `[data-flag="${this.dataset.flag}"]`)
+        .insert('div', `[data-key="${this.dataset.key}"]`)
         .attr('id', this.dataset.barId)
         .classed('bar', true);
       bar.append('div').classed('all', true);
       bar.append('div').classed('filtered', true);
 
       const filterStates = [
-        new Filter({
-          humanLabel: `Did not check ${this.dataset.checkedValue} for ${this.dataset.key}`,
-          test: transition => {
-            return transition[self.responseType][this.dataset.key] === this.dataset.flag;
-          }
+        new CheckedFilter({
+          exclude: true,
+          responseType: self.responseType,
+          checkedValue: this.dataset.checkedValue,
+          key: this.dataset.key
         }),
-        new Filter({
-          humanLabel: `Checked ${this.dataset.checkedValue} for ${this.dataset.key}`,
-          test: transition => {
-            return transition[self.responseType][this.dataset.key] === this.dataset.flag;
-          }
+        new CheckedFilter({
+          exclude: false,
+          responseType: self.responseType,
+          checkedValue: this.dataset.checkedValue,
+          key: this.dataset.key
         })
       ];
       d3.select(this).on('change', () => {
@@ -231,15 +219,15 @@ class VisView extends IntrospectableMixin(View) {
   }
   draw () {
     const { fullList, filteredList } = this.getTransitionLists();
-    this.updateFilterIndicators(fullList, filteredList);
     this.maxCount = 0;
+    this.drawViewFilter(fullList, filteredList);
     this.drawLikertBarCharts(fullList, filteredList);
     this.drawTextFields(fullList, filteredList);
     this.drawFlagCheckboxes(fullList, filteredList);
     this.drawDataCheckedValues(fullList, filteredList);
     this.updateAllBars();
   }
-  updateFilterIndicators (fullList, filteredList) {
+  drawViewFilter (fullList, filteredList) {
     const countResponses = transitionList => {
       let count = 0;
       const alreadyCountedDasResponses = {};
@@ -261,8 +249,16 @@ class VisView extends IntrospectableMixin(View) {
       }
       return count;
     };
-    d3.select(this.d3el.node().parentNode).select('.filterIndicators')
-      .text(`${countResponses(filteredList)} / ${countResponses(fullList)}`);
+    const filteredCount = countResponses(filteredList);
+    const fullCount = countResponses(fullList);
+    const viewFilter = d3.select(this.d3el.node().parentNode).select('.viewFilter');
+    viewFilter.select('label')
+      .text(`${filteredCount} / ${fullCount}`);
+    const excludeFilterExists = window.controller.lookupFilter(`Participants did not see ${this.humanLabel}`) !== -1;
+    const includeFilterExists = window.controller.lookupFilter(`Participants saw ${this.humanLabel}`) !== -1;
+    viewFilter.select('input')
+      .property('checked', !excludeFilterExists)
+      .property('indeterminate', !excludeFilterExists && !includeFilterExists);
   }
   countUniqueValues (fullList, filteredList, key) {
     const countValues = transitionList => {
@@ -304,9 +300,9 @@ class VisView extends IntrospectableMixin(View) {
       d3.select(this).selectAll('.likertChunk').each(function (d) {
         const allCount = allCounts[d] || 0;
         const filteredCount = filteredCounts[d] || 0;
-        const filterBaseLabel = `${self.humanResponseType}[${key}]`;
-        const excludeFilterExists = window.controller.filterLabelIndex(`${filterBaseLabel} != ${d}`) !== -1;
-        const includeFilterExists = window.controller.filterLabelIndex(`${filterBaseLabel} = ${d}`) !== -1;
+        const humanResponseType = window.controller.getHumanResponseType(self.responseType);
+        const excludeFilterExists = window.controller.lookupFilter(`${humanResponseType}[${key}] != ${d}`) !== -1;
+        const includeFilterExists = window.controller.lookupFilter(`${humanResponseType}[${key}] == ${d}`) !== -1;
         const likertChunk = d3.select(this);
         likertChunk.select('label')
           .text(`(${filteredCount}/${allCount}) ${d}`);
@@ -326,7 +322,8 @@ class VisView extends IntrospectableMixin(View) {
 
       const container = d3.select(this);
       const filterIndex = window.controller.findFilter(filterObj => {
-        return filterObj.humanLabel.startsWith(`${self.humanResponseType}[${this.dataset.key}] = `);
+        const humanResponseType = window.controller.getHumanResponseType(self.responseType);
+        return filterObj.humanLabel.startsWith(`${humanResponseType}[${this.dataset.key}] == `);
       });
       container.classed('filterTarget', filterIndex !== -1);
 
@@ -336,15 +333,10 @@ class VisView extends IntrospectableMixin(View) {
       const responsesEnter = responses.enter().append('div')
         .classed('response', true)
         .on('click', d => {
-          const actualValue = d === 'undefined' ? undefined
-            : d === 'null' ? null : d;
-          const displayValue = d === '' ? '(blank)' : d;
-          window.controller.toggleFilter(new Filter({
-            humanLabel: `${self.humanResponseType}[${this.dataset.key}] = ${displayValue}`,
-            test: transition => {
-              return transition[self.responseType] !== null &&
-                transition[self.responseType][this.dataset.key] === actualValue;
-            }
+          window.controller.toggleFilter(new TextFilter({
+            responseType: self.responseType,
+            key: this.dataset.key,
+            value: d === 'undefined' ? undefined : d === 'null' ? null : d
           }));
         });
       responses = responses.merge(responsesEnter);
@@ -377,9 +369,9 @@ class VisView extends IntrospectableMixin(View) {
       bar.select('.all').node().dataset.count = allCount;
       bar.select('.filtered').node().dataset.count = filteredCount;
 
-      const filterBaseLabel = `${self.humanResponseType}[${this.dataset.key}]`;
-      const excludeFilterExists = window.controller.filterLabelIndex(`${this.dataset.flag} not in ${filterBaseLabel}`) !== -1;
-      const includeFilterExists = window.controller.filterLabelIndex(`${this.dataset.flag} in ${filterBaseLabel}`) !== -1;
+      const humanResponseType = window.controller.getHumanResponseType(self.responseType);
+      const excludeFilterExists = window.controller.lookupFilter(`${this.dataset.flag} not in ${humanResponseType}[${this.dataset.key}]`) !== -1;
+      const includeFilterExists = window.controller.lookupFilter(`${this.dataset.flag} in ${humanResponseType}[${this.dataset.key}]`) !== -1;
       d3.select(this)
         .property('checked', !excludeFilterExists)
         .property('indeterminate', !excludeFilterExists && !includeFilterExists);
@@ -389,9 +381,13 @@ class VisView extends IntrospectableMixin(View) {
     const self = this;
     this.d3el.selectAll('[type="checkbox"][data-checked-value]').each(function () {
       const countChecks = (count, transition) => {
-        const match = transition[self.responseType] !== null &&
-          transition[self.responseType][this.dataset.key] === this.dataset.checkedValue;
-        const increment = match ? 0 : 1;
+        const match = self.responseType === undefined
+          ? transition.dasResponse[this.dataset.key] === this.dataset.checkedValue ||
+            (transition.etsResponse !== null &&
+              transition.etsResponse[this.dataset.key] === this.dataset.checkedValue)
+          : transition[self.responseType] !== null &&
+            transition[self.responseType][this.dataset.key] === this.dataset.checkedValue;
+        const increment = match ? 1 : 0;
         return count + increment;
       };
       const allCount = fullList.reduce(countChecks, 0);
@@ -403,9 +399,9 @@ class VisView extends IntrospectableMixin(View) {
       bar.select('.all').node().dataset.count = allCount;
       bar.select('.filtered').node().dataset.count = filteredCount;
 
-      const filterBaseLabel = `${self.humanResponseType}[${this.dataset.key}]`;
-      const excludeFilterExists = window.controller.filterLabelIndex(`${filterBaseLabel} != ${this.dataset.checkedValue}`) !== -1;
-      const includeFilterExists = window.controller.filterLabelIndex(`${filterBaseLabel} == ${this.dataset.checkedValue}`) !== -1;
+      const humanResponseType = window.controller.getHumanResponseType(self.responseType);
+      const excludeFilterExists = window.controller.lookupFilter(`Did not check ${this.dataset.checkedValue} for ${humanResponseType}[${this.dataset.key}]`) !== -1;
+      const includeFilterExists = window.controller.lookupFilter(`Checked ${this.dataset.checkedValue} for ${humanResponseType}[${this.dataset.key}]`) !== -1;
       d3.select(this)
         .property('checked', !excludeFilterExists)
         .property('indeterminate', !excludeFilterExists && !includeFilterExists);

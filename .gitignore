@@ -33,3 +33,11 @@ node_modules/js-sha256/build/*
 !node_modules/pluralize/
 node_modules/pluralize/*
 !node_modules/pluralize/pluralize.js
+
+!node_modules/json-url/
+node_modules/json-url/*
+!node_modules/json-url/dist/
+node_modules/json-url/dist/*
+!node_modules/json-url/dist/browser/
+node_modules/json-url/dist/browser/*
+!node_modules/json-url/dist/browser/json-url-single.js

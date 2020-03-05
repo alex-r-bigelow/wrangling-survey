@@ -1,6 +1,6 @@
 /* globals d3 */
 import VisView from '../VisView/VisView.js';
-import Filter from '../../models/Filter.js';
+import SingletonFilter from '../../filters/SingletonFilter.js';
 
 class TablesResponseDasView extends VisView {
   constructor (div) {
@@ -48,30 +48,15 @@ class TablesResponseDasView extends VisView {
       .classed('blank', d => d === '');
 
     tableResponsesEnter.on('click', d => {
-      if (this.responseType === 'dasResponse') {
-        window.controller.toggleFilter(new Filter({
-          humanLabel: `Only show interpretations of (tabular) ${d.dasResponse.datasetLabel}`,
-          test: transition => transition.dasResponse.browserId === d.dasResponse.browserId &&
-            transition.dasResponse.submitTimestamp === d.dasResponse.submitTimestamp
-        }));
-      } else {
-        window.controller.toggleFilter(new Filter({
-          humanLabel: `Only show tabular interpretation of ${d.dasResponse.datasetLabel}`,
-          test: transition => transition.transitionId === d.transitionId
-        }));
-      }
+      window.controller.toggleFilter(new SingletonFilter({
+        transitionId: d.transitionId,
+        responseType: this.responseType,
+        key: 'exampleTableData'
+      }));
     });
 
-    let isFilterTarget;
-    if (this.responseType === 'dasResponse') {
-      isFilterTarget = window.controller.findFilter(filterObj => {
-        return filterObj.humanLabel.startsWith(`Only show interpretations of (tabular) `);
-      }) !== -1;
-    } else {
-      isFilterTarget = window.controller.findFilter(filterObj => {
-        return filterObj.humanLabel.startsWith(`Only show tabular interpretation of `);
-      }) !== -1;
-    }
+    const humanResponseType = window.controller.getHumanResponseType(this.responseType);
+    const isFilterTarget = window.controller.lookupFilter(`Specific response, filtered from ${humanResponseType}[exampleTableData]`) !== -1;
     container.classed('filterTarget', isFilterTarget);
   }
   filterTransition (transition) {
