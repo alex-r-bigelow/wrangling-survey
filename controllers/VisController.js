@@ -17,7 +17,23 @@ import { TextualResponseDasView, TextualResponseEtsView } from '../views/Textual
 import { MediaResponseDasView, MediaResponseEtsView } from '../views/MediaView/MediaResponseViews.js';
 import { DebriefResponseDasView, DebriefResponseEtsView } from '../views/DebriefView/DebriefResponseViews.js';
 
+import ViewFilter from '../../filters/ViewFilter.js';
+import LikertFilter from '../../filters/LikertFilter.js';
+import FlagFilter from '../../filters/FlagFilter.js';
+import CheckedFilter from '../../filters/CheckedFilter.js';
+import TextFilter from '../../filters/TextFilter.js';
+import SingletonFilter from '../../filters/SingletonFilter.js';
+
 import recolorImageFilter from '../utils/recolorImageFilter.js';
+
+const FILTER_LOOKUP = {
+  ViewFilter,
+  LikertFilter,
+  FlagFilter,
+  CheckedFilter,
+  TextFilter,
+  SingletonFilter
+};
 
 class VisController extends Model {
   constructor () {
@@ -25,10 +41,11 @@ class VisController extends Model {
     this.database = new Database();
     this.database.on('update', () => {
       this.transitionList = this.database.getTransitionList();
+      this.parseFilters();
       this.renderAllViews();
     });
 
-    this.jsonCodec = JsonUrl('lzw');
+    this.jsonCodec = JsonUrl('lzma');
     this.filterList = [];
     this.filterView = new FilterView();
 
@@ -43,6 +60,8 @@ Firefox or Chrome.`);
     }
 
     window.onresize = () => { this.renderAllViews(); };
+    window.onpopstate = () => { this.parseFilters(); };
+
     (async () => {
       await this.setupViews();
       this.filterView.hide();
@@ -143,14 +162,41 @@ Firefox or Chrome.`);
     });
     return this._filteredTransitionList;
   }
+  async updateUrl () {
+    if (window.history.pushState) {
+      const filterQuery = await this.jsonCodec.compress(this.filterList.map(filter => {
+        return {
+          type: filter.type,
+          spec: filter.spec
+        };
+      }));
+      const newUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}?filters=${filterQuery}`;
+      window.history.pushState({ path: newUrl }, '', newUrl);
+    }
+  }
+  async parseFilters () {
+    const rawQuery = new URLSearchParams(window.location.search).get('filters');
+    if (rawQuery) {
+      const filterSpecs = await this.jsonCodec.decompress(rawQuery);
+      this.filterList = filterSpecs.map(filterSpec => {
+        return new FILTER_LOOKUP[filterSpec.type](filterSpec.spec);
+      });
+    } else {
+      this.filterList = [];
+    }
+    delete this._filteredTransitionList;
+    this.renderAllViews();
+  }
   addFilter (filterObj) {
     delete this._filteredTransitionList;
     this.filterList.push(filterObj);
+    this.updateUrl();
     this.renderAllViews();
   }
   removeFilter (index) {
     delete this._filteredTransitionList;
     this.filterList.splice(index, 1);
+    this.updateUrl();
     this.renderAllViews();
   }
   lookupFilter (humanLabel) {
@@ -167,6 +213,7 @@ Firefox or Chrome.`);
     } else {
       this.filterList.splice(existingIndex, 1);
     }
+    this.updateUrl();
     this.renderAllViews();
   }
   rotateFilterState (filterStates) {
@@ -180,6 +227,7 @@ Firefox or Chrome.`);
     } else {
       this.filterList[existingFilterIndices[i]] = filterStates[i + 1];
     }
+    this.updateUrl();
     this.renderAllViews();
   }
   getHumanResponseType (responseType) {
