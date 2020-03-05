@@ -188,7 +188,7 @@ class VisView extends IntrospectableMixin(View) {
 
       const filterStates = [
         new CheckedFilter({
-          exclude: false,
+          exclude: true,
           responseType: self.responseType,
           checkedValue: this.dataset.checkedValue,
           key: this.dataset.key
