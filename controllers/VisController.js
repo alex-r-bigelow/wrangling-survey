@@ -45,7 +45,7 @@ class VisController extends Model {
       this.renderAllViews();
     });
 
-    this.jsonCodec = JsonUrl('lzma');
+    this.jsonCodec = JsonUrl('lzw');
     this.filterList = [];
     this.filterView = new FilterView();
 
