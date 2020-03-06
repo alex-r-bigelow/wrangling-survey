@@ -17,12 +17,12 @@ import { TextualResponseDasView, TextualResponseEtsView } from '../views/Textual
 import { MediaResponseDasView, MediaResponseEtsView } from '../views/MediaView/MediaResponseViews.js';
 import { DebriefResponseDasView, DebriefResponseEtsView } from '../views/DebriefView/DebriefResponseViews.js';
 
-import ViewFilter from '../../filters/ViewFilter.js';
-import LikertFilter from '../../filters/LikertFilter.js';
-import FlagFilter from '../../filters/FlagFilter.js';
-import CheckedFilter from '../../filters/CheckedFilter.js';
-import TextFilter from '../../filters/TextFilter.js';
-import SingletonFilter from '../../filters/SingletonFilter.js';
+import ViewFilter from '../filters/ViewFilter.js';
+import LikertFilter from '../filters/LikertFilter.js';
+import FlagFilter from '../filters/FlagFilter.js';
+import CheckedFilter from '../filters/CheckedFilter.js';
+import TextFilter from '../filters/TextFilter.js';
+import SingletonFilter from '../filters/SingletonFilter.js';
 
 import recolorImageFilter from '../utils/recolorImageFilter.js';
 
