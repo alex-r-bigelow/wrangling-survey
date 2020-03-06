@@ -8,6 +8,10 @@ import recolorImageFilter from '../utils/recolorImageFilter.js';
 class SurveyController extends Model {
   constructor (tableName, viewClasses) {
     super();
+    this.initialPaneIndex = 0;
+    this.tableName = tableName;
+    this.currentSurveyViewIndex = 0;
+
     this.database = new Database();
     this.database.on('update', () => {
       this.renderAllViews();
@@ -15,9 +19,7 @@ class SurveyController extends Model {
     });
 
     this.glossary = new GlossaryView();
-    this.initialPaneIndex = 0;
 
-    this.tableName = tableName;
 
     this.surveyViews = [];
 
@@ -30,7 +32,6 @@ installed, please ask Alex about borrowing a device.`);
     }
 
     // Auto-advance on page load to wherever the user left off
-    this.currentSurveyViewIndex = 0;
     this.on('load', () => { this.advanceSurvey(this.surveyViews.length - 1); });
 
     window.onresize = () => { this.renderAllViews(); };

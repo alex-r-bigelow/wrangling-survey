@@ -34,9 +34,10 @@ class VisView extends IntrospectableMixin(View) {
     this.setupDataCheckedValues();
   }
   setupViewFilter () {
-    const viewFilter = d3.select(this.d3el.node().parentNode).select('.viewFilter');
-
-    viewFilter.append('input')
+    this.viewFilter = this.headerEl.append('div')
+      .classed('viewFilter', true)
+      .attr('title', 'This is the number of participants that saw this section');
+    this.viewFilter.append('input')
       .attr('type', 'checkbox')
       .on('change', () => {
         const filterStates = [
@@ -51,7 +52,7 @@ class VisView extends IntrospectableMixin(View) {
         ];
         window.controller.rotateFilterState(filterStates);
       });
-    viewFilter.append('label');
+    this.viewFilter.append('label');
   }
   setupLikertBarCharts () {
     const self = this;
@@ -206,6 +207,9 @@ class VisView extends IntrospectableMixin(View) {
     });
   }
   getTransitionLists () {
+    if (!window.controller.transitionList) {
+      return { fullList: [], filteredList: [] };
+    }
     const filterFunc = transition => this.filterTransition(transition);
     return {
       fullList: window.controller.transitionList
@@ -251,12 +255,11 @@ class VisView extends IntrospectableMixin(View) {
     };
     const filteredCount = countResponses(filteredList);
     const fullCount = countResponses(fullList);
-    const viewFilter = d3.select(this.d3el.node().parentNode).select('.viewFilter');
-    viewFilter.select('label')
+    this.viewFilter.select('label')
       .text(`${filteredCount} / ${fullCount}`);
     const excludeFilterExists = window.controller.lookupFilter(`Participants did not see ${this.humanLabel}`) !== -1;
     const includeFilterExists = window.controller.lookupFilter(`Participants saw ${this.humanLabel}`) !== -1;
-    viewFilter.select('input')
+    this.viewFilter.select('input')
       .property('checked', !excludeFilterExists)
       .property('indeterminate', !excludeFilterExists && !includeFilterExists);
   }

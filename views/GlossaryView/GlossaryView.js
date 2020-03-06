@@ -4,7 +4,6 @@ import SurveyView from '../SurveyView/SurveyView.js';
 class GlossaryView extends SurveyView {
   constructor () {
     super(d3.select('.GlossaryView'), [
-      { type: 'text', url: 'views/GlossaryView/template.html' },
       { type: 'text', url: 'docs/glossary.html' },
       { type: 'json', url: 'docs/pluralDictionary.json' },
       { type: 'less', url: 'views/GlossaryView/style.less' }
@@ -17,8 +16,7 @@ class GlossaryView extends SurveyView {
   }
   setup () {
     const self = this;
-    this.d3el.html(this.resources[0]);
-    this.d3el.select('.content').html(this.resources[1])
+    this.d3el.html(this.resources[0])
       .selectAll('[data-term]').each(function () {
         self.terms[this.dataset.term] = this;
         const element = d3.select(this);
@@ -37,17 +35,6 @@ class GlossaryView extends SurveyView {
           .attr('placeholder', 'Suggest an alternate definition');
         element.append('hr');
       });
-    const toggle = () => {
-      if (this.isDisabled() || !this.d3el.classed('unfocused')) {
-        this.hide();
-      } else {
-        this.show();
-        d3.event.stopPropagation();
-      }
-      this.render();
-    };
-    this.d3el.select('.toggle.button').on('click', toggle);
-    this.d3el.select('.collapse.button').on('click', toggle);
     // Add the plural dictionary
     for (const [regex, replace] of Object.entries(this.resources[2].plural)) {
       pluralize.addPluralRule(new window.RexExp(regex), replace);
@@ -64,17 +51,6 @@ class GlossaryView extends SurveyView {
     this.collectKeyElements();
     this.connectTerminology();
     this.setupSurveyListeners();
-  }
-  draw () {
-    const focused = !this.d3el.classed('unfocused');
-    const button = this.d3el.select('.collapse.button')
-      .classed('imgAndLabel', focused);
-    button.select('.label')
-      .style('display', focused ? null : 'none');
-    button.select('img')
-      .attr('src', focused ? 'img/collapse.svg' : 'img/expand.svg');
-    this.d3el.selectAll('.button')
-      .classed('disabled', this.isDisabled());
   }
   collectTerminology () {
     // Attach event listeners to inspectable fields, and keep the original term

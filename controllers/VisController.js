@@ -3,6 +3,7 @@ import { Model } from '../node_modules/uki/dist/uki.esm.js';
 import Database from '../models/Database.js';
 
 import FilterView from '../views/FilterView/FilterView.js';
+import GlossaryResponseView from '../views/GlossaryView/GlossaryResponseView.js';
 
 import OverView from '../views/OverView/OverView.js';
 
@@ -38,19 +39,11 @@ const FILTER_LOOKUP = {
 class VisController extends Model {
   constructor () {
     super();
-    this.database = new Database();
-    this.database.on('update', () => {
-      this.transitionList = this.database.getTransitionList();
-      this.parseFilters();
-      this.renderAllViews();
-    });
-
     this.jsonCodec = JsonUrl('lzw');
     this.filterList = [];
-    this.filterView = new FilterView();
-
-    this.visViews = [];
     this.currentViewIndex = 0;
+
+    this.database = new Database();
 
     // detect IE8 and above, and edge
     if (document.documentMode || /Edge/.test(navigator.userAgent)) {
@@ -63,9 +56,17 @@ Firefox or Chrome.`);
     window.onpopstate = () => { this.parseFilters(); };
 
     (async () => {
-      await this.setupViews();
-      this.filterView.hide();
-      await less.pageLoadFinished;
+      await Promise.all([
+        this.setupViews(),
+        less.pageLoadFinished,
+        new Promise((resolve, reject) => {
+          this.database.on('update', () => {
+            resolve();
+          });
+        })
+      ]);
+      this.transitionList = this.database.getTransitionList();
+      this.parseFilters(true);
       // Wait for LESS to finish loading before applying our SVG
       // filter hack
       recolorImageFilter();
@@ -73,8 +74,20 @@ Firefox or Chrome.`);
     })();
   }
   async setupViews () {
-    const self = this;
-    this.visViews = [
+    const sidebar = d3.select('.sidebar.pageSlice');
+    sidebar.select('.collapse.button').on('click', () => {
+      if (!sidebar.classed('unfocused')) {
+        this.hideSidebar();
+      } else {
+        this.showSidebar();
+      }
+    });
+
+    this.sidebarViews = await this.setupViewList([
+      FilterView,
+      GlossaryResponseView
+    ], '.sidebar');
+    this.visViews = await this.setupViewList([
       OverView,
       DomainResponseView,
       BasicCharacteristicsResponseView,
@@ -94,22 +107,39 @@ Firefox or Chrome.`);
       TextualResponseEtsView,
       MediaResponseEtsView,
       DebriefResponseEtsView
-    ].map(View => new View());
-    const sections = d3.select('.vis .wrapper')
+    ], '.vis');
+  }
+  async setupViewList (viewClassList, containerSelector) {
+    const self = this;
+    const views = viewClassList.map(View => new View());
+    const sections = d3.select(`${containerSelector} .wrapper`)
       .selectAll('details')
-      .data(this.visViews)
+      .data(views)
       .enter().append('details')
-      .on('toggle.vis', function (d, i) {
-        if (this.open) {
-          self.advanceSection(i);
+      .on('click', function () {
+        if (d3.select(containerSelector).classed('unfocused')) {
+          d3.selectAll('.pageSlice').classed('unfocused', true);
+          d3.select(containerSelector).classed('unfocused', false);
+          // We just toggled panes; make sure the thing we clicked on stays open
+          this._keepOpen = true;
         }
+      }).on('toggle', function (d, i) {
+        if (this._keepOpen) {
+          this.open = true;
+          delete this._keepOpen;
+        }
+        if (containerSelector === '.vis') {
+          if (this.open) {
+            self.advanceSection(i);
+          }
+        }
+        self.renderAllViews();
       });
-    const header = sections.append('summary');
+    const header = sections.append('summary')
+      .each(function (d) { d.headerEl = d3.select(this); });
     header.append('div')
+      .classed('title', true)
       .html(d => d.humanLabel);
-    header.append('div')
-      .classed('viewFilter', true)
-      .attr('title', 'This is the number of participants that saw this section');
     sections.append('div')
       .attr('class', d => d.className);
     await Promise.all(sections.nodes().map(async node => {
@@ -119,10 +149,11 @@ Firefox or Chrome.`);
       // elements before the next cross-cutting steps
       await viewInstance.render(d3.select(node).select(`.${viewInstance.className}`));
     }));
+    return views;
   }
   async advanceSection (viewIndex = this.currentViewIndex + 1) {
     // Skip any disabled views
-    while (this.visViews[viewIndex].isDisabled()) {
+    while (this.visViews[viewIndex] && this.visViews[viewIndex].isDisabled()) {
       viewIndex++;
     }
     if (this.visViews[viewIndex]) {
@@ -137,7 +168,7 @@ Firefox or Chrome.`);
   }
   async renderAllViews () {
     const self = this;
-    d3.select('.vis .wrapper')
+    d3.selectAll('.vis .wrapper')
       .selectAll('details')
       .classed('disabled', d => d.isDisabled())
       .property('open', (d, i) => i === this.currentViewIndex)
@@ -148,12 +179,22 @@ Firefox or Chrome.`);
             self.advanceSection();
           });
       });
-    await this.filterView.render();
-    await Promise.all(this.visViews.map(view => view.render()));
+
+    const focused = !d3.select('.sidebar.pageSlice').classed('unfocused');
+    const button = d3.select('.collapse.button')
+      .classed('imgAndLabel', focused);
+    button.select('.label')
+      .style('display', focused ? null : 'none');
+    button.select('img')
+      .attr('src', focused ? 'img/collapse.svg' : 'img/expand.svg');
+
+    await Promise.all(this.sidebarViews.concat(this.visViews).map(view => {
+      return view.render();
+    }));
   }
   getFilteredTransitionList () {
     if (this.transitionList === undefined) {
-      return null;
+      return [];
     }
     if (this._filteredTransitionList) {
       return this._filteredTransitionList;
@@ -181,7 +222,7 @@ Firefox or Chrome.`);
       }
     }
   }
-  async parseFilters () {
+  async parseFilters (forceAdvance) {
     const params = new URLSearchParams(window.location.search);
     const rawQuery = params.get('filters');
     if (rawQuery) {
@@ -195,11 +236,9 @@ Firefox or Chrome.`);
     delete this._filteredTransitionList;
 
     let viewIndex = params.get('viewIndex');
-    if (viewIndex !== null) {
-      viewIndex = parseInt(viewIndex);
-      if (!isNaN(viewIndex) && viewIndex !== this.currentViewIndex) {
-        this.advanceSection(viewIndex);
-      }
+    viewIndex = viewIndex === null ? 0 : parseInt(viewIndex);
+    if (!isNaN(viewIndex) && (forceAdvance || viewIndex !== this.currentViewIndex)) {
+      this.advanceSection(viewIndex);
     }
     this.renderAllViews();
   }
@@ -254,6 +293,16 @@ Firefox or Chrome.`);
     } else if (responseType === 'etsResponse') {
       return 'Alternative Abstraction';
     }
+  }
+  showSidebar () {
+    d3.select('.sidebar.pageSlice').classed('unfocused', false);
+    d3.select('.vis.pageSlice').classed('unfocused', true);
+    this.renderAllViews();
+  }
+  hideSidebar () {
+    d3.select('.sidebar.pageSlice').classed('unfocused', true);
+    d3.select('.vis.pageSlice').classed('unfocused', false);
+    this.renderAllViews();
   }
 }
 
