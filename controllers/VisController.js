@@ -130,6 +130,7 @@ Firefox or Chrome.`);
         this.visViews[viewIndex].trigger('open');
       }
       this.currentViewIndex = viewIndex;
+      this.updateUrl();
       this.renderAllViews();
     }
     return viewIndex;
@@ -170,12 +171,19 @@ Firefox or Chrome.`);
           spec: filter.spec
         };
       }));
-      const newUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}?filters=${filterQuery}`;
-      window.history.pushState({ path: newUrl }, '', newUrl);
+      const search = `?viewIndex=${this.currentViewIndex}&filters=${filterQuery}`;
+      const newUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}${search}`;
+      if (!window.location.search || search === window.location.search) {
+        // Don't push state if the page just loaded or the URL is redundant
+        window.history.replaceState({ path: newUrl }, '', newUrl);
+      } else {
+        window.history.pushState({ path: newUrl }, '', newUrl);
+      }
     }
   }
   async parseFilters () {
-    const rawQuery = new URLSearchParams(window.location.search).get('filters');
+    const params = new URLSearchParams(window.location.search);
+    const rawQuery = params.get('filters');
     if (rawQuery) {
       const filterSpecs = await this.jsonCodec.decompress(rawQuery);
       this.filterList = filterSpecs.map(filterSpec => {
@@ -185,6 +193,14 @@ Firefox or Chrome.`);
       this.filterList = [];
     }
     delete this._filteredTransitionList;
+
+    let viewIndex = params.get('viewIndex');
+    if (viewIndex !== null) {
+      viewIndex = parseInt(viewIndex);
+      if (!isNaN(viewIndex) && viewIndex !== this.currentViewIndex) {
+        this.advanceSection(viewIndex);
+      }
+    }
     this.renderAllViews();
   }
   addFilter (filterObj) {
