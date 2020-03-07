@@ -14,6 +14,8 @@ class ReflectionsResponseView extends VisView {
     super.setup();
     this.d3el.selectAll('.thanks').remove();
     this.d3el.select('.buttonContainer').remove();
+    this.d3el.selectAll('.datasetLabel').text('(Participant\'s initial dataset label)');
+    this.d3el.selectAll('.targetType').text('(Alternative abstraction type)');
   }
   filterTransition (transition) {
     return transition.etsResponse !== null;

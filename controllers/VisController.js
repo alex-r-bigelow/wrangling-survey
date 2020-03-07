@@ -24,6 +24,7 @@ import FlagFilter from '../filters/FlagFilter.js';
 import CheckedFilter from '../filters/CheckedFilter.js';
 import TextFilter from '../filters/TextFilter.js';
 import SingletonFilter from '../filters/SingletonFilter.js';
+import TermFilter from '../filters/TermFilter.js';
 
 const FILTER_LOOKUP = {
   ViewFilter,
@@ -31,7 +32,8 @@ const FILTER_LOOKUP = {
   FlagFilter,
   CheckedFilter,
   TextFilter,
-  SingletonFilter
+  SingletonFilter,
+  TermFilter
 };
 
 class VisController extends Controller {
