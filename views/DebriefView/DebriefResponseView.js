@@ -1,6 +1,6 @@
 import VisView from '../VisView/VisView.js';
 
-class DebriefResponseDasView extends VisView {
+class DebriefResponseView extends VisView {
   constructor (div) {
     super(div, [
       { type: 'less', url: 'views/DebriefView/style.less' },
@@ -19,19 +19,4 @@ class DebriefResponseDasView extends VisView {
       .text('Next');
   }
 }
-class DebriefResponseEtsView extends DebriefResponseDasView {
-  constructor (div) {
-    super(div);
-    this.humanLabel = 'Alternative Dataset Debrief';
-    this.responseType = 'etsResponse';
-  }
-  setup () {
-    super.setup();
-    this.d3el.selectAll('.thanks').remove();
-    this.d3el.select('.buttonContainer').remove();
-  }
-  filterTransition (transition) {
-    return transition.etsResponse !== null;
-  }
-}
-export { DebriefResponseDasView, DebriefResponseEtsView };
+export default DebriefResponseView;
