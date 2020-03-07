@@ -18,6 +18,7 @@ class AlternateIntroView extends SurveyView {
     this.stall = true;
   }
   setup () {
+    super.setup();
     if (window.controller.params.priorAlternateCount > 0) {
       this.d3el.html(this.resources[3]);
     } else if (window.controller.params.nativeThinking !== 'Never') {

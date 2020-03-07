@@ -123,14 +123,23 @@ details {
   }
 }
 
-.collapse.button {
+.cornerFloat {
   display: none;
 }
 
 @media(max-width:@mobileCutoff) {
-  .collapse.button {
+  .cornerFloat {
     display: block;
-    margin-bottom: 1em;
+    position: fixed;
+    top: 1em;
+    right: 1.45em;
+    .collapse.button {
+      position: relative;
+      margin-left: auto;
+    }
+  }
+  .sidebar {
+    margin-top: 3.45em;
   }
   .pageSlice.unfocused {
     flex-grow: 0;
@@ -149,9 +158,6 @@ details {
       margin-right: 1em;
       & > div {
         display: none;
-      }
-      &.complete summary {
-        padding-right: 2.5em;
       }
     }
     .collapse.button {

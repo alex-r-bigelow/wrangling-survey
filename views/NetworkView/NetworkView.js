@@ -93,6 +93,7 @@ class NetworkView extends SurveyView {
     this.render();
   }
   setup () {
+    super.setup();
     this.d3el.html(this.resources[1]);
 
     if (!this._exampleNetwork) {

@@ -12,17 +12,7 @@ import DebriefView from '../views/DebriefView/DebriefView.js';
 
 class ETS extends SurveyController {
   constructor () {
-    super('DR.ETS', [
-      AlternateIntroView,
-      TablesView,
-      NetworkView,
-      SpatialView,
-      GroupedView,
-      TextualView,
-      MediaView,
-      ReflectionsView,
-      DebriefView
-    ]);
+    super('DR.ETS');
 
     this.params = Object.fromEntries(new URLSearchParams(window.location.search));
 
@@ -37,6 +27,19 @@ class ETS extends SurveyController {
 
     this.params.priorAlternateCount = parseInt(this.params.priorAlternateCount);
     this.params.otherPriors = JSON.parse(this.params.otherPriors);
+  }
+  get viewClassList () {
+    return [
+      AlternateIntroView,
+      TablesView,
+      NetworkView,
+      SpatialView,
+      GroupedView,
+      TextualView,
+      MediaView,
+      ReflectionsView,
+      DebriefView
+    ];
   }
   extractResponses (defaultFormValues = {}) {
     return super.extractResponses(Object.assign({}, this.params, defaultFormValues));

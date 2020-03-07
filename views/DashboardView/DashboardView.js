@@ -9,6 +9,7 @@ class DashboardView extends SurveyView {
     this.humanLabel = 'Your Responses';
   }
   setup () {
+    super.setup();
     this.d3el.html(this.resources[1]);
 
     this.d3el.select('.idDisplay').text(window.controller.database.browserId);

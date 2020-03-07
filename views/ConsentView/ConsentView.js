@@ -9,10 +9,11 @@ class ConsentView extends SurveyView {
     this.humanLabel = 'Research Consent Form';
   }
   setup () {
+    super.setup();
     this.d3el.html(this.resources[1]);
     this.d3el.select('.agree').on('click', () => {
       window.localStorage.setItem('consented', 'true');
-      window.controller.advanceSurvey();
+      window.controller.advanceSection();
     });
     this.collectKeyElements();
   }

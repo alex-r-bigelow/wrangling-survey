@@ -93,7 +93,7 @@ class Database extends Model {
       .reduce((agg, responseList) => {
         return agg.concat(responseList);
       }, [])
-      .sort((a, b) => new Date(a.submitTimestamp) - new Date(b.submitTimestamp))
+      .sort((a, b) => new Date(a.submitTimestamp || a.startTimestamp) - new Date(b.submitTimestamp || b.startTimestamp))
       .map(response => response.terminology || {});
     Object.assign(this.terminology, ...sortedTerminology);
     // Combine all of the alternateDefinitions, sorted by timestamp

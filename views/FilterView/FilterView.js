@@ -11,6 +11,7 @@ class FilterView extends VisView {
     this._connectedTerms = false;
   }
   setup () {
+    super.setup();
     this.d3el.html(this.resources[0]);
     this.headerEl.append('div').classed('filterCount', true);
   }

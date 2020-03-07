@@ -1,6 +1,5 @@
-/* globals d3, less, JsonUrl */
-import { Model } from '../node_modules/uki/dist/uki.esm.js';
-import Database from '../models/Database.js';
+/* globals d3, JsonUrl */
+import Controller from './Controller.js';
 
 import FilterView from '../views/FilterView/FilterView.js';
 import GlossaryResponseView from '../views/GlossaryView/GlossaryResponseView.js';
@@ -25,8 +24,6 @@ import CheckedFilter from '../filters/CheckedFilter.js';
 import TextFilter from '../filters/TextFilter.js';
 import SingletonFilter from '../filters/SingletonFilter.js';
 
-import recolorImageFilter from '../utils/recolorImageFilter.js';
-
 const FILTER_LOOKUP = {
   ViewFilter,
   LikertFilter,
@@ -36,53 +33,23 @@ const FILTER_LOOKUP = {
   SingletonFilter
 };
 
-class VisController extends Model {
+class VisController extends Controller {
   constructor () {
     super();
     this.jsonCodec = JsonUrl('lzw');
     this.filterList = [];
-    this.currentViewIndex = 0;
 
-    this.database = new Database();
+    this.msErrorText = `Thank you for your interest! Feel free to browse the \
+data using IE or Edge, however you may encounter bugs. This site will work \
+better in Firefox or Chrome.`;
 
-    // detect IE8 and above, and edge
-    if (document.documentMode || /Edge/.test(navigator.userAgent)) {
-      window.alert(`Thank you for your interest! Feel free to browse the data
-using IE or Edge, however you may encounter bugs. This site will work better in
-Firefox or Chrome.`);
-    }
-
-    window.onresize = () => { this.renderAllViews(); };
     window.onpopstate = () => { this.parseFilters(); };
-
-    (async () => {
-      await Promise.all([
-        this.setupViews(),
-        less.pageLoadFinished,
-        new Promise((resolve, reject) => {
-          this.database.on('update', () => {
-            resolve();
-          });
-        })
-      ]);
-      this.transitionList = this.database.getTransitionList();
-      this.parseFilters(true);
-      // Wait for LESS to finish loading before applying our SVG
-      // filter hack
-      recolorImageFilter();
-      d3.select('.spinner').style('display', 'none');
-    })();
+  }
+  async finishSetup () {
+    this.transitionList = this.database.getTransitionList();
+    this.parseFilters(true);
   }
   async setupViews () {
-    const sidebar = d3.select('.sidebar.pageSlice');
-    sidebar.select('.collapse.button').on('click', () => {
-      if (!sidebar.classed('unfocused')) {
-        this.hideSidebar();
-      } else {
-        this.showSidebar();
-      }
-    });
-
     this.sidebarViews = await this.setupViewList([
       FilterView,
       GlossaryResponseView
@@ -99,7 +66,6 @@ Firefox or Chrome.`);
       TextualResponseDasView,
       MediaResponseDasView,
       DebriefResponseDasView,
-      // TODO: add other das views here
       TablesResponseEtsView,
       NetworkResponseEtsView,
       SpatialResponseEtsView,
@@ -108,48 +74,6 @@ Firefox or Chrome.`);
       MediaResponseEtsView,
       DebriefResponseEtsView
     ], '.vis');
-  }
-  async setupViewList (viewClassList, containerSelector) {
-    const self = this;
-    const views = viewClassList.map(View => new View());
-    const sections = d3.select(`${containerSelector} .wrapper`)
-      .selectAll('details')
-      .data(views)
-      .enter().append('details')
-      .on('click', function () {
-        if (d3.select(containerSelector).classed('unfocused')) {
-          d3.selectAll('.pageSlice').classed('unfocused', true);
-          d3.select(containerSelector).classed('unfocused', false);
-          // We just toggled panes; make sure the thing we clicked on stays open
-          this._keepOpen = true;
-        }
-      }).on('toggle', function (d, i) {
-        if (this._keepOpen) {
-          this.open = true;
-          delete this._keepOpen;
-        }
-        if (containerSelector === '.vis') {
-          if (this.open) {
-            self.advanceSection(i);
-          }
-        }
-        self.renderAllViews();
-      });
-    const header = sections.append('summary')
-      .each(function (d) { d.headerEl = d3.select(this); });
-    header.append('div')
-      .classed('title', true)
-      .html(d => d.humanLabel);
-    sections.append('div')
-      .attr('class', d => d.className);
-    await Promise.all(sections.nodes().map(async node => {
-      const d3el = d3.select(node);
-      const viewInstance = d3el.datum();
-      // Assign DOM elements to each view, and ensure views create all their DOM
-      // elements before the next cross-cutting steps
-      await viewInstance.render(d3.select(node).select(`.${viewInstance.className}`));
-    }));
-    return views;
   }
   async advanceSection (viewIndex = this.currentViewIndex + 1) {
     // Skip any disabled views
@@ -167,6 +91,7 @@ Firefox or Chrome.`);
     return viewIndex;
   }
   async renderAllViews () {
+    await super.renderAllViews();
     const self = this;
     d3.selectAll('.vis .wrapper')
       .selectAll('details')
@@ -179,14 +104,6 @@ Firefox or Chrome.`);
             self.advanceSection();
           });
       });
-
-    const focused = !d3.select('.sidebar.pageSlice').classed('unfocused');
-    const button = d3.select('.collapse.button')
-      .classed('imgAndLabel', focused);
-    button.select('.label')
-      .style('display', focused ? null : 'none');
-    button.select('img')
-      .attr('src', focused ? 'img/collapse.svg' : 'img/expand.svg');
 
     await Promise.all(this.sidebarViews.concat(this.visViews).map(view => {
       return view.render();

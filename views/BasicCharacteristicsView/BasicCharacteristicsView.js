@@ -9,6 +9,7 @@ class BasicCharacteristicsView extends SurveyView {
     this.humanLabel = 'Basic Dataset Characteristics';
   }
   setup () {
+    super.setup();
     this.d3el.html(this.resources[1]);
 
     this.d3el.select('.designStudyReviewOnly')
