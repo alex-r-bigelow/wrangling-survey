@@ -1,19 +1,8 @@
 @import '../../style/colors.less';
 @import '../../style/measurements.less';
 
+.GlossaryResponseView,
 .GlossaryView {
-  .toggle.button {
-    width: 100%;
-    min-width: -webkit-fit-content;
-    min-width: -moz-fit-content;
-    min-width: fit-content;
-    margin-top: calc(3.5em + 3px);
-  }
-  .collapse.button {
-    position: absolute;
-    right: 2em;
-    top: calc(1em + 1px);
-  }
   &.unfocused {
     height: calc(100vh - 2em);
     flex-grow: 0;
@@ -35,9 +24,6 @@
       .content {
         display: none;
       }
-    }
-    .collapse.button {
-      right: 1.5em;
     }
   }
 
@@ -62,15 +48,24 @@
       top: 1.5em;
     }
     .split {
-      display: flex;
       img {
         width: 4em;
         height: 4em;
-        margin: 1.35em 1em 0.65em 0;
-      }
-      p {
-        flex-grow: 1;
+        margin: 0.35em 1em 0.25em 0;
+        float: left;
       }
     }
+  }
+}
+.GlossaryResponseView {
+  .field {
+    clear: left;
+  }
+  .inspectable {
+    cursor: unset;
+    color: unset;
+  }
+  [data-term] h3 {
+    color: unset;
   }
 }

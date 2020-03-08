@@ -9,13 +9,6 @@ class Filter extends IntrospectableMixin(Object) {
   test (transition) {
     throw new Error('The test function should be overridden');
   }
-  toString () {
-    return window.controller.jsonCodec({
-      humanLabel: this.humanLabel,
-      type: this.type,
-      spec: this.spec
-    });
-  }
 }
 
 export default Filter;

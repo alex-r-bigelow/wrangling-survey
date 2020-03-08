@@ -9,6 +9,7 @@ class DebriefView extends SurveyView {
     this.humanLabel = 'Debrief';
   }
   setup () {
+    super.setup();
     this.d3el.html(this.resources[1]);
     super.setupLikertFields();
     super.collectKeyElements();

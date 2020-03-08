@@ -45,17 +45,22 @@ details {
     border-radius: @borderRadius;
     border: 1px solid @shadowColor;
     padding: 0.5em @buttonTextPadding;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .filterCount {
+      margin-left: 0.5em;
+    }
+    .statusIndicator,
+    .viewFilter {
+      margin-left: 1em;
+    }
     .statusIndicator {
-      position: absolute;
       width: 1em;
       height: 1em;
-      top: 0.75em;
-      right: 1em;
     }
     .viewFilter {
-      position: absolute;
-      right: 1em;
-      top: 0.5em;
+      margin-left: 1em;
       input[type="checkbox"] {
         margin-right: 1em;
       }
@@ -118,6 +123,49 @@ details {
   }
 }
 
+.cornerFloat {
+  display: none;
+}
+
+@media(max-width:@mobileCutoff) {
+  .cornerFloat {
+    display: block;
+    position: fixed;
+    top: 1em;
+    right: 1.45em;
+    .collapse.button {
+      position: relative;
+      margin-left: auto;
+    }
+  }
+  .sidebar {
+    margin-top: 3.45em;
+  }
+  .pageSlice.unfocused {
+    flex-grow: 0;
+    width: 3em;
+    .wrapper {
+      -webkit-transform-origin: top left;
+      -moz-transform-origin: top left;
+      transform-origin: top left;
+      -webkit-transform: rotate(90deg) translate(0, -100%);
+      -moz-transform: rotate(90deg) translate(0, -100%);
+      transform: rotate(90deg) translate(0, -100%);
+      display: flex;
+    }
+    details {
+      margin-bottom: 0;
+      margin-right: 1em;
+      & > div {
+        display: none;
+      }
+    }
+    .collapse.button {
+      width: @buttonSize;
+    }
+  }
+}
+
 .separator {
   width: 1px;
   height: 100%;
@@ -140,36 +188,7 @@ details {
   background: fade(@shadowColor, 80%) center / 5em no-repeat url('../img/spinner.gif');
 }
 
-@media(max-width:@mobileCutoff) {
-  .pageSlice.unfocused {
-    flex-grow: 0;
-    width: 3em;
-    .wrapper {
-      -webkit-transform-origin: top left;
-      -moz-transform-origin: top left;
-      transform-origin: top left;
-      -webkit-transform: rotate(90deg) translate(0, -100%);
-      -moz-transform: rotate(90deg) translate(0, -100%);
-      transform: rotate(90deg) translate(0, -100%);
-      display: flex;
-    }
-    details {
-      margin-bottom: 0;
-      margin-right: 1em;
-      & > div {
-        display: none;
-      }
-      &.complete summary {
-        padding-right: 2.5em;
-      }
-    }
-  }
-  .vis details summary {
-    padding-right: 5em;
-  }
-}
-
-.vis .textResponseContainer {
+.textResponseContainer {
   max-height: 10em;
   overflow-y: auto;
   .response {
@@ -313,7 +332,8 @@ details[open] summary .inspectable,
   font-weight: unset;
   cursor: unset;
 }
-.flagErrorWarning {
+.flagErrorWarning,
+.glossaryErrorWarning {
   color: @errorColor;
 }
 .bar {

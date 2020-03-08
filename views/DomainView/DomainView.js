@@ -19,6 +19,7 @@ class DomainView extends SurveyView {
     ];
   }
   setup () {
+    super.setup();
     this.d3el.html(this.resources[1]);
 
     this.d3el.select('#existingLabels')

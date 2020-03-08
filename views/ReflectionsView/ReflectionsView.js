@@ -9,6 +9,7 @@ class ReflectionsView extends SurveyView {
     this.humanLabel = 'Reflections';
   }
   setup () {
+    super.setup();
     this.d3el.html(this.resources[1]);
     this.targetTypeLabels = {
       'tabular': '<span class="inspectable">tabular</span>',

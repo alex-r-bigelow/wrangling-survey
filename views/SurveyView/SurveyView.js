@@ -12,8 +12,7 @@ class SurveyView extends IntrospectableMixin(View) {
     this.protesting = false;
     this.wrongWay = false;
     this.on('open', () => {
-      let header = this.d3el.node();
-      header = header && d3.select(header.parentNode).select('summary').node();
+      const header = this.headerEl && this.headerEl.node();
       if (header) {
         header.scrollIntoView();
       }
@@ -24,6 +23,11 @@ class SurveyView extends IntrospectableMixin(View) {
   }
   collectKeyElements () {
     this.keyElements = this.d3el.selectAll('[data-key]').nodes();
+  }
+  setup () {
+    super.setup();
+    this.headerEl.append('img')
+      .classed('statusIndicator', true);
   }
   setupLikertFields () {
     this.d3el.selectAll('[data-likert]').each(function () {
@@ -54,7 +58,7 @@ class SurveyView extends IntrospectableMixin(View) {
         debounceTimeout = window.setTimeout(async () => {
           const formData = window.controller.extractResponses();
           window.controller.database.setResponse(window.controller.tableName, formData.formValues);
-          window.controller.glossary.updateTerminology(formData.formValues.terminology);
+          window.controller.glossary.updateTerminology();
           await window.controller.renderAllViews(formData);
           if (refocus) {
             this.focus();
@@ -225,7 +229,7 @@ class SurveyView extends IntrospectableMixin(View) {
           formValues[key].indexOf(this.dataset.flag) !== -1;
       } else if (this.dataset.role) {
         // { data-key: { data-role: element value } }
-        let value = formValues[key] && formValues[this.dataset.role];
+        let value = formValues[key] && formValues[key][this.dataset.role];
         if (this.type === 'checkbox') {
           this.checked = !!value;
         } else if (this.tagName === 'SELECT') {

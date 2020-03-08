@@ -9,9 +9,10 @@ class GdprView extends SurveyView {
     this.humanLabel = 'GDPR Addendum';
   }
   setup () {
+    super.setup();
     this.d3el.html(this.resources[1]);
     this.d3el.select('.agree').on('click', () => {
-      window.controller.advanceSurvey();
+      window.controller.advanceSection();
     });
     this.collectKeyElements();
   }

@@ -35,3 +35,4 @@ class DebriefResponseEtsView extends DebriefResponseDasView {
   }
 }
 export { DebriefResponseDasView, DebriefResponseEtsView };
+export default DebriefResponseDasView;

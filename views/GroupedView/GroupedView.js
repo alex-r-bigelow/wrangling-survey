@@ -10,6 +10,7 @@ class GroupedView extends SurveyView {
     this.dataTypeLabel = '<span class="inspectable">grouped</span>';
   }
   setup () {
+    super.setup();
     this.d3el.html(this.resources[1]);
     this.setupProtest();
     this.setupLikertFields();

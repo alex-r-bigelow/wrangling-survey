@@ -11,6 +11,7 @@ class SettingsView extends SurveyView {
     this.stall = pendingRepsonseStrings === null || !JSON.parse(pendingRepsonseStrings)['DR.UID'];
   }
   setup () {
+    super.setup();
     this.d3el.html(this.resources[1]);
     if (!window.controller.unfinishedResponse && window.controller.database.context) {
       this.d3el.select('#context').node().value = window.controller.database.context;
@@ -22,7 +23,9 @@ class SettingsView extends SurveyView {
   }
   validateForm (formValues) {
     const invalidIds = {};
-    if (!formValues['email'] || formValues['email'].indexOf('@') === -1) {
+    const pendingResponses = window.controller.database.getPendingResponses();
+    if ((!formValues['email'] || formValues['email'].indexOf('@') === -1) &&
+        pendingResponses.length === 0) {
       invalidIds['email'] = true;
     }
     return {

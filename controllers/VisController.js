@@ -1,8 +1,8 @@
-/* globals d3, less, JsonUrl */
-import { Model } from '../node_modules/uki/dist/uki.esm.js';
-import Database from '../models/Database.js';
+/* globals d3, JsonUrl */
+import Controller from './Controller.js';
 
 import FilterView from '../views/FilterView/FilterView.js';
+import GlossaryResponseView from '../views/GlossaryView/GlossaryResponseView.js';
 
 import OverView from '../views/OverView/OverView.js';
 
@@ -15,47 +15,49 @@ import { SpatialResponseDasView, SpatialResponseEtsView } from '../views/Spatial
 import { GroupedResponseDasView, GroupedResponseEtsView } from '../views/GroupedView/GroupedResponseViews.js';
 import { TextualResponseDasView, TextualResponseEtsView } from '../views/TextualView/TextualResponseViews.js';
 import { MediaResponseDasView, MediaResponseEtsView } from '../views/MediaView/MediaResponseViews.js';
+import ReflectionsResponseView from '../views/ReflectionsView/ReflectionsResponseView.js';
 import { DebriefResponseDasView, DebriefResponseEtsView } from '../views/DebriefView/DebriefResponseViews.js';
 
-import recolorImageFilter from '../utils/recolorImageFilter.js';
+import ViewFilter from '../filters/ViewFilter.js';
+import LikertFilter from '../filters/LikertFilter.js';
+import FlagFilter from '../filters/FlagFilter.js';
+import CheckedFilter from '../filters/CheckedFilter.js';
+import TextFilter from '../filters/TextFilter.js';
+import SingletonFilter from '../filters/SingletonFilter.js';
+import TermFilter from '../filters/TermFilter.js';
 
-class VisController extends Model {
+const FILTER_LOOKUP = {
+  ViewFilter,
+  LikertFilter,
+  FlagFilter,
+  CheckedFilter,
+  TextFilter,
+  SingletonFilter,
+  TermFilter
+};
+
+class VisController extends Controller {
   constructor () {
     super();
-    this.database = new Database();
-    this.database.on('update', () => {
-      this.transitionList = this.database.getTransitionList();
-      this.renderAllViews();
-    });
-
     this.jsonCodec = JsonUrl('lzw');
     this.filterList = [];
-    this.filterView = new FilterView();
 
-    this.visViews = [];
-    this.currentViewIndex = 0;
+    this.msErrorText = `Thank you for your interest! Feel free to browse the \
+data using IE or Edge, however you may encounter bugs. This site will work \
+better in Firefox or Chrome.`;
 
-    // detect IE8 and above, and edge
-    if (document.documentMode || /Edge/.test(navigator.userAgent)) {
-      window.alert(`Thank you for your interest! Feel free to browse the data
-using IE or Edge, however you may encounter bugs. This site will work better in
-Firefox or Chrome.`);
-    }
-
-    window.onresize = () => { this.renderAllViews(); };
-    (async () => {
-      await this.setupViews();
-      this.filterView.hide();
-      await less.pageLoadFinished;
-      // Wait for LESS to finish loading before applying our SVG
-      // filter hack
-      recolorImageFilter();
-      d3.select('.spinner').style('display', 'none');
-    })();
+    window.onpopstate = () => { this.parseFilters(); };
+  }
+  async finishSetup () {
+    this.transitionList = this.database.getTransitionList();
+    this.parseFilters(true);
   }
   async setupViews () {
-    const self = this;
-    this.visViews = [
+    this.sidebarViews = await this.setupViewList([
+      FilterView,
+      GlossaryResponseView
+    ], '.sidebar');
+    this.visViews = await this.setupViewList([
       OverView,
       DomainResponseView,
       BasicCharacteristicsResponseView,
@@ -67,43 +69,19 @@ Firefox or Chrome.`);
       TextualResponseDasView,
       MediaResponseDasView,
       DebriefResponseDasView,
-      // TODO: add other das views here
       TablesResponseEtsView,
       NetworkResponseEtsView,
       SpatialResponseEtsView,
       GroupedResponseEtsView,
       TextualResponseEtsView,
       MediaResponseEtsView,
+      ReflectionsResponseView,
       DebriefResponseEtsView
-    ].map(View => new View());
-    const sections = d3.select('.vis .wrapper')
-      .selectAll('details')
-      .data(this.visViews)
-      .enter().append('details')
-      .on('toggle.vis', function (d, i) {
-        if (this.open) {
-          self.advanceSection(i);
-        }
-      });
-    const header = sections.append('summary');
-    header.append('div')
-      .html(d => d.humanLabel);
-    header.append('div')
-      .classed('viewFilter', true)
-      .attr('title', 'This is the number of participants that saw this section');
-    sections.append('div')
-      .attr('class', d => d.className);
-    await Promise.all(sections.nodes().map(async node => {
-      const d3el = d3.select(node);
-      const viewInstance = d3el.datum();
-      // Assign DOM elements to each view, and ensure views create all their DOM
-      // elements before the next cross-cutting steps
-      await viewInstance.render(d3.select(node).select(`.${viewInstance.className}`));
-    }));
+    ], '.vis');
   }
   async advanceSection (viewIndex = this.currentViewIndex + 1) {
     // Skip any disabled views
-    while (this.visViews[viewIndex].isDisabled()) {
+    while (this.visViews[viewIndex] && this.visViews[viewIndex].isDisabled()) {
       viewIndex++;
     }
     if (this.visViews[viewIndex]) {
@@ -111,13 +89,15 @@ Firefox or Chrome.`);
         this.visViews[viewIndex].trigger('open');
       }
       this.currentViewIndex = viewIndex;
+      this.updateUrl();
       this.renderAllViews();
     }
     return viewIndex;
   }
   async renderAllViews () {
+    await super.renderAllViews();
     const self = this;
-    d3.select('.vis .wrapper')
+    d3.selectAll('.vis .wrapper')
       .selectAll('details')
       .classed('disabled', d => d.isDisabled())
       .property('open', (d, i) => i === this.currentViewIndex)
@@ -128,12 +108,14 @@ Firefox or Chrome.`);
             self.advanceSection();
           });
       });
-    await this.filterView.render();
-    await Promise.all(this.visViews.map(view => view.render()));
+
+    await Promise.all(this.sidebarViews.concat(this.visViews).map(view => {
+      return view.render();
+    }));
   }
   getFilteredTransitionList () {
     if (this.transitionList === undefined) {
-      return null;
+      return [];
     }
     if (this._filteredTransitionList) {
       return this._filteredTransitionList;
@@ -143,14 +125,54 @@ Firefox or Chrome.`);
     });
     return this._filteredTransitionList;
   }
+  async updateUrl () {
+    if (window.history.pushState) {
+      const filterQuery = await this.jsonCodec.compress(this.filterList.map(filter => {
+        return {
+          type: filter.type,
+          spec: filter.spec
+        };
+      }));
+      const search = `?viewIndex=${this.currentViewIndex}&filters=${filterQuery}`;
+      const newUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}${search}`;
+      if (!window.location.search || search === window.location.search) {
+        // Don't push state if the page just loaded or the URL is redundant
+        window.history.replaceState({ path: newUrl }, '', newUrl);
+      } else {
+        window.history.pushState({ path: newUrl }, '', newUrl);
+      }
+    }
+  }
+  async parseFilters (forceAdvance) {
+    const params = new URLSearchParams(window.location.search);
+    const rawQuery = params.get('filters');
+    if (rawQuery) {
+      const filterSpecs = await this.jsonCodec.decompress(rawQuery);
+      this.filterList = filterSpecs.map(filterSpec => {
+        return new FILTER_LOOKUP[filterSpec.type](filterSpec.spec);
+      });
+    } else {
+      this.filterList = [];
+    }
+    delete this._filteredTransitionList;
+
+    let viewIndex = params.get('viewIndex');
+    viewIndex = viewIndex === null ? 0 : parseInt(viewIndex);
+    if (!isNaN(viewIndex) && (forceAdvance || viewIndex !== this.currentViewIndex)) {
+      this.advanceSection(viewIndex);
+    }
+    this.renderAllViews();
+  }
   addFilter (filterObj) {
     delete this._filteredTransitionList;
     this.filterList.push(filterObj);
+    this.updateUrl();
     this.renderAllViews();
   }
   removeFilter (index) {
     delete this._filteredTransitionList;
     this.filterList.splice(index, 1);
+    this.updateUrl();
     this.renderAllViews();
   }
   lookupFilter (humanLabel) {
@@ -167,6 +189,7 @@ Firefox or Chrome.`);
     } else {
       this.filterList.splice(existingIndex, 1);
     }
+    this.updateUrl();
     this.renderAllViews();
   }
   rotateFilterState (filterStates) {
@@ -180,6 +203,7 @@ Firefox or Chrome.`);
     } else {
       this.filterList[existingFilterIndices[i]] = filterStates[i + 1];
     }
+    this.updateUrl();
     this.renderAllViews();
   }
   getHumanResponseType (responseType) {
@@ -190,6 +214,16 @@ Firefox or Chrome.`);
     } else if (responseType === 'etsResponse') {
       return 'Alternative Abstraction';
     }
+  }
+  showSidebar () {
+    d3.select('.sidebar.pageSlice').classed('unfocused', false);
+    d3.select('.vis.pageSlice').classed('unfocused', true);
+    this.renderAllViews();
+  }
+  hideSidebar () {
+    d3.select('.sidebar.pageSlice').classed('unfocused', true);
+    d3.select('.vis.pageSlice').classed('unfocused', false);
+    this.renderAllViews();
   }
 }
 

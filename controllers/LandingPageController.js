@@ -9,13 +9,16 @@ import DashboardView from '../views/DashboardView/DashboardView.js';
 
 class LandingPageController extends SurveyController {
   constructor () {
-    super('DR.UID', [
+    super('DR.UID');
+  }
+  get viewClassList () {
+    return [
       ConsentView,
       GdprView,
       SettingsView,
       AboutView,
       DashboardView
-    ]);
+    ];
   }
   get unfinishedResponse () {
     if (super.unfinishedResponse) {

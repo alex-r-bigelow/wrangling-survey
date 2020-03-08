@@ -14,8 +14,8 @@
 <h3>Raw Responses</h3>
 <p>For custom analysis, you can download the raw data as newline-delimited JSON:</p>
 <ul>
-  <li><a href="/data/das.ndjson" download>Initial data descriptions</a></li>
-  <li><a href="/data/ets.ndjson" download>Alternative explorations</a></li>
+  <li><a href="data/das.ndjson" download="initialDescriptions.ndjson">Initial data descriptions</a></li>
+  <li><a href="data/ets.ndjson" download="alternativeExplorations.ndjson">Alternative explorations</a></li>
 </ul>
 
 <hr/>
@@ -50,13 +50,13 @@ and Supercomputing conferences.</p>
 
 <hr/>
 
-<h3>Spam Responses</h3>
-<p>We have identified responses where participants appear to have gone through
-the survey as fast as possible, and may not be contributing meaningful data. You
-can filter these responses here:</p>
+<h3>Questionable responses</h3>
+<p>We have manually identified responses where participants do not appear to be
+contributing meaningful data, for reasons such as errors in the interface on
+their device, or spam responses. You can filter these here:</p>
 <div class="field">
   <input type="checkbox" data-key="isJunk" data-checked-value="True" id="isJunk" />
-  <label for="isJunk">Spam responses</label>
+  <label for="isJunk">Questionable responses</label>
 </div>
 
 <div class="timestamps"></div>

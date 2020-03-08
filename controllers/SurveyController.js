@@ -1,91 +1,27 @@
-/* globals d3, less */
-import { Model } from '../node_modules/uki/dist/uki.esm.js';
-import Database from '../models/Database.js';
+/* globals d3 */
+import Controller from './Controller.js';
 import GlossaryView from '../views/GlossaryView/GlossaryView.js';
 
-import recolorImageFilter from '../utils/recolorImageFilter.js';
-
-class SurveyController extends Model {
-  constructor (tableName, viewClasses) {
+class SurveyController extends Controller {
+  constructor (tableName) {
     super();
-    this.database = new Database();
-    this.database.on('update', () => {
-      this.renderAllViews();
-      this.glossary.updateTerminology(this.database.terminology);
-    });
-
-    this.glossary = new GlossaryView();
-    this.initialPaneIndex = 0;
-
     this.tableName = tableName;
 
-    this.surveyViews = [];
-
-    // detect IE8 and above, and edge
-    if (document.documentMode || /Edge/.test(navigator.userAgent)) {
-      window.alert(`Thank you for being willing to take our survey! Unfortunately,
-IE and Edge can't render the survey correctly; please take the survey
-using Firefox or Chrome. If you don't have these browsers
-installed, please ask Alex about borrowing a device.`);
-    }
-
+    this.msErrorText = `Thank you for being willing to take our survey! \
+Unfortunately, IE and Edge can't render the survey correctly; please take \
+the survey using Firefox or Chrome. If you don't have these browsers \
+installed, please ask Alex about borrowing a device.`;
+  }
+  async finishSetup () {
     // Auto-advance on page load to wherever the user left off
-    this.currentSurveyViewIndex = 0;
-    this.on('load', () => { this.advanceSurvey(this.surveyViews.length - 1); });
-
-    window.onresize = () => { this.renderAllViews(); };
-    (async () => {
-      await this.setupViews(viewClasses);
-      this.glossary.collectTerminology();
-      // Is the user currently working on a response to this survey? If so,
-      // pre-populate with values they already chose
-      if (this.unfinishedResponse) {
-        for (const view of this.surveyViews) {
-          view.populateForm(this.unfinishedResponse);
-        }
+    this.advanceSection(this.surveyViews.length - 1);
+    // Is the user currently working on a response to this survey? If so,
+    // pre-populate with values they already chose
+    if (this.unfinishedResponse) {
+      for (const view of this.surveyViews) {
+        view.populateForm(this.unfinishedResponse);
       }
-      this.finishSetup();
-      await less.pageLoadFinished;
-      // Wait for LESS to finish loading before applying our SVG
-      // filter hack
-      recolorImageFilter();
-      // Extra render call does form validation
-      await this.renderAllViews();
-      d3.select('.spinner').style('display', 'none');
-      this.trigger('load');
-    })();
-  }
-  async setupViews (viewClasses) {
-    const self = this;
-    this.surveyViews = viewClasses.map(View => new View());
-    const surveySections = d3.select('.survey .wrapper')
-      .selectAll('details')
-      .data(this.surveyViews)
-      .enter().append('details')
-      .on('toggle.survey', function (d, i) {
-        if (this.open) {
-          self.advanceSurvey(i);
-        }
-      });
-    const header = surveySections.append('summary');
-    header.append('div')
-      .html(d => d.humanLabel);
-    header.append('img')
-      .classed('statusIndicator', true);
-    surveySections.append('div')
-      .attr('class', d => d.className);
-    await Promise.all(surveySections.nodes().map(async node => {
-      const d3el = d3.select(node);
-      const viewInstance = d3el.datum();
-      // Assign DOM elements to each view, and ensure views create all their DOM
-      // elements before the next cross-cutting steps
-      await viewInstance.render(d3.select(node).select(`.${viewInstance.className}`));
-      viewInstance.setupSurveyListeners();
-    }));
-  }
-  finishSetup () {
-    this.glossary.hide();
-
+    }
     // TODO: this is an ugly patch for public / private fields, because pseudo-elements can't exist inside form fields. Move this:
     d3.selectAll('input, textarea').each(function () {
       const privacyLogo = document.createElement('img');
@@ -94,8 +30,19 @@ installed, please ask Alex about borrowing a device.`);
         .classed('privacyLogo', true)
         .attr('src', d3.select(this).classed('private') ? 'img/lock.svg' : 'img/eye.svg');
     });
+
+    await this.renderAllViews();
+    this.glossary.updateTerminology();
+
+    for (const view of this.surveyViews) {
+      view.setupSurveyListeners();
+    }
   }
-  async advanceSurvey (viewIndex = this.currentSurveyViewIndex + 1) {
+  async setupViews () {
+    [this.glossary] = await this.setupViewList([ GlossaryView ], '.sidebar');
+    this.surveyViews = await this.setupViewList(this.viewClassList, '.survey');
+  }
+  async advanceSection (viewIndex = this.currentViewIndex + 1) {
     const formData = this.extractResponses();
     // First check if all the views up to viewIndex are either valid or disabled
     let forcedIndex = 0;
@@ -116,21 +63,22 @@ installed, please ask Alex about borrowing a device.`);
       }
     }
     if (this.surveyViews[viewIndex]) {
-      if (this.currentSurveyViewIndex !== viewIndex) {
+      if (this.currentViewIndex !== viewIndex) {
         this.surveyViews[viewIndex].trigger('open');
       }
-      this.currentSurveyViewIndex = viewIndex;
+      this.currentViewIndex = viewIndex;
       this.renderAllViews(formData);
     }
     return viewIndex;
   }
   async renderAllViews (formData = this.extractResponses()) {
+    await super.renderAllViews();
     const self = this;
     d3.select('.survey .wrapper')
       .selectAll('details')
       .attr('class', (d, i) => {
         let baseClass = formData.viewStates[i].state;
-        let j = this.currentSurveyViewIndex;
+        let j = this.currentViewIndex;
         while (j < i) {
           if (self.surveyViews[j].stall ||
               (formData.viewStates[j].visible &&
@@ -141,7 +89,7 @@ installed, please ask Alex about borrowing a device.`);
         }
         return baseClass;
       })
-      .property('open', (d, i) => i === this.currentSurveyViewIndex)
+      .property('open', (d, i) => i === this.currentViewIndex)
       .style('display', (d, i) => formData.viewStates[i].visible ? null : 'none')
       .each(function (d, i) {
         const detailsElement = d3.select(this);
@@ -157,11 +105,17 @@ installed, please ask Alex about borrowing a device.`);
               self.forceInvalidFieldWarnings = true;
               self.renderAllViews();
             } else {
-              self.advanceSurvey();
+              self.advanceSection();
             }
           });
       });
-    this.glossary.render();
+    const glossaryDetailsElement = d3.select(this.glossary.d3el.node().parentNode);
+    if (this.glossary.isVisible()) {
+      glossaryDetailsElement.style('display', null);
+      this.glossary.render();
+    } else {
+      glossaryDetailsElement.style('display', 'none');
+    }
     this.renderSubmitButton(formData);
     d3.selectAll('.invalid').classed('invalid', false);
     if (this.forceInvalidFieldWarnings) {

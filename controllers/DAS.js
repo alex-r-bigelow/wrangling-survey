@@ -13,7 +13,17 @@ import DebriefView from '../views/DebriefView/DebriefView.js';
 
 class DAS extends SurveyController {
   constructor () {
-    super('DR.DAS', [
+    super('DR.DAS');
+
+    // Redirect people to the main page until they've gone through the consent form
+    if (!window.localStorage.getItem('consented')) {
+      window.location.replace('index.html');
+    }
+
+    this.allowWrongWay = true;
+  }
+  get viewClassList () {
+    return [
       DomainView,
       BasicCharacteristicsView,
       DataTypeView,
@@ -24,14 +34,7 @@ class DAS extends SurveyController {
       TextualView,
       MediaView,
       DebriefView
-    ]);
-
-    // Redirect people to the main page until they've gone through the consent form
-    if (!window.localStorage.getItem('consented')) {
-      window.location.replace('index.html');
-    }
-
-    this.allowWrongWay = true;
+    ];
   }
 }
 

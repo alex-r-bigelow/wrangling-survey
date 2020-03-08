@@ -2,23 +2,19 @@
 import SurveyView from '../SurveyView/SurveyView.js';
 
 class GlossaryView extends SurveyView {
-  constructor () {
-    super(d3.select('.GlossaryView'), [
-      { type: 'text', url: 'views/GlossaryView/template.html' },
+  constructor (div) {
+    super(div, [
       { type: 'text', url: 'docs/glossary.html' },
       { type: 'json', url: 'docs/pluralDictionary.json' },
       { type: 'less', url: 'views/GlossaryView/style.less' }
     ]);
+    this.humanLabel = 'Glossary';
     this.terms = {};
     this._connectedTerms = false;
   }
-  isDisabled () {
-    return !window.localStorage.getItem('enableGlossary');
-  }
   setup () {
     const self = this;
-    this.d3el.html(this.resources[0]);
-    this.d3el.select('.content').html(this.resources[1])
+    this.d3el.html(this.resources[0])
       .selectAll('[data-term]').each(function () {
         self.terms[this.dataset.term] = this;
         const element = d3.select(this);
@@ -37,44 +33,21 @@ class GlossaryView extends SurveyView {
           .attr('placeholder', 'Suggest an alternate definition');
         element.append('hr');
       });
-    const toggle = () => {
-      if (this.isDisabled() || !this.d3el.classed('unfocused')) {
-        this.hide();
-      } else {
-        this.show();
-        d3.event.stopPropagation();
-      }
-      this.render();
-    };
-    this.d3el.select('.toggle.button').on('click', toggle);
-    this.d3el.select('.collapse.button').on('click', toggle);
     // Add the plural dictionary
-    for (const [regex, replace] of Object.entries(this.resources[2].plural)) {
+    for (const [regex, replace] of Object.entries(this.resources[1].plural)) {
       pluralize.addPluralRule(new window.RexExp(regex), replace);
     }
-    for (const [regex, replace] of Object.entries(this.resources[2].singular)) {
+    for (const [regex, replace] of Object.entries(this.resources[1].singular)) {
       pluralize.addSingularRule(new window.RexExp(regex), replace);
     }
-    for (const term of this.resources[2].uncountable) {
+    for (const term of this.resources[1].uncountable) {
       pluralize.addUncountableRule(term);
     }
-    for (const [singular, plural] of Object.entries(this.resources[2].irregular)) {
+    for (const [singular, plural] of Object.entries(this.resources[1].irregular)) {
       pluralize.addIrregularRule(singular, plural);
     }
     this.collectKeyElements();
-    this.connectTerminology();
     this.setupSurveyListeners();
-  }
-  draw () {
-    const focused = !this.d3el.classed('unfocused');
-    const button = this.d3el.select('.collapse.button')
-      .classed('imgAndLabel', focused);
-    button.select('.label')
-      .style('display', focused ? null : 'none');
-    button.select('img')
-      .attr('src', focused ? 'img/collapse.svg' : 'img/expand.svg');
-    this.d3el.selectAll('.button')
-      .classed('disabled', this.isDisabled());
   }
   collectTerminology () {
     // Attach event listeners to inspectable fields, and keep the original term
@@ -112,10 +85,12 @@ class GlossaryView extends SurveyView {
         }
       });
   }
-  updateTerminology (terminology = {}) {
+  updateTerminology () {
     if (!this._connectedTerms) {
       this.collectTerminology();
     }
+    window.controller.database.combineTerminology();
+    const terminology = window.controller.database.terminology;
     this.d3el.selectAll('[data-term]').each(function () {
       const term = terminology[this.dataset.term] || this.dataset.term;
       d3.select(this).select('h3').text(this.dataset.coreTerm || term);
@@ -132,11 +107,18 @@ class GlossaryView extends SurveyView {
         this.innerText = this.innerText[0].toLocaleUpperCase() + this.innerText.slice(1);
       }
     });
+    this.populateForm({
+      terminology,
+      alternateDefinitions: window.controller.database.alternateDefinitions
+    });
   }
-  show (term) {
-    this.d3el.classed('unfocused', false);
-    d3.select('.survey.pageSlice').classed('unfocused', true);
+  async show (term) {
     if (term) {
+      await window.controller.showSidebar();
+      const detailsElement = this.d3el.node().parentNode;
+      if (!detailsElement.open) {
+        detailsElement.open = true;
+      }
       term = term.toLocaleLowerCase();
       if (!this.terms[term]) {
         window.console.warn('No definition for term: ' + term);
@@ -152,13 +134,8 @@ class GlossaryView extends SurveyView {
     }
     this.render();
   }
-  hide () {
-    this.d3el.classed('unfocused', true);
-    d3.select('.survey.pageSlice').classed('unfocused', false);
-    this.render();
-  }
   isVisible () {
-    return true;
+    return !!window.localStorage.getItem('enableGlossary');
   }
   validateForm (formValues) {
     if (formValues.terminology) {

@@ -9,13 +9,15 @@ class AboutView extends SurveyView {
     this.humanLabel = 'About this survey';
     this.on('open', () => {
       window.localStorage.setItem('enableGlossary', true);
+      window.controller.renderAllViews();
     });
   }
   setup () {
+    super.setup();
     this.d3el.html(this.resources[1]);
     this.d3el.select('#firstProtestButton').on('click', () => {
       window.localStorage.setItem('firstProtest', 'true');
-      window.controller.advanceSurvey();
+      window.controller.advanceSection();
     });
     this.collectKeyElements();
   }

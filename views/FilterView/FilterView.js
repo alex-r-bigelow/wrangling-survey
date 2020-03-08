@@ -1,42 +1,23 @@
-/* globals d3 */
 import VisView from '../VisView/VisView.js';
 
 class FilterView extends VisView {
-  constructor () {
-    super(d3.select('.FilterView'), [
+  constructor (div) {
+    super(div, [
       { type: 'text', url: 'views/FilterView/template.html' },
       { type: 'less', url: 'views/FilterView/style.less' }
     ]);
+    this.humanLabel = 'Active Filters';
     this.terms = {};
     this._connectedTerms = false;
   }
   setup () {
     this.d3el.html(this.resources[0]);
-    const toggle = () => {
-      if (!this.d3el.classed('unfocused')) {
-        this.hide();
-      } else {
-        this.show();
-        d3.event.stopPropagation();
-      }
-      this.render();
-    };
-    this.d3el.select('.toggle.button').on('click', toggle);
-    this.d3el.select('.collapse.button').on('click', toggle);
+    this.headerEl.append('div').classed('filterCount', true);
   }
   draw () {
     const filterList = window.controller.filterList;
-
-    const focused = !this.d3el.classed('unfocused');
-    const button = this.d3el.select('.collapse.button')
-      .classed('imgAndLabel', focused);
-    button.select('.label')
-      .style('display', focused ? null : 'none');
-    button.select('img')
-      .attr('src', focused ? 'img/collapse.svg' : 'img/expand.svg');
-
-    this.d3el.select('.toggle.button .filterCount')
-      .text(filterList.length);
+    this.headerEl.select('.filterCount')
+      .text(`(${filterList.length})`);
 
     this.d3el.select('.noFilters')
       .style('display', filterList.length > 0 ? 'none' : null);
@@ -63,16 +44,6 @@ class FilterView extends VisView {
       .text('Remove');
     filters.select('.button')
       .on('click', (d, i) => { window.controller.removeFilter(i); });
-  }
-  show () {
-    this.d3el.classed('unfocused', false);
-    d3.select('.vis.pageSlice').classed('unfocused', true);
-    this.render();
-  }
-  hide () {
-    this.d3el.classed('unfocused', true);
-    d3.select('.vis.pageSlice').classed('unfocused', false);
-    this.render();
   }
   isVisible () {
     return true;
