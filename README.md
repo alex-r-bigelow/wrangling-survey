@@ -4,7 +4,12 @@ How do you think about your data? Is it a network? Is it spatial? Something else
 
 What if you could change your mind?
 
-Add your perspective to the conversation by [taking the survey](https://alex-r-bigelow.github.io/wrangling-survey/?context=Link).
+Add your perspective to the conversation by [taking the survey](https://alex-r-bigelow.github.io/wrangling-survey/?context=Github).
+
+## Survey results and citing
+You can explore the survey results through [an interactive webpage](https://alex-r-bigelow/github.io/wrangling-survey/Responses.html). Filters that you apply will change the URL to link to those specific settings.
+
+If you wish to cite data from this survey in a publication, please contact the study coordinator via [email](mailto:alexrbigelow@email.arizona.edu) for now; the responses will be archived on osf.io in the coming weeks, and we are currently experimenting to find the best way(s) to hardlink to specific responses via the DOI.
 
 ## About the survey design
 
