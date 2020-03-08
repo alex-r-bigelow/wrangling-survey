@@ -13,10 +13,9 @@ class DashboardView extends SurveyView {
     this.d3el.html(this.resources[1]);
 
     this.d3el.select('.idDisplay').text(window.controller.database.browserId);
-    const plushieDirections = window.controller.database.contextIsConference
-      ? 'While supplies last, show this screen to someone at the Arizona Research Computing booth'
-      : window.controller.database.contextIsArizona
-        ? 'Please contact <a mailto="alexrbigelow@email.arizona.edu">Alex Bigelow</a> to TODO' : null;
+    const plushieDirections = `Please
+<a href="mailto:alexrbigelow@email.arizona.edu">email the study coordinator</a>,
+with ID below, to arrange delivery of a plushie`;
     this.d3el.select('.plushieInfo')
       .style('display', plushieDirections ? null : 'none')
       .select('.directions').html(plushieDirections);
