@@ -15,8 +15,8 @@ import { SpatialResponseDasView, SpatialResponseEtsView } from '../views/Spatial
 import { GroupedResponseDasView, GroupedResponseEtsView } from '../views/GroupedView/GroupedResponseViews.js';
 import { TextualResponseDasView, TextualResponseEtsView } from '../views/TextualView/TextualResponseViews.js';
 import { MediaResponseDasView, MediaResponseEtsView } from '../views/MediaView/MediaResponseViews.js';
-import DebriefResponseView from '../views/DebriefView/DebriefResponseView.js';
 import ReflectionsResponseView from '../views/ReflectionsView/ReflectionsResponseView.js';
+import { DebriefResponseDasView, DebriefResponseEtsView } from '../views/DebriefView/DebriefResponseViews.js';
 
 import ViewFilter from '../filters/ViewFilter.js';
 import LikertFilter from '../filters/LikertFilter.js';
@@ -68,14 +68,15 @@ better in Firefox or Chrome.`;
       GroupedResponseDasView,
       TextualResponseDasView,
       MediaResponseDasView,
-      DebriefResponseView,
+      DebriefResponseDasView,
       TablesResponseEtsView,
       NetworkResponseEtsView,
       SpatialResponseEtsView,
       GroupedResponseEtsView,
       TextualResponseEtsView,
       MediaResponseEtsView,
-      ReflectionsResponseView
+      ReflectionsResponseView,
+      DebriefResponseEtsView
     ], '.vis');
   }
   async advanceSection (viewIndex = this.currentViewIndex + 1) {

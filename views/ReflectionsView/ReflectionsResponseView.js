@@ -6,14 +6,12 @@ class ReflectionsResponseView extends VisView {
       { type: 'less', url: 'views/ReflectionsView/style.less' },
       { type: 'text', url: 'views/ReflectionsView/template.html' }
     ]);
-    this.humanLabel = 'Alternative Dataset Debrief';
+    this.humanLabel = 'Alternative Dataset Reflections';
     this.responseType = 'etsResponse';
   }
   setup () {
     this.d3el.html(this.resources[1]);
     super.setup();
-    this.d3el.selectAll('.thanks').remove();
-    this.d3el.select('.buttonContainer').remove();
     this.d3el.selectAll('.datasetLabel').text('(Participant\'s initial dataset label)');
     this.d3el.selectAll('.targetType').text('(Alternative abstraction type)');
   }
