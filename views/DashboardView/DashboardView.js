@@ -47,9 +47,9 @@ with ID below, to arrange delivery of a plushie`;
     } else if (nDatasets + nExplorations === 1) {
       thankYou = 'Almost there! Please click the "Explore alternative" button';
     } else {
-      thankYou = 'Thank you for participating! Go pick up a plushie!';
+      thankYou = 'Thank you for participating! Please <a href="mailto:alexrbigelow@email.arizona.edu">email</a> for a plushie!';
     }
-    this.d3el.select('.thankYou').text(thankYou);
+    this.d3el.select('.thankYou').html(thankYou);
 
     let dasResponses = this.d3el.select('.yourResponseTable tbody')
       .selectAll('tr').data(summary.datasetList);
