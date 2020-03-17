@@ -29,7 +29,7 @@ class InsightsView extends VisView {
     // Labels that count as "I think of my data as..."
     this.sourceThreshold = ['Always'];
     // Labels that count as "... but I also <> think about it as..."
-    this.targetThreshold = ['Sometimes', 'Very Often', 'Always'];
+    this.targetThreshold = ['Sometimes', 'Very often', 'Always'];
 
     // Build X scales and axis:
     this.x = d3.scaleBand()
@@ -99,7 +99,12 @@ class InsightsView extends VisView {
       for (const targetCategory of this.datasetTypes) {
         let sourceCount = 0;
         let targetCount = 0;
+        const seenResponses = {};
         for (const transition of filteredList) {
+          if (seenResponses[transition.dasResponse.submitTimestamp]) {
+            continue;
+          }
+          seenResponses[transition.dasResponse.submitTimestamp] = true;
           if (this.sourceThreshold.indexOf(transition.dasResponse[sourceCategory + 'Thinking']) !== -1) {
             // Only looking at responses that picked a value in this.sourceThreshold
             sourceCount += 1;
@@ -109,13 +114,13 @@ class InsightsView extends VisView {
               targetCount += 1;
             }
           }
+          data.push({
+            sourceCategory,
+            targetCategory,
+            sourceCount,
+            targetCount
+          });
         }
-        data.push({
-          sourceCategory,
-          targetCategory,
-          sourceCount,
-          targetCount
-        });
       }
     }
     return data;
