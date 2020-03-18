@@ -9,6 +9,36 @@ class InsightsView extends VisView {
     ]);
     this.humanLabel = 'Insights';
   }
+  setup () {
+    this.d3el.html(this.resources[0]);
+    super.setup();
+
+    this.setupTimestamps();
+    this.setupHeatMap();
+  }
+  draw () {
+    const { fullList, filteredList } = this.getTransitionLists(); // eslint-disable-line no-unused-vars
+
+    this.drawTimestamps(fullList, filteredList);
+    this.drawHeatMap(filteredList);
+  }
+
+  setupViewFilter () {
+    // Overriding no-op; this view doesn't need a checkbox in its header
+  }
+  drawViewFilter () {
+    // Overriding no-op; this view doesn't need a checkbox in its header
+  }
+
+  /* timestamps code */
+  setupTimestamps () {
+
+  }
+  drawTimestamps (fullList, filteredList) {
+
+  }
+
+  /* heatmap code */
   get sourceThreshold () {
     if (!this._sourceThreshold) {
       this._sourceThreshold = this.d3el.select('.source')
@@ -27,48 +57,43 @@ class InsightsView extends VisView {
     }
     return this._targetThreshold;
   }
-  setup () {
-    this.d3el.html(this.resources[0]);
-    super.setup();
+  setupHeatMap () {
+    this.minHeatmapHeight = 450;
+    this.defaultMargins = {
+      top: 4 * this.emSize,
+      right: 0,
+      bottom: 0,
+      left: 6 * this.emSize
+    };
+    const parentBounds = this.d3el.node().getBoundingClientRect();
 
-    this.setupCoOccurringAbstractions();
-  }
-  setupCoOccurringAbstractions () {
-    this.margin = { top: 4 * this.emSize, right: 0, bottom: 0, left: 6 * this.emSize };
-    this.width = 600;
-    this.height = 450;
+    const width = parentBounds.width;
+    const height = this.minHeatmapHeight;
 
     const svg = this.d3el.select('.heatmap')
-      .attr('width', this.width)
-      .attr('height', this.height);
-    this.d3el.selectAll('.container, .x.axis, .y.axis')
-      .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
+      .attr('width', width)
+      .attr('height', height);
+
+    // Ensure that the y label is initially vertical, so that the first call
+    // to getBoundingClientRect() correctly determines its height
+    svg.select('.heatmap .y.label')
+      .attr('transform', 'rotate(-90)');
 
     // Labels of row and columns
     this.datasetTypes = ['tabular', 'network', 'spatial', 'grouped', 'textual', 'media'];
 
     // Build X scales and axis:
-    this.x = d3.scaleBand()
-      .range([ 0, this.width - this.margin.left - this.margin.right ])
+    this.heatMapX = d3.scaleBand()
       .domain(this.datasetTypes)
       .padding(0.01);
-    svg.select('.x.axis')
-      .call(d3.axisTop(this.x));
-    svg.select('.x.label')
-      .attr('transform', `translate(${this.margin.left + (this.width - this.margin.left - this.margin.right) / 2},${2 * this.emSize})`);
 
     // Build X scales and axis:
-    this.y = d3.scaleBand()
-      .range([ this.height - this.margin.top - this.margin.bottom, 0 ])
+    this.heatMapY = d3.scaleBand()
       .domain(Array.from(this.datasetTypes).reverse())
       .padding(0.01);
-    svg.select('.y.axis')
-      .call(d3.axisLeft(this.y));
-    svg.select('.y.label')
-      .attr('transform', `translate(${2 * this.emSize},${this.margin.top + (this.height - this.margin.top - this.margin.bottom) / 2}) rotate(-90)`);
 
     // Build color scale
-    this.myColor = d3.scaleLinear()
+    this.heatMapColor = d3.scaleLinear()
       .range(['white', '#ab0520']) // I stole this color from /style/colors.less, @ArizonaRed. Feel free to revert: '#bb1244']) // '#69b3a2'])
       .domain([0, 1]);
 
@@ -80,27 +105,47 @@ class InsightsView extends VisView {
         this.render();
       });
   }
-  setupViewFilter () {
-    // Overriding no-op; this view doesn't need a checkbox in its header
-  }
-  drawViewFilter () {
-    // Overriding no-op; this view doesn't need a checkbox in its header
-  }
-  draw () {
-    const { fullList, filteredList } = this.getTransitionLists(); // eslint-disable-line no-unused-vars
-
-    this.drawCoOccurringAbstractions(filteredList);
-  }
-  drawCoOccurringAbstractions (filteredList) {
-    const container = this.d3el.select('.heatmap .container');
-
+  drawHeatMap (filteredList) {
     const data = this.deriveCells(filteredList);
 
-    this.d3el.select('.y.label')
+    const yLabel = this.d3el.select('.heatmap .y.label')
       .text(`When participants ${this.sourceThreshold.join('/')} thought of data as...`);
-    this.d3el.select('.x.label')
+    const xLabel = this.d3el.select('.heatmap .x.label')
       .text(`... they also ${this.targetThreshold.join('/')} thought of it as:`);
 
+    const parentBounds = this.d3el.node().getBoundingClientRect();
+    const width = Math.max(parentBounds.width, xLabel.node().getBoundingClientRect().width);
+    const height = Math.max(this.minHeatmapHeight, yLabel.node().getBoundingClientRect().height);
+
+    const xOffset = Math.max(0, width - parentBounds.width);
+    const yOffset = Math.max(0, height - this.minHeatmapHeight);
+
+    const margins = {
+      top: this.defaultMargins.top + yOffset,
+      right: this.defaultMargins.right,
+      bottom: this.defaultMargins.bottom,
+      left: this.defaultMargins.left + xOffset
+    };
+
+    this.d3el.select('.heatmap')
+      .attr('width', width)
+      .attr('height', height);
+    this.d3el.selectAll('.container, .x.axis, .y.axis')
+      .attr('transform', `translate(${margins.left},${margins.top})`);
+    xLabel.attr('transform',
+      `translate(${width / 2},${2 * this.emSize + yOffset})`);
+    yLabel.attr('transform',
+      `translate(${2 * this.emSize + xOffset},${height / 2}) rotate(-90)`);
+
+    this.heatMapX.range([ 0, width - margins.left - margins.right ]);
+    this.heatMapY.range([ height - margins.top - margins.bottom, 0 ]);
+
+    this.d3el.select('.heatmap .x.axis')
+      .call(d3.axisTop(this.heatMapX));
+    this.d3el.select('.heatmap .y.axis')
+      .call(d3.axisLeft(this.heatMapY));
+
+    const container = this.d3el.select('.heatmap .container');
     let cells = container.selectAll('.cell')
       .data(data, d => d.sourceCategory + ':' + d.targetCategory);
     cells.exit().remove();
@@ -110,16 +155,16 @@ class InsightsView extends VisView {
 
     cellsEnter.append('rect');
     cells.select('rect')
-      .attr('x', d => this.x(d.targetCategory))
-      .attr('y', d => this.y(d.sourceCategory))
-      .attr('width', this.x.bandwidth())
-      .attr('height', this.y.bandwidth())
-      .style('fill', d => d.sourceCategory === d.targetCategory ? 'none' : this.myColor(d.targetCount / d.sourceCount));
+      .attr('x', d => this.heatMapX(d.targetCategory))
+      .attr('y', d => this.heatMapY(d.sourceCategory))
+      .attr('width', this.heatMapX.bandwidth())
+      .attr('height', this.heatMapY.bandwidth())
+      .style('fill', d => d.sourceCategory === d.targetCategory ? 'none' : this.heatMapColor(d.targetCount / d.sourceCount));
 
     cellsEnter.append('text');
     cells.select('text')
-      .attr('x', d => this.x(d.targetCategory) + (this.x.bandwidth() / 2))
-      .attr('y', d => this.y(d.sourceCategory) + (this.y.bandwidth() / 2))
+      .attr('x', d => this.heatMapX(d.targetCategory) + (this.heatMapX.bandwidth() / 2))
+      .attr('y', d => this.heatMapY(d.sourceCategory) + (this.heatMapY.bandwidth() / 2))
       .attr('dy', '0.35em')
       .text(d => `${d.targetCount}/${d.sourceCount}`);
   }
@@ -166,4 +211,5 @@ class InsightsView extends VisView {
     return data;
   }
 }
+
 export default InsightsView;
