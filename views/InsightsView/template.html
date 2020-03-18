@@ -1,6 +1,7 @@
-<h3>Common co-occurring abstractions</h3>
+<p>The following are views that we created to assist our analysis process in
+writing the publication.</p>
 
-<p>TODO: blurb about what this shows / how to interact with it</p>
+<h3>Common co-occurring abstractions</h3>
 
 <div class="svgWrapper">
   <svg class="heatmap">
@@ -11,6 +12,46 @@
     <g class="container"></g>
   </svg>
 </div>
+
+<div class="split field">
+  <div class="source">
+    <h3>Y axis</h3>
+    <input type="checkbox" id="AlwaysCoOccurringSource" data-value="Always" checked/>
+    <label for="AlwaysCoOccurringSource">Always</label>
+    <br/>
+    <input type="checkbox" id="VeryOftenCoOccurringSource" data-value="Very often"/>
+    <label for="VeryOftenCoOccurringSource">Very often</label>
+    <br/>
+    <input type="checkbox" id="SometimesCoOccurringSource" data-value="Sometimes"/>
+    <label for="SometimesCoOccurringSource">Sometimes</label>
+    <br/>
+    <input type="checkbox" id="RarelyCoOccurringSource" data-value="Rarely"/>
+    <label for="RarelyCoOccurringSource">Rarely</label>
+    <br/>
+    <input type="checkbox" id="NeverCoOccurringSource" data-value="Never"/>
+    <label for="NeverCoOccurringSource">Never</label>
+  </div>
+  <div class="target">
+    <h3>X axis</h3>
+    <input type="checkbox" id="AlwaysCoOccurringTarget" data-value="Always" checked/>
+    <label for="AlwaysCoOccurringTarget">Always</label>
+    <br/>
+    <input type="checkbox" id="VeryOftenCoOccurringTarget" data-value="Very often" checked/>
+    <label for="VeryOftenCoOccurringTarget">Very often</label>
+    <br/>
+    <input type="checkbox" id="SometimesCoOccurringTarget" data-value="Sometimes" checked/>
+    <label for="SometimesCoOccurringTarget">Sometimes</label>
+    <br/>
+    <input type="checkbox" id="RarelyCoOccurringTarget" data-value="Rarely"/>
+    <label for="RarelyCoOccurringTarget">Rarely</label>
+    <br/>
+    <input type="checkbox" id="NeverCoOccurringTarget" data-value="Never"/>
+    <label for="NeverCoOccurringTarget">Never</label>
+  </div>
+</div>
+
+<p>Note that this view only summarizes the responses that pass the current
+  Active Filters.</p>
 
 <hr/>
 
