@@ -1,0 +1,103 @@
+<p>The following are views that we created to assist our analysis process in
+writing the publication.</p>
+
+<h3>Timestamps</h3>
+
+<p>This survey was deployed at two conferences, in addition to the University
+  of Arizona campus community. The timestamps can therefore be used as a proxy
+  for demographic information:<p>
+<ul>
+  <li>The IEEE VIS conference took place from 20-25 Oct 2019</li>
+  <li>The Supercomputing conference took place from 17-22 Nov 2019</li>
+</ul>
+
+<select class="timestampMode">
+  <option data-dataset="dasResponse" data-key="startTimestamp">
+    Initial abstraction start timestamp
+  </option>
+  <option data-dataset="dasResponse" data-key="submitTimestamp" selected>
+    Initial abstraction submit timestamp
+  </option>
+  <option data-dataset="etsResponse" data-key="startTimestamp">
+    Alternate abstraction start timestamp
+  </option>
+  <option data-dataset="etsResponse" data-key="submitTimestamp">
+    Alternate abstraction submit timestamp
+  </option>
+</select>
+
+<div class="svgWrapper">
+  <svg class="detail">
+    <defs>
+      <clipPath id="detailClip">
+        <rect></rect>
+      </clipPath>
+    </defs>
+    <g class="x axis"></g>
+    <g class="y axis"></g>
+    <g class="fullBins"></g>
+    <g class="filteredBins"></g>
+    <g class="zoom"></g>
+  </svg>
+  <svg class="overview">
+    <g class="x axis"></g>
+    <g class="y axis"></g>
+    <g class="fullBins"></g>
+    <g class="filteredBins"></g>
+    <g class="brush"></g>
+  </svg>
+</div>
+
+<hr/>
+
+<h3>Common co-occurring abstractions</h3>
+
+<div class="svgWrapper">
+  <svg class="heatmap">
+    <g class="x axis"></g>
+    <g class="y axis"></g>
+    <text class="x label"></text>
+    <text class="y label"></text>
+    <g class="container"></g>
+  </svg>
+</div>
+
+<div class="split field">
+  <div class="source">
+    <h3>Y axis</h3>
+    <input type="checkbox" id="AlwaysCoOccurringSource" data-value="Always" checked/>
+    <label for="AlwaysCoOccurringSource">Always</label>
+    <br/>
+    <input type="checkbox" id="VeryOftenCoOccurringSource" data-value="Very often"/>
+    <label for="VeryOftenCoOccurringSource">Very often</label>
+    <br/>
+    <input type="checkbox" id="SometimesCoOccurringSource" data-value="Sometimes"/>
+    <label for="SometimesCoOccurringSource">Sometimes</label>
+    <br/>
+    <input type="checkbox" id="RarelyCoOccurringSource" data-value="Rarely"/>
+    <label for="RarelyCoOccurringSource">Rarely</label>
+    <br/>
+    <input type="checkbox" id="NeverCoOccurringSource" data-value="Never"/>
+    <label for="NeverCoOccurringSource">Never</label>
+  </div>
+  <div class="target">
+    <h3>X axis</h3>
+    <input type="checkbox" id="AlwaysCoOccurringTarget" data-value="Always" checked/>
+    <label for="AlwaysCoOccurringTarget">Always</label>
+    <br/>
+    <input type="checkbox" id="VeryOftenCoOccurringTarget" data-value="Very often" checked/>
+    <label for="VeryOftenCoOccurringTarget">Very often</label>
+    <br/>
+    <input type="checkbox" id="SometimesCoOccurringTarget" data-value="Sometimes" checked/>
+    <label for="SometimesCoOccurringTarget">Sometimes</label>
+    <br/>
+    <input type="checkbox" id="RarelyCoOccurringTarget" data-value="Rarely"/>
+    <label for="RarelyCoOccurringTarget">Rarely</label>
+    <br/>
+    <input type="checkbox" id="NeverCoOccurringTarget" data-value="Never"/>
+    <label for="NeverCoOccurringTarget">Never</label>
+  </div>
+</div>
+
+<p>Note that this view only summarizes the responses that pass the current
+  Active Filters.</p>
