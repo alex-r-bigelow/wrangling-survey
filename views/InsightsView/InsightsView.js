@@ -13,14 +13,18 @@ class InsightsView extends VisView {
     this.d3el.html(this.resources[0]);
     super.setup();
 
-    this.setupTimestamps();
+    this.setupOverview();
+    this.setupDetail();
     this.setupHeatMap();
   }
   draw () {
     const { fullList, filteredList } = this.getTransitionLists(); // eslint-disable-line no-unused-vars
 
-    this.drawTimestamps(fullList, filteredList);
-    this.drawHeatMap(filteredList);
+    if (fullList.length > 0) {
+      this.drawOverview(fullList, filteredList);
+      this.drawDetail(fullList, filteredList);
+      this.drawHeatMap(filteredList);
+    }
   }
 
   setupViewFilter () {
@@ -31,11 +35,182 @@ class InsightsView extends VisView {
   }
 
   /* timestamps code */
-  setupTimestamps () {
-
+  getTimestampMode () {
+    const selectMenu = this.d3el.select('.timestampMode').node();
+    return selectMenu.options[selectMenu.selectedIndex].dataset;
   }
-  drawTimestamps (fullList, filteredList) {
+  setupOverview () {
+    this.overviewHeight = 150;
+    this.overviewMargins = {
+      top: 0,
+      right: 0.5 * this.emSize,
+      bottom: 2 * this.emSize,
+      left: 2 * this.emSize
+    };
 
+    this.overviewX = d3.scaleTime();
+    this.overviewY = d3.scaleLinear().range([
+      this.overviewHeight - this.overviewMargins.bottom,
+      this.overviewMargins.top
+    ]);
+
+    this.d3el.select('.overview .x.axis')
+      .attr('transform', `translate(${this.overviewMargins.left},${this.overviewHeight - this.overviewMargins.bottom})`);
+    this.d3el.selectAll('.overview .y.axis, .overview .fullBins, .overview .filteredBins, .overview .brush')
+      .attr('transform', `translate(${this.overviewMargins.left},${this.overviewMargins.top})`);
+
+    this.overviewBrush = d3.brushX()
+      .on('brush', () => {
+
+      })
+      .on('end', () => {
+        if (d3.event.selection && d3.event.sourceEvent) {
+          this.detailX.domain(d3.event.selection.map(this.overviewX.invert)
+            .sort((a, b) => a - b));
+        }
+        this.render();
+      });
+  }
+  drawOverview (fullList, filteredList) {
+    const width = this.d3el.node().getBoundingClientRect().width;
+
+    const { dataset, key } = this.getTimestampMode();
+
+    this.overviewX
+      .range([
+        0,
+        Math.max(1, width - this.overviewMargins.left - this.overviewMargins.right)
+      ])
+      .domain(d3.extent(fullList, transition => transition[dataset] &&
+        new Date(transition[dataset][key])))
+      .nice(20)
+      .clamp(true);
+
+    this.d3el.select('.overview')
+      .attr('width', width)
+      .attr('height', this.overviewHeight);
+
+    this.drawHistogram(
+      fullList,
+      filteredList,
+      this.overviewX,
+      this.overviewY,
+      this.d3el.select('.overview')
+    );
+
+    this.overviewBrush.extent([[0, 0], [
+      Math.max(1, width - this.overviewMargins.left - this.overviewMargins.right),
+      Math.max(1, this.overviewHeight - this.overviewMargins.top - this.overviewMargins.bottom)]
+    ]);
+    this.d3el.select('.overview .brush')
+      .call(this.overviewBrush);
+    this.updateOverviewBrush();
+  }
+  updateOverviewBrush () {
+    if (!this._detailDomainInitialized) {
+      // Start the detail view at 1/3 the span of the overview
+      let detailDomain = this.overviewX.domain();
+      detailDomain[1] = new Date((+detailDomain[0]) + (detailDomain[1] - detailDomain[0]) / 3);
+      this.detailX.domain(detailDomain);
+      this._detailDomainInitialized = true;
+    }
+    const detailScreenCoords = this.detailX.domain()
+      .map(this.overviewX)
+      .sort((a, b) => a - b);
+    this.d3el.select('.overview .brush')
+      .call(this.overviewBrush.move, detailScreenCoords);
+  }
+  setupDetail () {
+    this.detailHeight = 350;
+    this.detailMargins = {
+      top: 0,
+      right: 0.5 * this.emSize,
+      bottom: 2 * this.emSize,
+      left: 2 * this.emSize
+    };
+
+    this.detailX = d3.scaleTime();
+    this.detailY = d3.scaleLinear().range([
+      this.detailHeight - this.detailMargins.bottom,
+      this.detailMargins.top
+    ]);
+
+    this.d3el.select('.detail .x.axis')
+      .attr('transform', `translate(${this.detailMargins.left},${this.detailHeight - this.detailMargins.bottom})`);
+    this.d3el.selectAll('.detail .y.axis, .detail .fullBins, .detail .filteredBins')
+      .attr('transform', `translate(${this.detailMargins.left},${this.detailMargins.top})`);
+
+    this.detailZoom = d3.zoom()
+      .scaleExtent([1, Infinity])
+      .on('zoom', () => {
+
+      });
+
+    this.d3el.select('.timestampMode').on('change', () => {
+      this.render();
+    });
+  }
+  drawDetail (fullList, filteredList) {
+    const width = this.d3el.node().getBoundingClientRect().width;
+
+    this.detailX.range([
+      0,
+      Math.max(1, width - this.detailMargins.left - this.detailMargins.right)
+    ]);
+    this.detailZoom
+      .translateExtent([[0, 0], [width, this.detailHeight]])
+      .extent([[0, 0], [width, this.detailHeight]]);
+
+    this.d3el.selectAll('.detail, .detail clipPath rect')
+      .attr('width', width)
+      .attr('height', this.detailHeight);
+
+    this.drawHistogram(
+      fullList,
+      filteredList,
+      this.detailX,
+      this.detailY,
+      this.d3el.select('.detail'),
+      this.overviewY.domain()
+    );
+  }
+  drawHistogram (fullList, filteredList, xScale, yScale, svg, yDomain = undefined) {
+    const { dataset, key } = this.getTimestampMode();
+    const mapFunc = transition => {
+      return transition[dataset] && new Date(transition[dataset][key]);
+    };
+
+    const histogramGenerator = d3.histogram()
+      .domain(xScale.domain())
+      .thresholds(xScale.ticks());
+    const fullData = histogramGenerator(fullList.map(mapFunc).filter(d => !isNaN(d)));
+    const filteredData = histogramGenerator(filteredList.map(mapFunc).filter(d => !isNaN(d)));
+
+    if (yDomain) {
+      yScale.domain(yDomain);
+    } else {
+      yScale.domain(d3.extent(fullData, d => d.length));
+    }
+
+    svg.select('.x.axis')
+      .call(d3.axisBottom(xScale));
+    svg.select('.y.axis')
+      .call(d3.axisLeft(yScale));
+
+    this.drawBins(fullData, xScale, yScale, svg.select('.fullBins'));
+    this.drawBins(filteredData, xScale, yScale, svg.select('.filteredBins'));
+  }
+  drawBins (data, xScale, yScale, container) {
+    let bins = container.selectAll('.bin').data(data);
+    bins.exit().remove();
+    const binsEnter = bins.enter().append('rect')
+      .classed('bin', true);
+    bins = bins.merge(binsEnter);
+
+    bins.attr('x', d => xScale(d.x0) + 1)
+      .attr('width', d => Math.max(0, xScale(d.x1) - xScale(d.x0) - 1))
+      .attr('y', d => yScale(d.length))
+      .attr('height', d => yScale(0) - yScale(d.length));
   }
 
   /* heatmap code */
@@ -59,35 +234,27 @@ class InsightsView extends VisView {
   }
   setupHeatMap () {
     this.minHeatmapHeight = 450;
-    this.defaultMargins = {
+    this.defaultHeatmapMargins = {
       top: 4 * this.emSize,
-      right: 0,
+      right: 0.5 * this.emSize,
       bottom: 0,
       left: 6 * this.emSize
     };
-    const parentBounds = this.d3el.node().getBoundingClientRect();
-
-    const width = parentBounds.width;
-    const height = this.minHeatmapHeight;
-
-    const svg = this.d3el.select('.heatmap')
-      .attr('width', width)
-      .attr('height', height);
 
     // Ensure that the y label is initially vertical, so that the first call
     // to getBoundingClientRect() correctly determines its height
-    svg.select('.heatmap .y.label')
+    this.d3el.select('.heatmap .y.label')
       .attr('transform', 'rotate(-90)');
 
     // Labels of row and columns
     this.datasetTypes = ['tabular', 'network', 'spatial', 'grouped', 'textual', 'media'];
 
-    // Build X scales and axis:
+    // Build X scales:
     this.heatMapX = d3.scaleBand()
       .domain(this.datasetTypes)
       .padding(0.01);
 
-    // Build X scales and axis:
+    // Build X scales:
     this.heatMapY = d3.scaleBand()
       .domain(Array.from(this.datasetTypes).reverse())
       .padding(0.01);
@@ -121,16 +288,16 @@ class InsightsView extends VisView {
     const yOffset = Math.max(0, height - this.minHeatmapHeight);
 
     const margins = {
-      top: this.defaultMargins.top + yOffset,
-      right: this.defaultMargins.right,
-      bottom: this.defaultMargins.bottom,
-      left: this.defaultMargins.left + xOffset
+      top: this.defaultHeatmapMargins.top + yOffset,
+      right: this.defaultHeatmapMargins.right,
+      bottom: this.defaultHeatmapMargins.bottom,
+      left: this.defaultHeatmapMargins.left + xOffset
     };
 
-    this.d3el.select('.heatmap')
+    const svg = this.d3el.select('.heatmap')
       .attr('width', width)
       .attr('height', height);
-    this.d3el.selectAll('.container, .x.axis, .y.axis')
+    svg.selectAll('.container, .x.axis, .y.axis')
       .attr('transform', `translate(${margins.left},${margins.top})`);
     xLabel.attr('transform',
       `translate(${width / 2},${2 * this.emSize + yOffset})`);

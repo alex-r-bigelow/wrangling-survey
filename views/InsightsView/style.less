@@ -9,10 +9,25 @@
     position: relative;
     width: 100%;
     overflow: auto;
+    svg {
+      display: block;
+    }
   }
   .x.label,
   .y.label,
   .cell text {
     text-anchor: middle;
+  }
+  .fullBins .bin {
+    fill: @separatorColor;
+  }
+  .filteredBins .bin {
+    fill: @shadowColor;
+  }
+  .detail .bin {
+    clip-path: url(#detailClip);
+  }
+  .timestampMode {
+    margin-bottom: 1em;
   }
 }
