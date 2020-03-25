@@ -18,3 +18,18 @@ This survey employs two innovations for qualitative analysis that we hope will h
 - An editable glossary, to encourage participants to help better map our jargon to the words and concepts that people actually think use in practice.
 
 - "Protest" buttons that encourage the user to skip portions of the survey where they recognize that the questions that we are asking may not adequately capture their main concerns or perspectives.
+
+## Local setup, development
+
+To set up for development:
+
+```
+git clone https://github.com/alex-r-bigelow/wrangling-survey.git
+cd wrangling-survey
+npm install
+```
+
+To serve locally:
+```
+npm run serve
+```

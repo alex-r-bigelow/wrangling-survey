@@ -1,8 +1,9 @@
 /* globals d3, JsonUrl */
 import Controller from './Controller.js';
 
-import FilterView from '../views/FilterView/FilterView.js';
 import GlossaryResponseView from '../views/GlossaryView/GlossaryResponseView.js';
+import FilterView from '../views/FilterView/FilterView.js';
+import InsightsView from '../views/InsightsView/InsightsView.js';
 
 import OverView from '../views/OverView/OverView.js';
 
@@ -54,8 +55,9 @@ better in Firefox or Chrome.`;
   }
   async setupViews () {
     this.sidebarViews = await this.setupViewList([
+      GlossaryResponseView,
       FilterView,
-      GlossaryResponseView
+      InsightsView
     ], '.sidebar');
     this.visViews = await this.setupViewList([
       OverView,
