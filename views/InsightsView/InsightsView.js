@@ -5,6 +5,7 @@ class InsightsView extends VisView {
   constructor (div) {
     super(div, [
       { type: 'text', url: 'views/InsightsView/template.html' },
+      { type: 'text', url: 'views/InsightsView/axisMenu.html' },
       { type: 'less', url: 'views/InsightsView/style.less' }
     ]);
     this.humanLabel = 'Insights';
@@ -67,8 +68,8 @@ class InsightsView extends VisView {
         if (d3.event.selection && d3.event.sourceEvent) {
           this.detailX.domain(d3.event.selection.map(this.overviewX.invert)
             .sort((a, b) => a - b));
+          this.render();
         }
-        this.render();
       });
   }
   drawOverview (fullList, filteredList) {
@@ -214,31 +215,21 @@ class InsightsView extends VisView {
   }
 
   /* heatmap code */
-  get sourceThreshold () {
-    if (!this._sourceThreshold) {
-      this._sourceThreshold = this.d3el.select('.source')
-        .selectAll(':checked').nodes().map(el => {
-          return el.dataset.value;
-        });
-    }
-    return this._sourceThreshold;
-  }
-  get targetThreshold () {
-    if (!this._targetThreshold) {
-      this._targetThreshold = this.d3el.select('.target')
-        .selectAll(':checked').nodes().map(el => {
-          return el.dataset.value;
-        });
-    }
-    return this._targetThreshold;
-  }
   setupHeatMap () {
+    // Populate the select menus / checkboxes
+    this.d3el.select('.source').html(this.resources[1]
+      .replace(/\$\{axisType\}/g, 'Y')
+      .replace(/\$\{denominatorOrNumerator\}/g, 'denominator'));
+    this.d3el.select('.target').html(this.resources[1]
+      .replace(/\$\{axisType\}/g, 'X')
+      .replace(/\$\{denominatorOrNumerator\}/g, 'numerator'));
+
     this.minHeatmapHeight = 450;
     this.defaultHeatmapMargins = {
-      top: 4 * this.emSize,
+      top: 6 * this.emSize,
       right: 0.5 * this.emSize,
       bottom: 0,
-      left: 6 * this.emSize
+      left: 8 * this.emSize
     };
 
     // Ensure that the y label is initially vertical, so that the first call
@@ -267,19 +258,117 @@ class InsightsView extends VisView {
     // Attach event listeners
     this.d3el.selectAll('input[type="checkbox"]')
       .on('click', () => {
-        delete this._sourceThreshold;
-        delete this._targetThreshold;
+        this.render();
+      });
+    this.d3el.selectAll('.keyChooser')
+      .on('change', () => {
         this.render();
       });
   }
+  updateCheckboxes (sourceOrTarget) {
+    const container = this.d3el.select(`.${sourceOrTarget}`);
+    // Extract which orders are checked
+    const orders = {};
+    for (const element of container.selectAll('.orderedCheckbox :checked').nodes()) {
+      orders[element.dataset.order] = true;
+    }
+    // Show / hide checkboxes relevant to the selected question
+    const selectMenu = container.select('.keyChooser').node();
+    const selectedOption = selectMenu.options[selectMenu.selectedIndex];
+    let { dataset, key, scale, prependType } = selectedOption.dataset;
+
+    container.selectAll('.orderedCheckbox input')
+      .each(function () {
+        d3.select(this.parentNode)
+          .style('display', this.dataset.scale === scale ? null : 'none');
+        this.checked = this.dataset.scale === scale && orders[this.dataset.order];
+      });
+
+    // Extract a list of checked values
+    const thresholds = container.selectAll('.orderedCheckbox :checked').nodes()
+      .map(element => element.dataset.value);
+
+    // Create lines of a label
+    let labelLines = [];
+    if (thresholds.length === 0) {
+      labelLines.push('(please check a box below)');
+    } else {
+      labelLines.push(selectedOption.dataset[`${sourceOrTarget}Line1`]);
+      if (thresholds.length === 1) {
+        labelLines.push(thresholds[0]);
+      } else if (thresholds.length === 2) {
+        labelLines.push(thresholds[0] + ' or ' + thresholds[1]);
+      } else {
+        labelLines.push(thresholds.slice(0, -1).join(', ') + ', or ' + thresholds.slice(-1));
+      }
+      labelLines.push(selectedOption.dataset[`${sourceOrTarget}Line3`]);
+    }
+    // Combine the lines, and then re-wrap them
+    let temp = labelLines.join(' ');
+    labelLines = [];
+    while (temp.length > 60) {
+      let i = 60;
+      while (i > 0 && temp[i] !== ' ') {
+        i--;
+      }
+      labelLines.push(temp.slice(0, i));
+      temp = temp.slice(i + 1);
+    }
+    if (temp !== '') {
+      labelLines.push(temp);
+    }
+
+    const returnObj = {};
+    returnObj[`${sourceOrTarget}Dataset`] = dataset;
+    returnObj[`${sourceOrTarget}Key`] = key;
+    returnObj[`${sourceOrTarget}PrependType`] = prependType;
+    returnObj[`${sourceOrTarget}Thresholds`] = thresholds;
+    returnObj[`${sourceOrTarget}LabelLines`] = labelLines;
+    return returnObj;
+  }
   drawHeatMap (filteredList) {
-    const data = this.deriveCells(filteredList);
+    // Update and extract information from the select menus and checkboxes
+    const {
+      sourceDataset,
+      sourceKey,
+      sourcePrependType,
+      sourceThresholds,
+      sourceLabelLines
+    } = this.updateCheckboxes('source');
+    const {
+      targetDataset,
+      targetKey,
+      targetPrependType,
+      targetThresholds,
+      targetLabelLines
+    } = this.updateCheckboxes('target');
 
-    const yLabel = this.d3el.select('.heatmap .y.label')
-      .text(`When participants ${this.sourceThreshold.join('/')} thought of data as...`);
-    const xLabel = this.d3el.select('.heatmap .x.label')
-      .text(`... they also ${this.targetThreshold.join('/')} thought of it as:`);
+    // Count how many responses fit these criteria
+    const data = this.deriveCells({
+      sourceDataset,
+      sourceKey,
+      sourcePrependType,
+      sourceThresholds,
+      targetDataset,
+      targetKey,
+      targetPrependType,
+      targetThresholds,
+      filteredList
+    });
 
+    // Update the axis labels
+    const yLabel = this.d3el.select('.heatmap .y.label');
+    let yTspans = yLabel.selectAll('tspan').data(sourceLabelLines);
+    yTspans.exit().remove();
+    yTspans = yTspans.merge(yTspans.enter().append('tspan'));
+    yTspans.text(d => d).attr('x', 0).attr('dy', (d, i) => i > 0 ? '1em' : 0);
+    const xLabel = this.d3el.select('.heatmap .x.label');
+    let xTspans = xLabel.selectAll('tspan').data(targetLabelLines);
+    xTspans.exit().remove();
+    xTspans = xTspans.merge(xTspans.enter().append('tspan'));
+    xTspans.text(d => d).attr('x', 0).attr('dy', (d, i) => i > 0 ? '1em' : 0);
+
+    // Update the chart and its bounds based on the axis label sizes
     const parentBounds = this.d3el.node().getBoundingClientRect();
     const width = Math.max(parentBounds.width, xLabel.node().getBoundingClientRect().width);
     const height = Math.max(this.minHeatmapHeight, yLabel.node().getBoundingClientRect().height);
@@ -312,6 +401,7 @@ class InsightsView extends VisView {
     this.d3el.select('.heatmap .y.axis')
       .call(d3.axisLeft(this.heatMapY));
 
+    // Draw / update the cells with the current counts
     const container = this.d3el.select('.heatmap .container');
     let cells = container.selectAll('.cell')
       .data(data, d => d.sourceCategory + ':' + d.targetCategory);
@@ -326,7 +416,7 @@ class InsightsView extends VisView {
       .attr('y', d => this.heatMapY(d.sourceCategory))
       .attr('width', this.heatMapX.bandwidth())
       .attr('height', this.heatMapY.bandwidth())
-      .style('fill', d => d.sourceCategory === d.targetCategory ? 'none' : this.heatMapColor(d.targetCount / d.sourceCount));
+      .style('fill', d => d.sourceCount === 0 ? 'none' : this.heatMapColor(d.targetCount / d.sourceCount));
 
     cellsEnter.append('text');
     cells.select('text')
@@ -335,33 +425,120 @@ class InsightsView extends VisView {
       .attr('dy', '0.35em')
       .text(d => `${d.targetCount}/${d.sourceCount}`);
   }
-  deriveCells (filteredList) {
+  considerAndOrCount ({
+    transition,
+    dataset,
+    key,
+    thresholds,
+    category,
+    seenInitialResponses
+  }) {
+    // Figure out whether to look at this transition
+    const consider = (
+      (
+        // Always consider initial responses, as long as their criteria fits
+        dataset === 'dasResponse' &&
+        thresholds.indexOf(transition.dasResponse[key]) !== -1
+      ) || (
+        // For alternate explorations, make sure it exists
+        dataset === 'etsResponse' &&
+        transition.etsResponse !== null && (
+          // facet by targetType
+          (
+            key === 'targetType' && (
+              // Check that the response fits the checkbox criteria
+              (
+                thresholds.indexOf('assigned') !== -1 &&
+                transition.etsResponse.targetType === category
+              ) || (
+                thresholds.indexOf('did not assign') !== -1 &&
+                transition.etsResponse.targetType !== category
+              )
+            )
+          ) || (
+            key !== 'targetType' &&
+            transition.etsResponse.targetType === category &&
+            // Check that the response fits the checkbox criteria
+            thresholds.indexOf(transition.etsResponse[key]) !== -1
+          )
+        )
+      )
+    );
+
+    const count = consider && (
+      // Always count alternate explorations if we're considering them
+      dataset === 'etsResponse' || (
+        // Make sure this isn't a duplicate initial response
+        !seenInitialResponses[transition.dasResponse.submitTimestamp]
+      )
+    );
+
+    return { consider, count };
+  }
+  deriveCells ({
+    sourceDataset,
+    sourceKey,
+    sourcePrependType,
+    sourceThresholds,
+    targetDataset,
+    targetKey,
+    targetPrependType,
+    targetThresholds,
+    filteredList
+  }) {
     const sourceCounts = {};
     const targetCounts = {};
-    const seenResponses = {};
+    const seenInitialResponses = {};
     for (const transition of filteredList) {
-      if (seenResponses[transition.dasResponse.submitTimestamp]) {
-        continue;
-      }
-      seenResponses[transition.dasResponse.submitTimestamp] = true;
       for (const sourceCategory of this.datasetTypes) {
         sourceCounts[sourceCategory] = sourceCounts[sourceCategory] || 0;
         targetCounts[sourceCategory] = targetCounts[sourceCategory] || {};
 
-        // Only looking at responses that picked a value in this.sourceThreshold
-        if (this.sourceThreshold.indexOf(transition.dasResponse[sourceCategory + 'Thinking']) !== -1) {
-          sourceCounts[sourceCategory] += 1;
+        let sKey = sourceKey;
+        if (sourcePrependType) {
+          sKey = sourceCategory + sKey;
+        }
 
+        const { consider, count } = this.considerAndOrCount({
+          transition,
+          dataset: sourceDataset,
+          key: sKey,
+          thresholds: sourceThresholds,
+          category: sourceCategory,
+          seenInitialResponses
+        });
+
+        if (count) {
+          sourceCounts[sourceCategory] += 1;
+        }
+
+        // Okay, now figure out whether to count stuff for the targetCategory
+        if (consider) {
           for (const targetCategory of this.datasetTypes) {
             targetCounts[sourceCategory][targetCategory] = targetCounts[sourceCategory][targetCategory] || 0;
 
-            // ... did they also pick a value in this.targetThreshold?
-            if (this.targetThreshold.indexOf(transition.dasResponse[targetCategory + 'Thinking']) !== -1) {
+            let tKey = targetKey;
+            if (targetPrependType) {
+              tKey = targetCategory + tKey;
+            }
+
+            const countTarget = this.considerAndOrCount({
+              transition,
+              dataset: targetDataset,
+              key: tKey,
+              thresholds: targetThresholds,
+              category: targetCategory,
+              seenInitialResponses
+            }).count;
+
+            if (countTarget) {
               targetCounts[sourceCategory][targetCategory] += 1;
             }
           }
         }
       }
+
+      seenInitialResponses[transition.dasResponse.submitTimestamp] = true;
     }
     const data = [];
     for (const sourceCategory of this.datasetTypes) {
