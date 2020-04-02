@@ -1,0 +1,128 @@
+<h3>${axisType} Axis, ${denominatorOrNumerator}</h3>
+<select class="keyChooser">
+  <option data-dataset="dasResponse" data-key="Thinking" data-scale="alwaysNever"
+          data-source-line1="When participants" data-source-line3="initially thought of their data as..."
+          data-target-line1="...they" data-target-line3="initially thought of their data as:"
+          data-prepend-type="true" >
+    Initial interpretation
+  </option>
+  <option data-dataset="dasResponse" data-key="RawData" data-scale="accurateInaccurate"
+          data-source-line1="When participants (initially) felt it would be" data-source-line3="to describe the way the computer stores the raw data as..."
+          data-target-line1="...they (initially) felt it would be" data-target-line3="to describe the way the computer stores the raw data as:"
+          data-prepend-type="true">
+    Initial raw data
+  </option>
+  <option data-dataset="etsResponse" data-key="targetType" data-scale="assignedNotAssigned"
+          data-source-line1="When the survey" data-source-line3="an alternate exploration of..."
+          data-target-line1="...the survey" data-target-line3="an alternate exploration of:">
+    Survey alternate assignment
+  </option>
+  <option data-dataset="etsResponse" data-key="hardToImagine" data-scale="agreeDisagree"
+          data-source-line1="When participants" data-source-line3="that the transition to ___ was difficult to imagine..."
+          data-target-line1="...they" data-target-line3="that the transition to ___ was difficult to imagine.">
+    Transition difficult to imagine
+  </option>
+  <option data-dataset="etsResponse" data-key="inaccurate" data-scale="agreeDisagree"
+          data-source-line1="When participants" data-source-line3="that the transition to ___ would be difficult or unrealistic..."
+          data-target-line1="...they" data-target-line3="that the transition to ___ would be difficult or unrealistic.">
+    Transition inaccurate / unrealistic
+  </option>
+  <option data-dataset="etsResponse" data-key="useful" data-scale="agreeDisagree"
+          data-source-line1="When participants" data-source-line3="that the transition to ___ would be useful..."
+          data-target-line1="...they" data-target-line3="that the transition to ___ would be useful.">
+    Transition was useful
+  </option>
+  <option data-dataset="etsResponse" data-key="moreLikely" data-scale="agreeDisagree"
+          data-source-line1="When participants" data-source-line3="that they would be more likely to think in terms of ___ in the future..."
+          data-target-line1="...they" data-target-line3="that they would be more likely to think in terms of ___ in the future.">
+    More likely to think
+  </option>
+  <option data-dataset="etsResponse" data-key="needsNewData" data-scale="agreeDisagree"
+          data-source-line1="When participants" data-source-line3="that reshaping their data into ___ would require more data..."
+          data-target-line1="...they" data-target-line3="that reshaping their data into ___ would require more data.">
+    Reshaping needs more data
+  </option>
+  <option data-dataset="etsResponse" data-key="planToReshape" data-scale="agreeDisagree"
+          data-source-line1="When participants" data-source-line3="that they plan to reshape their data into ___ in the future..."
+          data-target-line1="...they" data-target-line3="that they plan to reshape their data into ___ in the future.">
+    Plan to reshape
+  </option>
+  <option data-dataset="etsResponse" data-key="hardInPractice" data-scale="agreeDisagree"
+          data-source-line1="When participants" data-source-line3="that reshaping data into ___ would be difficult in practice..."
+          data-target-line1="...they" data-target-line3="that reshaping data into ___ would be difficult in practice.">
+    Difficult to format in practice
+  </option>
+</select>
+<br/>
+
+<div class="orderedCheckbox">
+  <input type="checkbox" id="AlwaysCoOccurring${axisType}" data-value="Always" data-order="0" data-scale="alwaysNever" checked/>
+  <label for="AlwaysCoOccurring${axisType}">Always</label>
+</div>
+<div class="orderedCheckbox">
+  <input type="checkbox" id="VeryOftenCoOccurring${axisType}" data-value="Very often" data-order="1" data-scale="alwaysNever"/>
+  <label for="VeryOftenCoOccurring${axisType}">Very often</label>
+</div>
+<div class="orderedCheckbox">
+  <input type="checkbox" id="SometimesCoOccurring${axisType}" data-value="Sometimes" data-order="2" data-scale="alwaysNever"/>
+  <label for="SometimesCoOccurring${axisType}">Sometimes</label>
+</div>
+<div class="orderedCheckbox">
+  <input type="checkbox" id="RarelyCoOccurring${axisType}" data-value="Rarely" data-order="3" data-scale="alwaysNever"/>
+  <label for="RarelyCoOccurring${axisType}">Rarely</label>
+</div>
+<div class="orderedCheckbox">
+  <input type="checkbox" id="NeverCoOccurring${axisType}" data-value="Never" data-order="4" data-scale="alwaysNever"/>
+  <label for="NeverCoOccurring${axisType}">Never</label>
+</div>
+
+<div class="orderedCheckbox">
+  <input type="checkbox" id="VeryInaccurateCoOccurring${axisType}" data-value="Very inaccurate" data-order="4" data-scale="accurateInaccurate"/>
+  <label for="VeryInaccurateCoOccurring${axisType}">Very inaccurate</label>
+</div>
+<div class="orderedCheckbox">
+  <input type="checkbox" id="ModInaccurateCoOccurring${axisType}" data-value="Moderately inaccurate" data-order="3" data-scale="accurateInaccurate"/>
+  <label for="ModInaccurateCoOccurring${axisType}">Moderately inaccurate</label>
+</div>
+<div class="orderedCheckbox">
+  <input type="checkbox" id="NotInaccNorAccCoOccurring${axisType}" data-value="Neither inaccurate nor accurate" data-order="2" data-scale="accurateInaccurate"/>
+  <label for="NotInaccNorAccCoOccurring${axisType}">Neither inaccurate nor accurate</label>
+</div>
+<div class="orderedCheckbox">
+  <input type="checkbox" id="ModAccurateCoOccurring${axisType}" data-value="Moderately accurate" data-order="1" data-scale="accurateInaccurate"/>
+  <label for="ModAccurateCoOccurring${axisType}">Moderately accurate</label>
+</div>
+<div class="orderedCheckbox">
+  <input type="checkbox" id="AccurateCoOccurring${axisType}" data-value="Accurate" data-order="0" data-scale="accurateInaccurate"/>
+  <label for="AccurateCoOccurring${axisType}">Accurate</label>
+</div>
+
+<div class="orderedCheckbox">
+  <input type="checkbox" id="StronglyDisagreeCoOccurring${axisType}" data-value="Strongly disagree" data-order="4" data-scale="agreeDisagree"/>
+  <label for="StronglyDisagreeCoOccurring${axisType}">Strongly disagree</label>
+</div>
+<div class="orderedCheckbox">
+  <input type="checkbox" id="DisagreeCoOccurring${axisType}" data-value="Disagree" data-order="3" data-scale="agreeDisagree"/>
+  <label for="DisagreeCoOccurring${axisType}">Disagree</label>
+</div>
+<div class="orderedCheckbox">
+  <input type="checkbox" id="NeutralCoOccurring${axisType}" data-value="Neither agree nor disagree" data-order="2" data-scale="agreeDisagree"/>
+  <label for="NeutralCoOccurring${axisType}">Neither agree nor disagree</label>
+</div>
+<div class="orderedCheckbox">
+  <input type="checkbox" id="AgreeCoOccurring${axisType}" data-value="Agree" data-order="1" data-scale="agreeDisagree"/>
+  <label for="AgreeCoOccurring${axisType}">Agree</label>
+</div>
+<div class="orderedCheckbox">
+  <input type="checkbox" id="StronglyAgreeCoOccurring${axisType}" data-value="Strongly agree" data-order="0" data-scale="agreeDisagree"/>
+  <label for="StronglyAgreeCoOccurring${axisType}">Strongly agree</label>
+</div>
+
+<div class="orderedCheckbox">
+  <input type="checkbox" id="assignedCoOccurring${axisType}" data-value="assigned" data-order="0" data-scale="assignedNotAssigned"/>
+  <label for="assignedCoOccurring${axisType}">Assigned</label>
+</div>
+<div class="orderedCheckbox">
+  <input type="checkbox" id="DidNotAssignCoOccurring${axisType}" data-value="did not assign" data-order="4" data-scale="assignedNotAssigned"/>
+  <label for="DidNotAssignCoOccurring${axisType}">Did not assign</label>
+</div>
